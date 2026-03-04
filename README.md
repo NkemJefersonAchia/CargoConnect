@@ -1,4 +1,4 @@
-# 🚛 CargoConnect
+# CargoConnect
 
 > A full-stack logistics and relocation web platform built for **Kigali, Rwanda**.
 > CargoConnect connects customers who need to move cargo or relocate with verified truck drivers — in real time.
@@ -179,14 +179,151 @@ CargoConnect/
 
 ---
 
-## Team Members
+## Team Members & Task Assignments
 
-| Name | Role |
-|------|------|
-| *(Add name)* | *(e.g. Backend Developer)* |
-| *(Add name)* | *(e.g. Frontend Developer)* |
-| *(Add name)* | *(e.g. Database & DevOps)* |
-| *(Add name)* | *(e.g. UI/UX Designer)* |
+There are 7 members on this team. Each person owns a clear slice of the project so work never overlaps and everyone always knows what they are responsible for.
+
+---
+
+###  Member 1 — Project Lead & App Architecture
+
+**Name:** *(Add name)*
+**Responsible for:** The backbone of the whole application — setting up the project, making sure every piece connects, and writing the documentation.
+
+| File / Area | Task |
+|-------------|------|
+| `app.py` | Create the Flask app, register all blueprints, configure SocketIO |
+| `extensions.py` | Define shared extensions (db, bcrypt, socketio, migrate, login_manager) |
+| `config/config.py` | Load environment variables, configure the app |
+| `.env.example` | Document all required environment variables |
+| `requirements.txt` | List all Python dependencies |
+| `.gitignore` | Exclude secrets and cache from version control |
+| `README.md` | Write the full project documentation |
+| Overall integration | Make sure all blueprints, models, and templates connect without errors |
+| Final testing | Run the full app end-to-end and confirm all 44 routes work |
+
+---
+
+###  Member 2 — Database Engineer
+
+**Name:** *(Add name)*
+**Responsible for:** Designing and building every database table. Every other team member depends on this work, so it should be done first.
+
+| File / Area | Task |
+|-------------|------|
+| `models/__init__.py` | Import and expose the SQLAlchemy db instance |
+| `models/user.py` | Users table — user_id, name, email, phone, password_hash, role |
+| `models/customer.py` | Customers table — customer_id, user_id (FK), default_address, bookings relationship |
+| `models/driver.py` | Drivers table — driver_id, user_id (FK), licence_no, rating, availability, GPS coords |
+| `models/truck.py` | Trucks table — truck_id, driver_id (FK), plate_no, capacity |
+| `models/booking.py` | Bookings table — all fields, status enum, relationships to customer/driver/truck |
+| `models/payment.py` | Payments table — payment_id, booking_id (FK), amount, method, status, paid_at |
+| `models/rating.py` | Ratings table — rating_id, booking_id, customer_id, driver_id, score, comment |
+| `models/notification.py` | Notifications table — notification_id, user_id (FK), message, is_read, sent_at |
+| Database setup | Create the `cargoconnect` PostgreSQL database and verify all tables generate correctly |
+
+---
+
+###  Member 3 — Authentication & Admin Backend
+
+**Name:** *(Add name)*
+**Responsible for:** Everything related to user accounts and the admin control panel routes.
+
+| File / Area | Task |
+|-------------|------|
+| `routes/auth.py` | Register endpoint (creates User + Customer or Driver profile), Login endpoint (bcrypt check + Flask-Login), Logout endpoint |
+| `templates/login.html` | Login page — form, error display, link to register |
+| `templates/register.html` | Register page — role toggle (customer/driver), licence field for drivers |
+| `routes/admin.py` | All admin endpoints: stats, list users/drivers/bookings, verify/reject drivers, delete users, toggle availability |
+| `templates/admin_dashboard.html` | Admin overview — 6 stat cards, driver verification queue with Verify/Reject buttons |
+| `templates/admin_users.html` | Users table — live search filter, delete with confirmation modal |
+| `templates/admin_drivers.html` | Drivers table — toggle availability, remove verification, delete with modal |
+| `templates/admin_bookings.html` | Bookings table — status dropdown filter, detail modal per row |
+| Role protection | Add `require_admin` decorator, ensure customer/driver routes block wrong roles |
+
+---
+
+###  Member 4 — Customer Features Backend
+
+**Name:** *(Add name)*
+**Responsible for:** All the features a customer uses — stats, bookings, notifications, and ratings.
+
+| File / Area | Task |
+|-------------|------|
+| `routes/customer.py` | Stats endpoint, active booking endpoint, recent bookings endpoint, notifications endpoints, rate driver endpoint |
+| `routes/booking.py` | Driver search using Haversine formula, cost estimation (2000 + 500/ton + 200/km), create booking endpoint, cancel booking endpoint |
+| Haversine formula | Implement great-circle distance calculation to rank drivers by proximity |
+| Cost calculation | `estimate_cost(weight_tons, distance_km)` helper function |
+| `find_available_drivers()` | Query verified + available drivers, exclude busy drivers, sort by rating, return top 10 |
+| Booking serialisation | `_serialize_booking()` helper that converts a Booking object to a JSON-safe dict |
+| Notification creation | Create Notification records when a booking is made or cancelled |
+
+---
+
+###  Member 5 — Customer Dashboard Frontend
+
+**Name:** *(Add name)*
+**Responsible for:** Everything the customer sees and interacts with in the browser.
+
+| File / Area | Task |
+|-------------|------|
+| `templates/base.html` | Shared layout — sidebar with nav links, topbar with hamburger, flash messages, content block, script block |
+| `templates/customer_dashboard.html` | Stats row (4 cards), active booking card, recent bookings table, quick-book form, truck results list, confirmation modal |
+| `templates/book_truck.html` | Standalone book-a-truck page with search form and results |
+| `static/js/booking.js` | Load stats on page load, load active booking, load recent bookings, load notifications, handle truck search form (fetch POST), display truck result cards, open/close booking modal, submit confirmed booking |
+| `static/js/auth.js` | Show/hide licence field based on role selection on register page, auto-dismiss flash messages |
+| `static/js/dashboard.js` | Hamburger sidebar toggle, close sidebar on outside click for mobile, shared `formatRWF()` and `formatDate()` helpers |
+| Truck results cards | Each card shows driver name, star rating, plate, capacity, distance, estimated cost, Book button |
+| Booking modal | Confirm modal shows full trip summary before submitting |
+
+---
+
+###  Member 6 — Driver Dashboard Frontend & Backend
+
+**Name:** *(Add name)*
+**Responsible for:** Everything the driver sees and does — from going online to completing a trip.
+
+| File / Area | Task |
+|-------------|------|
+| `routes/driver.py` | Dashboard page route, stats endpoint, availability toggle (PATCH), pending jobs endpoint, active job endpoint, accept job, decline job, complete job, job history endpoint |
+| `templates/driver_dashboard.html` | Availability card with toggle switch, 4 stat cards, active job card, incoming jobs list, job history table — all data loaded via fetch |
+| `templates/driver_job.html` | Active job detail view — customer info, trip details, Update Location button, Complete Trip button |
+| Driver inline JS | All the JavaScript inside `driver_dashboard.html` — loadDriverStats, loadActiveJob, loadPendingJobs, loadJobHistory, acceptJob, declineJob, completeTrip, updateLocation via socket.emit |
+| Availability toggle UI | Card turns orange when driver is online, grey when offline |
+| Verification pending state | Show "Account pending verification" instead of toggle if driver is not verified |
+| Job cards | Each incoming job card shows customer name, route, cost, time, Accept and Decline buttons |
+
+---
+
+###  Member 7 — Real-Time Tracking, Payments & Styling
+
+**Name:** *(Add name)*
+**Responsible for:** The live GPS tracking feature, the MTN MoMo payment integration, and the entire visual design system.
+
+| File / Area | Task |
+|-------------|------|
+| `routes/tracking.py` | `join_tracking_room` SocketIO event (customer joins booking room), `driver_location_update` SocketIO event (update DB + broadcast to room) |
+| `templates/track_booking.html` | Trip details panel, Leaflet map container, pass booking ID and dropoff coords to JS |
+| `static/js/tracking.js` | Initialise Leaflet map centred on Kigali (-1.9441, 30.0619), connect Socket.IO, join tracking room, listen for `location_update`, move orange driver marker, pan map to new location |
+| `routes/payment.py` | `get_momo_token()` helper, `/initiate/<id>` endpoint (calls MoMo Collections API), `/callback` endpoint (updates payment status, sends notifications to both parties) |
+| `static/css/style.css` | Complete design system — all CSS variables in `:root`, sidebar, topbar, cards, stat cards, buttons (primary/action/ghost/danger), forms, inputs, badges, tables, modals, tracking layout, availability toggle, job cards, truck cards, auth pages, responsive mobile layout |
+| `static/js/admin.js` | Shared admin utilities — hamburger setup, truncate helper, formatDate helper, apiRequest wrapper |
+| CSS variables | Define all 13 colour tokens, both fonts, all spacing/radius/shadow values as variables — no hex value written more than once |
+| Mobile responsive | Sidebar collapses on screens below 768px, hamburger button appears in topbar |
+
+---
+
+### Summary Table
+
+| # | Member | Main Area | Key Files |
+|---|--------|-----------|-----------|
+| 1 | *(name)* | Project Lead & Architecture | `app.py`, `extensions.py`, `config/`, `README.md` |
+| 2 | *(name)* | Database | All `models/*.py` files |
+| 3 | *(name)* | Auth & Admin | `routes/auth.py`, `routes/admin.py`, login/register/admin templates |
+| 4 | *(name)* | Customer Backend | `routes/customer.py`, `routes/booking.py`, driver search algorithm |
+| 5 | *(name)* | Customer Frontend | `templates/customer_dashboard.html`, `book_truck.html`, `booking.js`, `dashboard.js`, `auth.js` |
+| 6 | *(name)* | Driver Dashboard | `routes/driver.py`, `driver_dashboard.html`, `driver_job.html` |
+| 7 | *(name)* | Tracking, Payments & CSS | `routes/tracking.py`, `routes/payment.py`, `track_booking.html`, `tracking.js`, `style.css` |
 
 ---
 
