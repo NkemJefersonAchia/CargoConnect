@@ -179,7 +179,7 @@ CargoConnect/
 
 ---
 
-## Team Members & Task Assignments
+## Team Members
 
 There are 7 members on this team. Each person owns a clear slice of the project so work never overlaps and everyone always knows what they are responsible for.
 
