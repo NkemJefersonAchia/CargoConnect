@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Live Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 350px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.3em;
+            margin: 0;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .sidebar-content {
+            padding: 20px;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 0.9em;
+            color: #999;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .info-label {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .driver-info {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .driver-avatar {
+            font-size: 2em;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .driver-details h4 {
+            color: #333;
+            margin-bottom: 3px;
+            font-size: 0.95em;
+        }
+
+        .driver-details p {
+            color: #666;
+            font-size: 0.85em;
+            margin: 0;
+        }
+
+        .driver-rating {
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .location-item {
+            background: #f0f7ff;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid #4facfe;
+        }
+
+        .location-label {
+            font-size: 0.8em;
+            color: #999;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .location-address {
+            color: #333;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-marker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .marker-current {
+            background: #667eea;
+            color: white;
+        }
+
+        .marker-dropoff {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .marker-pickup {
+            background: #27ae60;
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 300px;
+            }
+
+            .sidebar-content {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                border-bottom: 2px solid #e0e0e0;
+            }
+
+            #map {
+                height: 60vh;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Live Tracking</h2>
+                <button class="back-btn" onclick="goBack()">← Back</button>
+            </div>
+            <div class="sidebar-content">
+                <div class="info-section">
+                    <div class="section-title">Trip Status</div>
+                    <div class="info-item">
+                        <span class="info-label">Trip ID</span>
+                        <span class="info-value" id="tripId">TR001</span>
+                    </div>
+                    <div class="info-item" style="margin-top: 10px;">
+                        <span class="info-label">Status</span>
+                        <span class="status-badge">In Progress</span>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <div class="section-title">Progress</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 65%;"></div>
+                        </div>
+                        <div style="text-align: right; font-size: 0.85em; color: #999;">65% Complete</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="section-title">Driver Information</div>
+                    <div class="driver-info">
+                        <div class="driver-avatar">👨‍💼</div>
+                        <div class="driver-details">
+                            <h4 id="driverName">John Smith</h4>
+                            <p id="driverVehicle">Van</p>
+                            <p class="driver-rating">⭐ <span id="driverRating">4.9</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="section-title">Locations</div>
+                    <div class="location-item">
+                        <div class="location-label">📍 Current Location</div>
+                        <div class="location-address" id="currentLocation">En route</div>
+                    </div>
+                    <div class="location-item">
+                        <div class="location-label">📦 Pickup</div>
+                        <div class="location-address" id="pickupAddress">Loading...</div>
+                    </div>
+                    <div class="location-item">
+                        <div class="location-label">📍 Drop Off</div>
+                        <div class="location-address" id="dropoffAddress">Loading...</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="reportProblem()">⚠️ Report a Problem</button>
+                    <button class="btn btn-secondary" onclick="openContactModal()">📞 Contact Driver</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="map-legend">
+                <div class="legend-item">
+                    <div class="legend-marker marker-current">📦</div>
+                    <span>Current Location</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-marker marker-pickup">✓</div>
+                    <span>Pickup Point</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-marker marker-dropoff">🎯</div>
+                    <span>Drop Off Point</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get trip data from localStorage
+        const tripData = JSON.parse(localStorage.getItem('tripData') || '{}');
+        const tripId = new URLSearchParams(window.location.search).get('trip') || 'TR001';
+
+        // Initialize map
+        const map = L.map('map').setView([tripData.currentLat || 30.0131, tripData.currentLng || 31.3422], 13);
+
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Create custom icons
+        const currentIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">📦</div>',
+            iconSize: [40, 40],
+            popupAnchor: [0, -20]
+        });
+
+        const dropoffIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background: #e74c3c; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">🎯</div>',
+            iconSize: [40, 40],
+            popupAnchor: [0, -20]
+        });
+
+        const pickupIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background: #27ae60; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">✓</div>',
+            iconSize: [40, 40],
+            popupAnchor: [0, -20]
+        });
+
+        // Add markers
+        L.marker([tripData.currentLat || 30.0200, tripData.currentLng || 31.3600], { icon: currentIcon })
+            .bindPopup('<div style="text-align: center;"><strong>Current Location</strong><br>Package in transit</div>')
+            .addTo(map);
+
+        L.marker([tripData.pickupLat || 30.0131, tripData.pickupLng || 31.3422], { icon: pickupIcon })
+            .bindPopup('<div style="text-align: center;"><strong>Pickup Point</strong><br>Already picked up</div>')
+            .addTo(map);
+
+        L.marker([tripData.dropoffLat || 30.0466, tripData.dropoffLng || 31.4837], { icon: dropoffIcon })
+            .bindPopup('<div style="text-align: center;"><strong>Drop Off Point</strong><br>Destination</div>')
+            .addTo(map);
+
+        // Draw route
+        const route = L.polyline(
+            [
+                [tripData.pickupLat || 30.0131, tripData.pickupLng || 31.3422],
+                [tripData.currentLat || 30.0200, tripData.currentLng || 31.3600],
+                [tripData.dropoffLat || 30.0466, tripData.dropoffLng || 31.4837]
+            ],
+            {
+                color: '#667eea',
+                weight: 3,
+                opacity: 0.7,
+                dashArray: '5, 10'
+            }
+        ).addTo(map);
+
+        // Fit bounds
+        const group = new L.featureGroup([
+            L.marker([tripData.pickupLat || 30.0131, tripData.pickupLng || 31.3422]),
+            L.marker([tripData.dropoffLat || 30.0466, tripData.dropoffLng || 31.4837])
+        ]);
+        map.fitBounds(group.getBounds().pad(0.1), { maxZoom: 12 });
+
+        // Update sidebar with trip details (would come from actual data in production)
+        document.getElementById('tripId').textContent = tripId;
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function openContactModal() {
+            alert('Opening contact options for driver...');
+            // In production, this would open the contact modal with driver info
+        }
+
+        function reportProblem() {
+            alert('Opening problem report form. Contact support team about your issue...');
+            // In production, this would open a form to report issues with the delivery
+        }
+
+        function shareLocation() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Track My Cargo',
+                    text: 'Track my cargo delivery in real-time',
+                    url: window.location.href
+                });
+            } else {
+                alert('Location sharing link copied to clipboard!');
+            }
+        }
+
+        // Simulate package movement (demo only)
+        let currentPosition = 0;
+        setInterval(() => {
+            currentPosition += 0.5;
+            if (currentPosition <= 100) {
+                document.getElementById('progressFill').style.width = currentPosition + '%';
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

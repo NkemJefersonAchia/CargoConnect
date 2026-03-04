@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Request Sent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .success-icon {
+            font-size: 5em;
+            margin-bottom: 30px;
+            animation: bounceIn 0.6s ease-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .title {
+            font-size: 2.2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .notification-box {
+            background: #f0f7ff;
+            border-left: 4px solid #4facfe;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .notification-box h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .notification-box p {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .driver-info {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .driver-info-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .driver-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .driver-detail-item {
+            background: white;
+            padding: 12px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .driver-detail-label {
+            color: #999;
+            font-size: 0.85em;
+            margin-bottom: 5px;
+        }
+
+        .driver-detail-value {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .countdown {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .countdown-text {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+
+        .countdown-timer {
+            font-size: 1.8em;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #d4edda;
+            color: #155724;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            .title {
+                font-size: 1.8em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .driver-details {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✅</div>
+        <div class="status-badge">Request Sent Successfully</div>
+        
+        <h1 class="title">Your Request Has Been Sent!</h1>
+        <p class="subtitle">Your cargo shipment request has been forwarded to your selected driver. They will review your request and respond shortly.</p>
+
+        <div class="notification-box">
+            <h3>📬 What Happens Next?</h3>
+            <p>The driver has been notified of your cargo booking request. They will review the details and accept or respond with any questions within the next few minutes. You'll receive a notification once they respond.</p>
+        </div>
+
+        <div class="driver-info">
+            <div class="driver-info-title">Driver Assigned</div>
+            <div class="driver-details">
+                <div class="driver-detail-item">
+                    <div class="driver-detail-label">Driver Name</div>
+                    <div class="driver-detail-value" id="driverName">John Smith</div>
+                </div>
+                <div class="driver-detail-item">
+                    <div class="driver-detail-label">Vehicle</div>
+                    <div class="driver-detail-value" id="driverVehicle">Van</div>
+                </div>
+                <div class="driver-detail-item">
+                    <div class="driver-detail-label">Rating</div>
+                    <div class="driver-detail-value">⭐ 4.9</div>
+                </div>
+                <div class="driver-detail-item">
+                    <div class="driver-detail-label">Status</div>
+                    <div class="driver-detail-value pulse">🟢 Online</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="countdown">
+            <div class="countdown-text">Typical response time:</div>
+            <div class="countdown-timer" id="timer">00:05:00</div>
+        </div>
+
+        <div class="button-group">
+            <a href="client-bookings.html" class="btn btn-primary">View My Bookings</a>
+            <a href="client-home.html" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Get driver info from localStorage
+        const driverName = localStorage.getItem('selectedDriverName') || 'John Smith';
+        document.getElementById('driverName').textContent = driverName;
+
+        // Start countdown timer (5 minutes = 300 seconds)
+        let timeLeft = 300;
+
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function updateTimer() {
+            document.getElementById('timer').textContent = formatTime(timeLeft);
+            if (timeLeft > 0) {
+                timeLeft--;
+                setTimeout(updateTimer, 1000);
+            } else {
+                document.getElementById('timer').textContent = '00:00:00';
+            }
+        }
+
+        // Start the timer
+        updateTimer();
+
+        // Auto-redirect after 10 seconds
+        setTimeout(() => {
+            console.log('Auto-redirecting to bookings...');
+        }, 10000);
+    </script>
+</body>
+</html>
