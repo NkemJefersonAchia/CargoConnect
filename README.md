@@ -187,7 +187,7 @@ There are 7 members on this team. Each person owns a clear slice of the project 
 
 ###  Member 1 — Project Lead & App Architecture
 
-**Name:** *(Add name)*
+**Name:** Nkem Jeferon Achia 
 **Responsible for:** The backbone of the whole application — setting up the project, making sure every piece connects, and writing the documentation.
 
 | File / Area | Task |
