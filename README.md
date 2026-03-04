@@ -5,7 +5,7 @@
 
 ---
 
-## 📌 Table of Contents
+##  Table of Contents
 
 - [What is CargoConnect?](#what-is-cargoconnect)
 - [How it Works](#how-it-works)
