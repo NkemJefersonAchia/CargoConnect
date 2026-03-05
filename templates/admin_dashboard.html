@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard — CargoConnect{% endblock %}
+
+{% block sidebar_links %}
+  <li><a href="{{ url_for('admin.dashboard') }}" class="sidebar__link sidebar__link--active">&#127968; Dashboard</a></li>
+  <li><a href="{{ url_for('admin.users_page') }}" class="sidebar__link">&#128101; Users</a></li>
+  <li><a href="{{ url_for('admin.drivers_page') }}" class="sidebar__link">&#128666; Drivers</a></li>
+  <li><a href="{{ url_for('admin.bookings_page') }}" class="sidebar__link">&#128203; Bookings</a></li>
+  <li><a href="#" class="sidebar__link">&#128179; Payments</a></li>
+  <li><a href="#" class="sidebar__link">&#128276; Notifications</a></li>
+{% endblock %}
+
+{% block topbar_right %}
+  <span class="topbar__username">{{ user.user_name }} <span class="badge badge--admin">Admin</span></span>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Admin Overview</h1>
+
+<!-- Stats Row -->
+<div class="stats-row stats-row--wide">
+  <article class="stat-card">
+    <p class="stat-card__label">Total Users</p>
+    <p class="stat-card__value" id="statUsers">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Total Drivers</p>
+    <p class="stat-card__value" id="statDrivers">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Verified Drivers</p>
+    <p class="stat-card__value" id="statVerified">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Total Bookings</p>
+    <p class="stat-card__value" id="statBookings">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Completed Trips</p>
+    <p class="stat-card__value" id="statCompleted">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Total Revenue (RWF)</p>
+    <p class="stat-card__value" id="statRevenue">—</p>
+  </article>
+</div>
+
+<!-- Driver Verification Queue -->
+<section class="card">
+  <h2 class="card__title">Driver Verification Queue</h2>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Licence No.</th>
+          <th>Registered</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="verificationQueue">
+        <tr><td colspan="6" class="table-empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  async function loadStats() {
+    try {
+      const res = await fetch('/admin/stats');
+      const json = await res.json();
+      if (json.status === 'success') {
+        const d = json.data;
+        document.getElementById('statUsers').textContent = d.total_users;
+        document.getElementById('statDrivers').textContent = d.total_drivers;
+        document.getElementById('statVerified').textContent = d.verified_drivers;
+        document.getElementById('statBookings').textContent = d.total_bookings;
+        document.getElementById('statCompleted').textContent = d.completed_bookings;
+        document.getElementById('statRevenue').textContent = Number(d.total_revenue).toLocaleString();
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadVerificationQueue() {
+    try {
+      const res = await fetch('/admin/unverified-drivers');
+      const json = await res.json();
+      const tbody = document.getElementById('verificationQueue');
+      if (json.status === 'success' && json.data.length > 0) {
+        tbody.innerHTML = json.data.map(d => `
+          <tr id="driverRow${d.driver_id}">
+            <td>${d.name}</td>
+            <td>${d.email}</td>
+            <td>${d.phone || '—'}</td>
+            <td>${d.licence_no || '—'}</td>
+            <td>${d.created_at}</td>
+            <td>
+              <button class="btn btn--sm btn--success" onclick="verifyDriver(${d.driver_id})">Verify</button>
+              <button class="btn btn--sm btn--danger" onclick="rejectDriver(${d.driver_id})">Reject</button>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = '<tr><td colspan="6" class="table-empty">No pending verifications.</td></tr>';
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function verifyDriver(driverId) {
+    try {
+      const res = await fetch(`/admin/drivers/${driverId}/verify`, { method: 'POST' });
+      const json = await res.json();
+      if (json.status === 'success') {
+        document.getElementById(`driverRow${driverId}`)?.remove();
+        loadStats();
+      } else {
+        alert(json.message);
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function rejectDriver(driverId) {
+    if (!confirm('Reject and remove this driver?')) return;
+    try {
+      const res = await fetch(`/admin/drivers/${driverId}/reject`, { method: 'DELETE' });
+      const json = await res.json();
+      if (json.status === 'success') {
+        document.getElementById(`driverRow${driverId}`)?.remove();
+      } else {
+        alert(json.message);
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  loadStats();
+  loadVerificationQueue();
+</script>
+{% endblock %}

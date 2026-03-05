@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Users — Admin CargoConnect{% endblock %}
+
+{% block sidebar_links %}
+  <li><a href="{{ url_for('admin.dashboard') }}" class="sidebar__link">&#127968; Dashboard</a></li>
+  <li><a href="{{ url_for('admin.users_page') }}" class="sidebar__link sidebar__link--active">&#128101; Users</a></li>
+  <li><a href="{{ url_for('admin.drivers_page') }}" class="sidebar__link">&#128666; Drivers</a></li>
+  <li><a href="{{ url_for('admin.bookings_page') }}" class="sidebar__link">&#128203; Bookings</a></li>
+  <li><a href="#" class="sidebar__link">&#128179; Payments</a></li>
+  <li><a href="#" class="sidebar__link">&#128276; Notifications</a></li>
+{% endblock %}
+
+{% block topbar_right %}
+  <span class="topbar__username">{{ user.user_name }} <span class="badge badge--admin">Admin</span></span>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">User Management</h1>
+
+<section class="card">
+  <div class="table-toolbar">
+    <input class="form-input table-search" type="search" id="userSearch" placeholder="Search by name, email or role..." />
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table" id="usersTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="usersTableBody">
+        <tr><td colspan="7" class="table-empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Delete confirmation modal -->
+<div class="modal" id="deleteModal" role="dialog" aria-modal="true">
+  <div class="modal__backdrop" id="deleteModalBackdrop"></div>
+  <div class="modal__box">
+    <h3 class="modal__title">Delete User</h3>
+    <p class="modal__body">Are you sure you want to permanently delete this user? This action cannot be undone.</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" id="deleteCancel">Cancel</button>
+      <button class="btn btn--danger" id="deleteConfirm">Delete</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  let allUsers = [];
+  let deleteTargetId = null;
+
+  async function loadUsers() {
+    try {
+      const res = await fetch('/admin/users');
+      const json = await res.json();
+      if (json.status === 'success') {
+        allUsers = json.data;
+        renderUsers(allUsers);
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  function renderUsers(users) {
+    const tbody = document.getElementById('usersTableBody');
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No users found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(u => `
+      <tr id="userRow${u.user_id}">
+        <td>#${u.user_id}</td>
+        <td>${u.user_name}</td>
+        <td>${u.email}</td>
+        <td>${u.user_phone_no || '—'}</td>
+        <td><span class="badge badge--role-${u.role}">${u.role}</span></td>
+        <td>${u.created_at}</td>
+        <td>
+          <button class="btn btn--sm btn--danger" onclick="openDeleteModal(${u.user_id})">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('userSearch').addEventListener('input', function () {
+    const q = this.value.toLowerCase();
+    const filtered = allUsers.filter(u =>
+      u.user_name.toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q) ||
+      u.role.toLowerCase().includes(q)
+    );
+    renderUsers(filtered);
+  });
+
+  function openDeleteModal(userId) {
+    deleteTargetId = userId;
+    document.getElementById('deleteModal').classList.add('modal--open');
+  }
+
+  document.getElementById('deleteCancel').addEventListener('click', () => {
+    document.getElementById('deleteModal').classList.remove('modal--open');
+  });
+
+  document.getElementById('deleteModalBackdrop').addEventListener('click', () => {
+    document.getElementById('deleteModal').classList.remove('modal--open');
+  });
+
+  document.getElementById('deleteConfirm').addEventListener('click', async () => {
+    if (!deleteTargetId) return;
+    try {
+      const res = await fetch(`/admin/users/${deleteTargetId}`, { method: 'DELETE' });
+      const json = await res.json();
+      if (json.status === 'success') {
+        document.getElementById(`userRow${deleteTargetId}`)?.remove();
+        allUsers = allUsers.filter(u => u.user_id !== deleteTargetId);
+      } else {
+        alert(json.message);
+      }
+      document.getElementById('deleteModal').classList.remove('modal--open');
+    } catch (e) { console.error(e); }
+  });
+
+  loadUsers();
+</script>
+{% endblock %}

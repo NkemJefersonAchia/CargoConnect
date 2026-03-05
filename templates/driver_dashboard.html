@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block title %}Driver Dashboard — CargoConnect{% endblock %}
+
+{% block sidebar_links %}
+  <li><a href="{{ url_for('driver.dashboard') }}" class="sidebar__link sidebar__link--active">&#127968; Dashboard</a></li>
+  <li><a href="#jobs" class="sidebar__link">&#128203; My Jobs</a></li>
+  <li><a href="#" class="sidebar__link">&#128666; My Truck</a></li>
+  <li><a href="#history" class="sidebar__link">&#128176; Earnings</a></li>
+  <li><a href="#" class="sidebar__link">&#128100; My Profile</a></li>
+{% endblock %}
+
+{% block topbar_right %}
+  <span class="topbar__username">{{ user.user_name }}</span>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Driver Dashboard</h1>
+
+<!-- Availability Toggle -->
+<section class="card availability-card" id="availabilityCard">
+  {% if not driver.is_verified %}
+    <div class="verification-pending">
+      <p class="verification-pending__icon">&#9200;</p>
+      <p class="verification-pending__text">Your account is pending admin verification. You will be notified when approved.</p>
+    </div>
+  {% else %}
+    <div class="availability-toggle-wrapper">
+      <div>
+        <p class="availability-label" id="availabilityLabel">{{ 'You are Online' if driver.is_available else 'You are Offline' }}</p>
+        <p class="availability-hint">Toggle to change your status</p>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="availabilityToggle" {% if driver.is_available %}checked{% endif %} />
+        <span class="toggle-switch__track"></span>
+      </label>
+    </div>
+  {% endif %}
+</section>
+
+<!-- Stats Row -->
+<div class="stats-row">
+  <article class="stat-card">
+    <p class="stat-card__label">Jobs Completed</p>
+    <p class="stat-card__value" id="statJobs">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Average Rating</p>
+    <p class="stat-card__value" id="statRating">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Earnings This Week</p>
+    <p class="stat-card__value" id="statEarnings">—</p>
+  </article>
+  <article class="stat-card">
+    <p class="stat-card__label">Pending Jobs</p>
+    <p class="stat-card__value" id="statPending">—</p>
+  </article>
+</div>
+
+<!-- Active Job -->
+<section class="card" id="activeJobCard" style="display:none;">
+  <h2 class="card__title">Active Job</h2>
+  <div id="activeJobContent"></div>
+</section>
+
+<!-- Incoming Jobs -->
+<section class="card" id="jobs">
+  <h2 class="card__title">Incoming Job Requests</h2>
+  <div id="pendingJobsList">
+    <p class="empty-state__text">Loading...</p>
+  </div>
+</section>
+
+<!-- Job History -->
+<section class="card" id="history">
+  <h2 class="card__title">Job History</h2>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Earnings (RWF)</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody">
+        <tr><td colspan="5" class="table-empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+  const DRIVER_ID = {{ driver.driver_id }};
+</script>
+<script>
+  const socket = io();
+
+  async function loadDriverStats() {
+    try {
+      const res = await fetch('/driver/stats');
+      const json = await res.json();
+      if (json.status === 'success') {
+        const d = json.data;
+        document.getElementById('statJobs').textContent = d.total_jobs;
+        document.getElementById('statRating').textContent = d.average_rating + ' / 5';
+        document.getElementById('statEarnings').textContent = formatRWF(d.weekly_earnings);
+        document.getElementById('statPending').textContent = d.pending_jobs;
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadActiveJob() {
+    try {
+      const res = await fetch('/driver/active-job');
+      const json = await res.json();
+      if (json.status === 'success' && json.data) {
+        const j = json.data;
+        document.getElementById('activeJobCard').style.display = '';
+        document.getElementById('activeJobContent').innerHTML = `
+          <dl class="detail-list">
+            <dt>Customer</dt><dd>${j.customer_name}</dd>
+            <dt>Phone</dt><dd>${j.customer_phone || '—'}</dd>
+            <dt>Pickup</dt><dd>${j.pickup_address}</dd>
+            <dt>Dropoff</dt><dd>${j.dropoff_address}</dd>
+            <dt>Cost</dt><dd>${formatRWF(j.estimated_cost)} RWF</dd>
+          </dl>
+          <div class="btn-row">
+            <button class="btn btn--action" onclick="updateLocation(${j.booking_id})">Update My Location</button>
+            <button class="btn btn--primary" onclick="completeTrip(${j.booking_id})">Complete Trip</button>
+          </div>
+        `;
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadPendingJobs() {
+    try {
+      const res = await fetch('/driver/pending-jobs');
+      const json = await res.json();
+      const container = document.getElementById('pendingJobsList');
+      if (json.status === 'success' && json.data.length > 0) {
+        container.innerHTML = json.data.map(j => `
+          <article class="job-card">
+            <div class="job-card__info">
+              <p class="job-card__name">${j.customer_name}</p>
+              <p class="job-card__route">&#128205; ${j.pickup_address} &rarr; ${j.dropoff_address}</p>
+              <p class="job-card__meta">&#128176; ${formatRWF(j.estimated_cost)} RWF &nbsp;&bull;&nbsp; &#128197; ${formatDate(j.scheduled_time)}</p>
+            </div>
+            <div class="job-card__actions">
+              <button class="btn btn--action" onclick="acceptJob(${j.booking_id})">Accept</button>
+              <button class="btn btn--ghost" onclick="declineJob(${j.booking_id})">Decline</button>
+            </div>
+          </article>
+        `).join('');
+      } else {
+        container.innerHTML = '<p class="empty-state__text">No pending job requests.</p>';
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function loadJobHistory() {
+    try {
+      const res = await fetch('/driver/job-history');
+      const json = await res.json();
+      const tbody = document.getElementById('historyTableBody');
+      if (json.status === 'success' && json.data.length > 0) {
+        tbody.innerHTML = json.data.map(j => `
+          <tr>
+            <td>#${j.booking_id}</td>
+            <td>${j.customer_name}</td>
+            <td>${j.date}</td>
+            <td>${formatRWF(j.earnings)}</td>
+            <td>${j.rating ? '⭐ ' + j.rating : '—'}</td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No completed jobs yet.</td></tr>';
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function acceptJob(bookingId) {
+    try {
+      const res = await fetch(`/driver/job/${bookingId}/accept`, { method: 'POST' });
+      const json = await res.json();
+      if (json.status === 'success') {
+        loadPendingJobs();
+        loadActiveJob();
+      } else {
+        alert(json.message);
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  async function declineJob(bookingId) {
+    try {
+      const res = await fetch(`/driver/job/${bookingId}/decline`, { method: 'POST' });
+      const json = await res.json();
+      if (json.status === 'success') loadPendingJobs();
+      else alert(json.message);
+    } catch (e) { console.error(e); }
+  }
+
+  async function completeTrip(bookingId) {
+    if (!confirm('Mark this trip as completed?')) return;
+    try {
+      const res = await fetch(`/driver/job/${bookingId}/complete`, { method: 'POST' });
+      const json = await res.json();
+      if (json.status === 'success') {
+        document.getElementById('activeJobCard').style.display = 'none';
+        loadDriverStats();
+        loadJobHistory();
+      } else {
+        alert(json.message);
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  function updateLocation(bookingId) {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser.');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(pos => {
+      socket.emit('driver_location_update', {
+        driver_id: DRIVER_ID,
+        booking_id: bookingId,
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+      });
+      alert('Location updated!');
+    }, () => {
+      alert('Unable to retrieve your location.');
+    });
+  }
+
+  const availabilityToggle = document.getElementById('availabilityToggle');
+  if (availabilityToggle) {
+    availabilityToggle.addEventListener('change', async function () {
+      const isAvailable = this.checked;
+      try {
+        const res = await fetch('/driver/availability', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ is_available: isAvailable }),
+        });
+        const json = await res.json();
+        if (json.status === 'success') {
+          const card = document.getElementById('availabilityCard');
+          const label = document.getElementById('availabilityLabel');
+          label.textContent = isAvailable ? 'You are Online' : 'You are Offline';
+          card.classList.toggle('availability-card--online', isAvailable);
+        } else {
+          this.checked = !isAvailable;
+          alert(json.message);
+        }
+      } catch (e) {
+        this.checked = !isAvailable;
+        console.error(e);
+      }
+    });
+  }
+
+  function formatRWF(val) {
+    return Number(val).toLocaleString();
+  }
+  function formatDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-RW', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  loadDriverStats();
+  loadActiveJob();
+  loadPendingJobs();
+  loadJobHistory();
+</script>
+{% endblock %}

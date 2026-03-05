@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Bookings — Admin CargoConnect{% endblock %}
+
+{% block sidebar_links %}
+  <li><a href="{{ url_for('admin.dashboard') }}" class="sidebar__link">&#127968; Dashboard</a></li>
+  <li><a href="{{ url_for('admin.users_page') }}" class="sidebar__link">&#128101; Users</a></li>
+  <li><a href="{{ url_for('admin.drivers_page') }}" class="sidebar__link">&#128666; Drivers</a></li>
+  <li><a href="{{ url_for('admin.bookings_page') }}" class="sidebar__link sidebar__link--active">&#128203; Bookings</a></li>
+  <li><a href="#" class="sidebar__link">&#128179; Payments</a></li>
+  <li><a href="#" class="sidebar__link">&#128276; Notifications</a></li>
+{% endblock %}
+
+{% block topbar_right %}
+  <span class="topbar__username">{{ user.user_name }} <span class="badge badge--admin">Admin</span></span>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">All Bookings</h1>
+
+<section class="card">
+  <div class="table-toolbar">
+    <select class="form-input table-filter" id="statusFilter">
+      <option value="all">All Statuses</option>
+      <option value="pending">Pending</option>
+      <option value="confirmed">Confirmed</option>
+      <option value="completed">Completed</option>
+      <option value="cancelled">Cancelled</option>
+    </select>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Driver</th>
+          <th>Pickup</th>
+          <th>Dropoff</th>
+          <th>Scheduled</th>
+          <th>Status</th>
+          <th>Cost (RWF)</th>
+          <th>Created</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody id="bookingsTableBody">
+        <tr><td colspan="10" class="table-empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Booking Detail Modal -->
+<div class="modal" id="bookingDetailModal" role="dialog" aria-modal="true">
+  <div class="modal__backdrop" id="bookingDetailBackdrop"></div>
+  <div class="modal__box modal__box--wide">
+    <h3 class="modal__title">Booking Details</h3>
+    <div id="bookingDetailContent" class="modal__body"></div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" id="bookingDetailClose">Close</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  let allBookings = [];
+
+  async function loadBookings(status = 'all') {
+    try {
+      const url = status === 'all' ? '/admin/bookings' : `/admin/bookings?status=${status}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      allBookings = json.data || [];
+      renderBookings(allBookings);
+    } catch (e) { console.error(e); }
+  }
+
+  function renderBookings(bookings) {
+    const tbody = document.getElementById('bookingsTableBody');
+    if (bookings.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" class="table-empty">No bookings found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = bookings.map(b => `
+      <tr>
+        <td>#${b.booking_id}</td>
+        <td>${b.customer_name}</td>
+        <td>${b.driver_name}</td>
+        <td>${truncate(b.pickup_address, 20)}</td>
+        <td>${truncate(b.dropoff_address, 20)}</td>
+        <td>${formatDate(b.scheduled_time)}</td>
+        <td><span class="badge badge--${b.status}">${b.status}</span></td>
+        <td>${Number(b.estimated_cost).toLocaleString()}</td>
+        <td>${b.created_at}</td>
+        <td><button class="btn btn--sm btn--ghost" onclick="showDetail(${b.booking_id})">View</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function showDetail(bookingId) {
+    const b = allBookings.find(x => x.booking_id === bookingId);
+    if (!b) return;
+    document.getElementById('bookingDetailContent').innerHTML = `
+      <dl class="detail-list">
+        <dt>Booking ID</dt><dd>#${b.booking_id}</dd>
+        <dt>Customer</dt><dd>${b.customer_name}</dd>
+        <dt>Driver</dt><dd>${b.driver_name}</dd>
+        <dt>Truck Plate</dt><dd>${b.plate_no || '—'}</dd>
+        <dt>Pickup</dt><dd>${b.pickup_address}</dd>
+        <dt>Dropoff</dt><dd>${b.dropoff_address}</dd>
+        <dt>Scheduled</dt><dd>${formatDate(b.scheduled_time)}</dd>
+        <dt>Status</dt><dd><span class="badge badge--${b.status}">${b.status}</span></dd>
+        <dt>Cost</dt><dd>${Number(b.estimated_cost).toLocaleString()} RWF</dd>
+        <dt>Payment</dt><dd>${b.payment_status || 'N/A'}</dd>
+        <dt>Created</dt><dd>${b.created_at}</dd>
+      </dl>
+    `;
+    document.getElementById('bookingDetailModal').classList.add('modal--open');
+  }
+
+  document.getElementById('bookingDetailClose').addEventListener('click', () => {
+    document.getElementById('bookingDetailModal').classList.remove('modal--open');
+  });
+  document.getElementById('bookingDetailBackdrop').addEventListener('click', () => {
+    document.getElementById('bookingDetailModal').classList.remove('modal--open');
+  });
+
+  document.getElementById('statusFilter').addEventListener('change', function () {
+    loadBookings(this.value);
+  });
+
+  function truncate(str, len) {
+    return str && str.length > len ? str.slice(0, len) + '…' : (str || '');
+  }
+  function formatDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-RW', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+
+  loadBookings();
+</script>
+{% endblock %}
