@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Driver Job History</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .navbar-back {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .navbar-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .earnings-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-card {
+            text-align: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .summary-card h3 {
+            color: #999;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .summary-card .value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        .summary-card .detail {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+
+        .filter-btn:hover {
+            border-color: #4facfe;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .history-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            gap: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .history-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-left {
+            flex: 1;
+        }
+
+        .history-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 150px;
+        }
+
+        .trip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .trip-id {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        .trip-status {
+            display: inline-block;
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .customer-name {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .trip-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .trip-details {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .earnings-display {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #27ae60;
+            margin-bottom: 8px;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+
+        .stars {
+            color: #f39c12;
+            font-size: 0.9em;
+        }
+
+        .rating-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .earnings-note {
+            color: #999;
+            font-size: 0.8em;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state-text {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .history-card {
+                flex-direction: column;
+            }
+
+            .history-right {
+                text-align: left;
+            }
+
+            .page-header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">🚚 CargoConnect</div>
+        <a href="driver-home.html" class="navbar-back">← Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Job History</h1>
+            <p>View your past deliveries, earnings, and customer ratings</p>
+        </div>
+
+        <!-- Earnings Summary -->
+        <div class="earnings-summary">
+            <div class="summary-card">
+                <h3>Total Jobs</h3>
+                <div class="value">127</div>
+                <div class="detail">Completed deliveries</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Earnings</h3>
+                <div class="value">$4,850</div>
+                <div class="detail">Before platform fees</div>
+            </div>
+            <div class="summary-card">
+                <h3>Avg Rating</h3>
+                <div class="value">4.8</div>
+                <div class="detail">⭐ From customers</div>
+            </div>
+            <div class="summary-card">
+                <h3>5-Star Reviews</h3>
+                <div class="value">89%</div>
+                <div class="detail">Customer satisfaction</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterHistory('all')">All Jobs</button>
+            <button class="filter-btn" onclick="filterHistory('march')">March 2026</button>
+            <button class="filter-btn" onclick="filterHistory('february')">February 2026</button>
+            <button class="filter-btn" onclick="filterHistory('january')">January 2026</button>
+        </div>
+
+        <!-- History List -->
+        <div class="history-list" id="historyList">
+            <!-- Job history will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        // Sample job history data
+        const jobHistory = {
+            all: [
+                {
+                    id: "TR001",
+                    customer: "Sarah Johnson",
+                    date: "2026-03-04",
+                    pickup: "222 Retail Park, Maadi",
+                    dropoff: "888 Shopping Center, New Cairo",
+                    earnings: 40.95,
+                    rating: 5,
+                    status: "Completed"
+                },
+                {
+                    id: "TR002",
+                    customer: "Ahmed Hassan",
+                    date: "2026-03-03",
+                    pickup: "123 Main Street, Downtown",
+                    dropoff: "456 Business Ave, Giza",
+                    earnings: 58.50,
+                    rating: 5,
+                    status: "Completed"
+                },
+                {
+                    id: "TR003",
+                    customer: "Fatima Ali",
+                    date: "2026-03-02",
+                    pickup: "789 Market Road, Helwan",
+                    dropoff: "321 Industrial Zone, 6th of October",
+                    earnings: 50.18,
+                    rating: 4,
+                    status: "Completed"
+                },
+                {
+                    id: "TR004",
+                    customer: "Mohamed Karim",
+                    date: "2026-03-01",
+                    pickup: "555 Commercial St, Nasr City",
+                    dropoff: "999 Logistics Hub, New Cairo",
+                    earnings: 65.25,
+                    rating: 5,
+                    status: "Completed"
+                },
+                {
+                    id: "TR005",
+                    customer: "Layla Omar",
+                    date: "2026-02-28",
+                    pickup: "100 Tech Park, New Cairo",
+                    dropoff: "200 Innovation Hub, Sheikh Zayed",
+                    earnings: 43.43,
+                    rating: 5,
+                    status: "Completed"
+                },
+                {
+                    id: "TR006",
+                    customer: "Karim Hassan",
+                    date: "2026-02-27",
+                    pickup: "333 Fashion Street, Downtown",
+                    dropoff: "666 Retail Hub, New Cairo",
+                    earnings: 54.90,
+                    rating: 4,
+                    status: "Completed"
+                },
+                {
+                    id: "TR007",
+                    customer: "Noor Khalid",
+                    date: "2026-02-26",
+                    pickup: "444 Commercial Ave, Giza",
+                    dropoff: "777 Business Park, 6th of October",
+                    earnings: 47.48,
+                    rating: 5,
+                    status: "Completed"
+                },
+                {
+                    id: "TR008",
+                    customer: "Zainab Ali",
+                    date: "2026-02-25",
+                    pickup: "500 Business District, Downtown",
+                    dropoff: "600 Commerce Center, New Cairo",
+                    earnings: 61.65,
+                    rating: 5,
+                    status: "Completed"
+                }
+            ]
+        };
+
+        function renderHistory(historyToShow) {
+            const container = document.getElementById('historyList');
+
+            if (historyToShow.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-title">No Job History</div>
+                        <div class="empty-state-text">You haven't completed any deliveries in this period yet.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = historyToShow.map(job => {
+                const date = new Date(job.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric'
+                });
+
+                const stars = '⭐'.repeat(job.rating) + '☆'.repeat(5 - job.rating);
+
+                return `
+                    <div class="history-card">
+                        <div class="history-left">
+                            <div class="trip-header">
+                                <div class="trip-id">${job.id}</div>
+                                <span class="trip-status">${job.status}</span>
+                            </div>
+                            <div class="customer-name">${job.customer}</div>
+                            <div class="trip-date">${formattedDate}</div>
+                            <div class="trip-details">
+                                📍 ${job.pickup}<br>
+                                → ${job.dropoff}
+                            </div>
+                        </div>
+                        <div class="history-right">
+                            <div class="earnings-display">$${job.earnings.toFixed(2)}</div>
+                            <div class="earnings-note">Net earnings</div>
+                            <div class="rating-display">
+                                <span class="stars">${stars}</span>
+                                <span class="rating-value">${job.rating}.0</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterHistory(filter) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter history
+            let filtered = jobHistory.all;
+            if (filter === 'march') {
+                filtered = jobHistory.all.filter(j => j.date.startsWith('2026-03'));
+            } else if (filter === 'february') {
+                filtered = jobHistory.all.filter(j => j.date.startsWith('2026-02'));
+            } else if (filter === 'january') {
+                filtered = jobHistory.all.filter(j => j.date.startsWith('2026-01'));
+            }
+
+            // Sort by most recent first
+            const sorted = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
+            renderHistory(sorted);
+        }
+
+        // Initialize - render all history sorted by most recent
+        const sorted = [...jobHistory.all].sort((a, b) => new Date(b.date) - new Date(a.date));
+        renderHistory(sorted);
+    </script>
+</body>
+</html>

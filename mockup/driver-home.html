@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Driver Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-link {
+            color: #666;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .navbar-link:hover {
+            color: #4facfe;
+        }
+
+        .logout-btn {
+            background: #4facfe;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #00f2fe;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .welcome-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .welcome-text h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin: 0;
+        }
+
+        .welcome-text p {
+            color: #666;
+            font-size: 1.1em;
+            margin: 5px 0 0 0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #27ae60;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-text {
+            color: #27ae60;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .welcome-message {
+            color: #666;
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            background: #f9f9f9;
+        }
+
+        .card-icon {
+            font-size: 3.5em;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 0.95em;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .card-button {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 10px;
+        }
+
+        .card-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .card-stat {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            color: #4facfe;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .online-toggle-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .toggle-info h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.2em;
+        }
+
+        .toggle-info p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 80px;
+            height: 50px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 40px;
+            width: 40px;
+            left: 5px;
+            bottom: 5px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #27ae60;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+        }
+
+        .online-status {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #ccc;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .online-status.active {
+            color: #27ae60;
+        }
+
+        @media (max-width: 768px) {
+            .welcome-section {
+                padding: 20px;
+            }
+
+            .welcome-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .online-toggle-section {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .online-status {
+                min-width: auto;
+                text-align: center;
+            }
+
+            .welcome-text h1 {
+                font-size: 1.8em;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 2em;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .navbar-menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">🚚 CargoConnect</div>
+        <div class="navbar-menu">
+            <a href="driver-profile.html" class="navbar-link">Profile</a>
+            <a href="driver-earnings.html" class="navbar-link">Earnings</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="welcome-section">
+            <div class="welcome-header">
+                <div class="avatar">🚗</div>
+                <div class="welcome-text">
+                    <h1>Welcome, <span id="driverName">Driver</span>!</h1>
+                    <p><span class="status-indicator"></span><span class="status-text">Online & Available</span></p>
+                </div>
+            </div>
+            <div class="welcome-message">
+                You're all set to start accepting delivery requests. Monitor your trips, build your reputation with reviews, and track your payments all in one place.
+            </div>
+        </div>
+
+        <!-- Online/Offline Toggle -->
+        <div class="online-toggle-section">
+            <div class="toggle-info">
+                <h3>Go Online to Accept Jobs</h3>
+                <p>Toggle your availability status to receive delivery requests</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="onlineToggle" checked onchange="toggleOnlineStatus()">
+                    <span class="toggle-slider"></span>
+                </label>
+                <span class="online-status active" id="onlineStatus">🟢 Online</span>
+            </div>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Trips Card -->
+            <div class="card" onclick="navigateTo('driver-trips.html')">
+                <div class="card-icon">📦</div>
+                <div class="card-title">My Trips</div>
+                <div class="card-description">View active deliveries, pending requests, and completed trips</div>
+                <div class="card-stat">
+                    <div class="stat-number" id="tripCount">0</div>
+                    <div class="stat-label">Active Deliveries</div>
+                </div>
+                <button class="card-button">View Trips →</button>
+            </div>
+
+            <!-- Reviews Card -->
+            <div class="card" onclick="navigateTo('driver-reviews.html')">
+                <div class="card-icon">⭐</div>
+                <div class="card-title">Reviews & Ratings</div>
+                <div class="card-description">Check customer feedback and build your reputation</div>
+                <div class="card-stat">
+                    <div class="stat-number" id="rating">4.9</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <button class="card-button">View Reviews →</button>
+            </div>
+
+            <!-- Payments Card -->
+            <div class="card" onclick="navigateTo('driver-payments.html')">
+                <div class="card-icon">💰</div>
+                <div class="card-title">Payments</div>
+                <div class="card-description">Track earnings, invoices, and manage payouts</div>
+                <div class="card-stat">
+                    <div class="stat-number" id="earnings">$0</div>
+                    <div class="stat-label">This Month</div>
+                </div>
+                <button class="card-button">View Payments →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get driver name from URL parameters or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const driverName = urlParams.get('name') || localStorage.getItem('driverName') || 'Driver';
+        
+        // Update driver name in welcome section
+        document.getElementById('driverName').textContent = driverName;
+        
+        // Store driver name for other pages
+        if (driverName !== 'Driver') {
+            localStorage.setItem('driverName', driverName);
+        }
+
+        // Sample stats (in production, these would come from the backend)
+        document.getElementById('tripCount').textContent = '2';
+        document.getElementById('rating').textContent = '4.9';
+        document.getElementById('earnings').textContent = '$485.50';
+
+        function toggleOnlineStatus() {
+            const toggle = document.getElementById('onlineToggle');
+            const statusEl = document.getElementById('onlineStatus');
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.status-text');
+
+            if (toggle.checked) {
+                statusEl.textContent = '🟢 Online';
+                statusEl.classList.add('active');
+                statusIndicator.style.background = '#27ae60';
+                statusText.textContent = 'Online & Available';
+                statusText.style.color = '#27ae60';
+                localStorage.setItem('driverOnline', 'true');
+            } else {
+                statusEl.textContent = '🔴 Offline';
+                statusEl.classList.remove('active');
+                statusIndicator.style.background = '#e74c3c';
+                statusText.textContent = 'Offline';
+                statusText.style.color = '#e74c3c';
+                localStorage.setItem('driverOnline', 'false');
+            }
+        }
+
+        // Check if driver was previously online
+        const wasOnline = localStorage.getItem('driverOnline') !== 'false';
+        document.getElementById('onlineToggle').checked = wasOnline;
+        if (!wasOnline) {
+            toggleOnlineStatus();
+        }
+
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        function logout() {
+            localStorage.removeItem('driverName');
+            window.location.href = 'driver-auth.html';
+        }
+    </script>
+</body>
+</html>

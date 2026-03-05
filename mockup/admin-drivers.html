@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Drivers Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .navbar-link:hover {
+            color: white;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .sidebar-item {
+            padding: 15px 25px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-item:hover {
+            background: #f5f7fa;
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+
+        .sidebar-item.active {
+            background: #f5f7fa;
+            color: #667eea;
+            border-left-color: #667eea;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 40px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 10px 15px;
+            background: #f5f7fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .sort-btn {
+            padding: 10px 15px;
+            background: #f5f7fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .sort-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .sort-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background: #f5f7fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .table th {
+            padding: 15px;
+            text-align: left;
+            color: #333;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .table th:hover {
+            background: #efefef;
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #666;
+        }
+
+        .table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-verified {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-online {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .status-offline {
+            background: #ffccbc;
+            color: #d84315;
+        }
+
+        .user-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-approve {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .btn-approve:hover {
+            background: #155724;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .btn-reject:hover {
+            background: #721c24;
+            color: white;
+        }
+
+        .btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-view:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-disable {
+            background: #ffe0e0;
+            color: #d32f2f;
+        }
+
+        .btn-disable:hover {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .pagination {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .pagination button:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            color: #f39c12;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-250px);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .table {
+                font-size: 0.9em;
+            }
+
+            .table th,
+            .table td {
+                padding: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">👨‍💼 CargoConnect Admin</div>
+        <div class="navbar-menu">
+            <a href="admin-settings.html" class="navbar-link">Settings</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-menu">
+            <a href="admin-dashboard.html" class="sidebar-item">
+                <span>📊</span> Dashboard
+            </a>
+            <a href="admin-users.html" class="sidebar-item">
+                <span>👥</span> Users Management
+            </a>
+            <a href="admin-drivers.html" class="sidebar-item active">
+                <span>🚗</span> Drivers Management
+            </a>
+            <a href="admin-trips.html" class="sidebar-item">
+                <span>📦</span> Trips Management
+            </a>
+            <a href="admin-payments.html" class="sidebar-item">
+                <span>💰</span> Payments & Revenue
+            </a>
+            <a href="admin-disputes.html" class="sidebar-item">
+                <span>⚠️</span> Disputes & Reports
+            </a>
+            <a href="admin-analytics.html" class="sidebar-item">
+                <span>📈</span> Analytics
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="page-header">
+            <h1>Drivers Management</h1>
+            <p>View and manage all registered drivers on the platform</p>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name, email, or license...">
+            </div>
+            <div class="filter-controls">
+                <button class="filter-btn active" onclick="filterBy('all', this)">All Drivers</button>
+                <button class="filter-btn" onclick="filterBy('pending', this)">⏳ Pending</button>
+                <button class="filter-btn" onclick="filterBy('verified', this)">✓ Verified</button>
+            </div>
+            <div class="sort-controls">
+                <button class="sort-btn active" onclick="sortBy('registration', this)">Latest</button>
+                <button class="sort-btn" onclick="sortBy('rating', this)">Top Rated</button>
+                <button class="sort-btn" onclick="sortBy('trips', this)">Most Trips</button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Driver Name</th>
+                        <th>License #</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Trips Completed</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="driversTable">
+                </tbody>
+            </table>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">🚗</div>
+                <p>No drivers found</p>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button onclick="previousPage()">← Previous</button>
+            <span id="pageInfo"></span>
+            <button onclick="nextPage()">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        const driversData = [
+            { id: 1, name: 'Ahmed Hassan', license: 'DL-2024-001', email: 'ahmed.h@email.com', phone: '+1-555-0201', trips: 45, rating: 4.9, verification: 'verified', registered: '2026-03-01' },
+            { id: 2, name: 'Marcus Johnson', license: 'DL-2024-002', email: 'm.johnson@email.com', phone: '+1-555-0202', trips: 0, rating: 0, verification: 'pending', registered: '2026-03-03' },
+            { id: 3, name: 'Sofia Rodriguez', license: 'DL-2024-003', email: 'sofia.r@email.com', phone: '+1-555-0203', trips: 38, rating: 4.8, verification: 'verified', registered: '2026-02-28' },
+            { id: 4, name: 'Raj Patel', license: 'DL-2024-004', email: 'raj.p@email.com', phone: '+1-555-0204', trips: 0, rating: 0, verification: 'pending', registered: '2026-02-27' },
+            { id: 5, name: 'Elena Moretti', license: 'DL-2024-005', email: 'elena.m@email.com', phone: '+1-555-0205', trips: 52, rating: 5.0, verification: 'verified', registered: '2026-02-25' },
+            { id: 6, name: 'Carlos Mendez', license: 'DL-2024-006', email: 'carlos.m@email.com', phone: '+1-555-0206', trips: 31, rating: 4.7, verification: 'verified', registered: '2026-02-22' },
+            { id: 7, name: 'Wei Zhang', license: 'DL-2024-007', email: 'wei.z@email.com', phone: '+1-555-0207', trips: 0, rating: 0, verification: 'pending', registered: '2026-02-20' },
+            { id: 8, name: 'Yuki Tanaka', license: 'DL-2024-008', email: 'yuki.t@email.com', phone: '+1-555-0208', trips: 28, rating: 4.6, verification: 'verified', registered: '2026-02-18' },
+            { id: 9, name: 'Andre Santos', license: 'DL-2024-009', email: 'andre.s@email.com', phone: '+1-555-0209', trips: 41, rating: 4.8, verification: 'verified', registered: '2026-02-15' },
+            { id: 10, name: 'Nina Sjoberg', license: 'DL-2024-010', email: 'nina.s@email.com', phone: '+1-555-0210', trips: 0, rating: 0, verification: 'pending', registered: '2026-02-13' },
+            { id: 11, name: 'Ivan Volkov', license: 'DL-2024-011', email: 'ivan.v@email.com', phone: '+1-555-0211', trips: 35, rating: 4.5, verification: 'verified', registered: '2026-02-10' },
+            { id: 12, name: 'Amara Okafor', license: 'DL-2024-012', email: 'amara.o@email.com', phone: '+1-555-0212', trips: 27, rating: 4.9, verification: 'verified', registered: '2026-02-08' }
+        ];
+
+        let currentFilter = 'all';
+        let currentSort = 'registration';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredData = [...driversData];
+
+        function renderTable() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            const table = document.getElementById('driversTable');
+            const emptyState = document.getElementById('emptyState');
+
+            if (pageData.length === 0) {
+                table.innerHTML = '';
+                emptyState.style.display = 'block';
+                document.querySelector('.pagination').style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            document.querySelector('.pagination').style.display = 'block';
+
+            table.innerHTML = pageData.map(driver => `
+                <tr>
+                    <td>
+                        <div class="user-name">
+                            <div class="user-avatar">${driver.name.charAt(0)}</div>
+                            <span>${driver.name}</span>
+                        </div>
+                    </td>
+                    <td>${driver.license}</td>
+                    <td>${driver.email}</td>
+                    <td>${driver.phone}</td>
+                    <td>${driver.trips}</td>
+                    <td>
+                        ${driver.rating > 0 ? `<span class="rating">⭐ ${driver.rating}</span>` : '<span>-</span>'}
+                    </td>
+                    <td>
+                        <span class="status-badge status-${driver.verification}">
+                            ${driver.verification === 'verified' ? '✓ Verified' : driver.verification === 'pending' ? '⏳ Pending' : '✗ Rejected'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-small btn-view" onclick="viewDriver(${driver.id})">View</button>
+                            ${driver.verification === 'pending' ? `
+                                <button class="btn-small btn-approve" onclick="approveDriver(${driver.id})">Approve</button>
+                                <button class="btn-small btn-reject" onclick="rejectDriver(${driver.id})">Reject</button>
+                            ` : `
+                                <button class="btn-small btn-disable" onclick="disableDriver(${driver.id})">Disable</button>
+                            `}
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const pageInfo = document.getElementById('pageInfo');
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${filteredData.length} drivers)`;
+        }
+
+        function filterBy(filterType, button) {
+            currentFilter = filterType;
+            currentPage = 1;
+
+            let temp = [...driversData];
+            if (filterType === 'pending') {
+                temp = temp.filter(d => d.verification === 'pending');
+            } else if (filterType === 'verified') {
+                temp = temp.filter(d => d.verification === 'verified');
+            }
+
+            filteredData = temp;
+
+            // Re-apply sort
+            applySort();
+
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            renderTable();
+        }
+
+        function sortBy(sortType, button) {
+            currentSort = sortType;
+            currentPage = 1;
+
+            applySort();
+
+            document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            renderTable();
+        }
+
+        function applySort() {
+            if (currentSort === 'registration') {
+                filteredData.sort((a, b) => new Date(b.registered) - new Date(a.registered));
+            } else if (currentSort === 'rating') {
+                filteredData.sort((a, b) => b.rating - a.rating);
+            } else if (currentSort === 'trips') {
+                filteredData.sort((a, b) => b.trips - a.trips);
+            }
+        }
+
+        function searchDrivers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            currentPage = 1;
+
+            let temp = driversData.filter(driver =>
+                driver.name.toLowerCase().includes(searchTerm) ||
+                driver.email.toLowerCase().includes(searchTerm) ||
+                driver.license.toLowerCase().includes(searchTerm)
+            );
+
+            if (currentFilter === 'pending') {
+                temp = temp.filter(d => d.verification === 'pending');
+            } else if (currentFilter === 'verified') {
+                temp = temp.filter(d => d.verification === 'verified');
+            }
+
+            filteredData = temp;
+            applySort();
+            renderTable();
+        }
+
+        function viewDriver(driverId) {
+            const driver = driversData.find(d => d.id === driverId);
+            alert(`Driver: ${driver.name}\nLicense: ${driver.license}\nStatus: ${driver.verification}`);
+        }
+
+        function approveDriver(driverId) {
+            const driver = driversData.find(d => d.id === driverId);
+            if (driver) {
+                driver.verification = 'verified';
+                filterBy(currentFilter, document.querySelector('.filter-btn.active'));
+                alert(`✓ ${driver.name} has been approved!`);
+            }
+        }
+
+        function rejectDriver(driverId) {
+            const driver = driversData.find(d => d.id === driverId);
+            if (driver) {
+                driver.verification = 'rejected';
+                filterBy(currentFilter, document.querySelector('.filter-btn.active'));
+                alert(`✗ ${driver.name} has been rejected!`);
+            }
+        }
+
+        function disableDriver(driverId) {
+            alert(`Driver #${driverId} has been disabled.`);
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-auth.html';
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', searchDrivers);
+
+        // Initial render
+        renderTable();
+    </script>
+</body>
+</html>

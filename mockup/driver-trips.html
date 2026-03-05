@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Driver Trips</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .navbar-back {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .navbar-back:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 1em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #4facfe;
+            border-bottom-color: #4facfe;
+        }
+
+        .tab-button:hover {
+            color: #4facfe;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .trips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .trip-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .trip-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .trip-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trip-header.accepted {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+        }
+
+        .trip-header.completed {
+            background: linear-gradient(135deg, #95a5a6 0%, #bdc3c7 100%);
+        }
+
+        .trip-id {
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .trip-status {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .trip-body {
+            padding: 20px;
+        }
+
+        .trip-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .trip-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            color: #999;
+            font-size: 0.85em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .location-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .location-icon {
+            font-size: 1.2em;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .location-address {
+            flex: 1;
+        }
+
+        .divider {
+            border-top: 1px solid #eee;
+            margin: 20px 0;
+        }
+
+        .customer-info {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .customer-avatar {
+            font-size: 2em;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .customer-details h4 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
+
+        .customer-details p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .customer-rating {
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 0.95em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            background: #4facfe;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            flex: 1;
+        }
+
+        .btn-accept {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .empty-state {
+            background: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state-text {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-size: 1.3em;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .contact-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .contact-icon {
+            font-size: 1.5em;
+        }
+
+        .contact-details h3 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .contact-link {
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .trips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .trip-card {
+                padding: 15px 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">🚚 CargoConnect</div>
+        <a href="driver-home.html" class="navbar-back">← Back to Dashboard</a>
+    </div>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>My Trips</h1>
+            <p>Manage your delivery requests and active trips</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('requests')">Trip Requests (3)</button>
+            <button class="tab-button" onclick="switchTab('upcoming')">Trips to Come (2)</button>
+            <button class="tab-button" onclick="switchTab('completed')">Completed (8)</button>
+        </div>
+
+        <!-- TRIP REQUESTS TAB -->
+        <div id="requests" class="tab-content active">
+            <div class="trips-grid" id="requestsTrips">
+                <!-- Trip requests will be populated here -->
+            </div>
+        </div>
+
+        <!-- TRIPS TO COME TAB -->
+        <div id="upcoming" class="tab-content">
+            <div class="trips-grid" id="upcomingTrips">
+                <!-- Upcoming trips will be populated here -->
+            </div>
+        </div>
+
+        <!-- COMPLETED TRIPS TAB -->
+        <div id="completed" class="tab-content">
+            <div class="trips-grid" id="completedTrips">
+                <!-- Completed trips will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT CUSTOMER MODAL -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Contact <span id="modalCustomerName"></span></h2>
+                <button class="modal-close" onclick="closeContactModal()">&times;</button>
+            </div>
+            
+            <div class="contact-item">
+                <div class="contact-icon">📞</div>
+                <div class="contact-details">
+                    <h3>Phone</h3>
+                    <p><a href="tel:" id="phoneLink" class="contact-link"></a></p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">💬</div>
+                <div class="contact-details">
+                    <h3>WhatsApp</h3>
+                    <p><a href="#" id="whatsappLink" class="contact-link" target="_blank"></a></p>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-icon">✉️</div>
+                <div class="contact-details">
+                    <h3>Email</h3>
+                    <p><a href="mailto:" id="emailLink" class="contact-link"></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample trip data
+        const trips = {
+            requests: [
+                {
+                    id: "TR101",
+                    customerName: "Ahmed Hassan",
+                    customerRating: 4.8,
+                    pickupAddress: "123 Main Street, Downtown, Cairo",
+                    dropoffAddress: "456 Business Ave, Giza, Cairo",
+                    shippingTime: "2026-03-04 14:30",
+                    weight: "5 - 50 kg",
+                    material: "Glass",
+                    status: "Request Pending",
+                    fare: "$45.50",
+                    phone: "+20 100 123 4567",
+                    email: "ahmed.hassan@email.com",
+                    whatsapp: "+20 100 123 4567"
+                },
+                {
+                    id: "TR102",
+                    customerName: "Fatima Ali",
+                    customerRating: 4.9,
+                    pickupAddress: "789 Market Road, Helwan, Cairo",
+                    dropoffAddress: "321 Industrial Zone, 6th of October, Giza",
+                    shippingTime: "2026-03-04 16:00",
+                    weight: "20 - 100 kg",
+                    material: "Mixture",
+                    status: "Request Pending",
+                    fare: "$65.00",
+                    phone: "+20 100 234 5678",
+                    email: "fatima.ali@email.com",
+                    whatsapp: "+20 100 234 5678"
+                },
+                {
+                    id: "TR103",
+                    customerName: "Mohamed Karim",
+                    customerRating: 4.7,
+                    pickupAddress: "555 Commercial St, Nasr City, Cairo",
+                    dropoffAddress: "999 Logistics Hub, New Cairo, Cairo",
+                    shippingTime: "2026-03-04 17:30",
+                    weight: "30 - 80 kg",
+                    material: "Wood",
+                    status: "Request Pending",
+                    fare: "$55.75",
+                    phone: "+20 100 345 6789",
+                    email: "mohamed.karim@email.com",
+                    whatsapp: "+20 100 345 6789"
+                }
+            ],
+            upcoming: [
+                {
+                    id: "TR201",
+                    customerName: "Sarah Johnson",
+                    customerRating: 4.8,
+                    pickupAddress: "222 Retail Park, Maadi, Cairo",
+                    dropoffAddress: "888 Shopping Center, New Cairo, Cairo",
+                    shippingTime: "2026-03-05 10:00",
+                    weight: "10 - 40 kg",
+                    material: "Glass",
+                    status: "Accepted",
+                    phone: "+20 100 111 2222",
+                    email: "sarah.johnson@email.com",
+                    whatsapp: "+20 100 111 2222"
+                },
+                {
+                    id: "TR202",
+                    customerName: "John Smith",
+                    customerRating: 4.9,
+                    pickupAddress: "777 Plaza District, Heliopolis, Cairo",
+                    dropoffAddress: "444 Office Complex, Sheikh Zayed, Giza",
+                    shippingTime: "2026-03-06 13:00",
+                    weight: "5 - 35 kg",
+                    material: "Mixture",
+                    status: "Accepted",
+                    phone: "+20 100 222 3333",
+                    email: "john.smith@email.com",
+                    whatsapp: "+20 100 222 3333"
+                }
+            ],
+            completed: [
+                {
+                    id: "TR301",
+                    customerName: "Amira Hassan",
+                    customerRating: 4.9,
+                    pickupAddress: "111 Fashion St, Downtown, Cairo",
+                    dropoffAddress: "222 Mall District, New Cairo, Cairo",
+                    shippingTime: "2026-03-01 08:00",
+                    weight: "10 - 25 kg",
+                    material: "Glass",
+                    status: "Completed",
+                    completedAt: "2026-03-01 09:30"
+                },
+                {
+                    id: "TR302",
+                    customerName: "Hassan Mohamed",
+                    customerRating: 4.6,
+                    pickupAddress: "333 Commerce Ave, Giza, Cairo",
+                    dropoffAddress: "444 Business Park, 6th of October, Giza",
+                    shippingTime: "2026-03-02 16:00",
+                    weight: "15 - 45 kg",
+                    material: "Wood",
+                    status: "Completed",
+                    completedAt: "2026-03-02 18:20"
+                },
+                {
+                    id: "TR303",
+                    customerName: "Layla Omar",
+                    customerRating: 4.8,
+                    pickupAddress: "555 Tech Park, New Cairo, Cairo",
+                    dropoffAddress: "666 Innovation Hub, Sheikh Zayed, Giza",
+                    shippingTime: "2026-02-28 09:00",
+                    weight: "25 - 75 kg",
+                    material: "Mixture",
+                    status: "Completed",
+                    completedAt: "2026-02-28 11:45"
+                },
+                {
+                    id: "TR304",
+                    customerName: "Karim Hassan",
+                    customerRating: 4.7,
+                    pickupAddress: "777 Retail Hub, New Cairo, Cairo",
+                    dropoffAddress: "888 Shopping Complex, Sheikh Zayed, Giza",
+                    shippingTime: "2026-02-27 10:00",
+                    weight: "20 - 100 kg",
+                    material: "Glass",
+                    status: "Completed",
+                    completedAt: "2026-02-27 12:15"
+                },
+                {
+                    id: "TR305",
+                    customerName: "Noor Khalid",
+                    customerRating: 4.9,
+                    pickupAddress: "999 Market St, Helwan, Cairo",
+                    dropoffAddress: "111 Industrial Zone, 6th of October, Giza",
+                    shippingTime: "2026-02-26 14:30",
+                    weight: "30 - 80 kg",
+                    material: "Wood",
+                    status: "Completed",
+                    completedAt: "2026-02-26 17:00"
+                },
+                {
+                    id: "TR306",
+                    customerName: "Zainab Ali",
+                    customerRating: 4.8,
+                    pickupAddress: "222 Business St, Downtown, Cairo",
+                    dropoffAddress: "333 Mall Center, New Cairo, Cairo",
+                    shippingTime: "2026-02-25 11:00",
+                    weight: "5 - 50 kg",
+                    material: "Mixture",
+                    status: "Completed",
+                    completedAt: "2026-02-25 13:30"
+                },
+                {
+                    id: "TR307",
+                    customerName: "Omar Hassan",
+                    customerRating: 4.6,
+                    pickupAddress: "444 Tech District, New Cairo, Cairo",
+                    dropoffAddress: "555 Innovation Park, Sheikh Zayed, Giza",
+                    shippingTime: "2026-02-24 15:00",
+                    weight: "15 - 45 kg",
+                    material: "Glass",
+                    status: "Completed",
+                    completedAt: "2026-02-24 17:45"
+                },
+                {
+                    id: "TR308",
+                    customerName: "Dina Ahmed",
+                    customerRating: 4.7,
+                    pickupAddress: "666 Retail Park, Maadi, Cairo",
+                    dropoffAddress: "777 Shopping Hub, New Cairo, Cairo",
+                    shippingTime: "2026-02-23 09:00",
+                    weight: "25 - 75 kg",
+                    material: "Wood",
+                    status: "Completed",
+                    completedAt: "2026-02-23 11:20"
+                }
+            ]
+        };
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function renderTrips(tripsList, containerId, isRequest = false) {
+            const container = document.getElementById(containerId);
+
+            if (tripsList.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-title">No Trips</div>
+                        <div class="empty-state-text">You don't have any trips in this category at the moment.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = tripsList.map(trip => {
+                const isCompleted = containerId === 'completedTrips';
+                return `
+                <div class="trip-card">
+                    <div class="trip-header ${isCompleted ? 'completed' : isRequest ? '' : 'accepted'}">
+                        <div class="trip-id">Trip #${trip.id}</div>
+                        <div class="trip-status">${trip.status}</div>
+                    </div>
+                    <div class="trip-body">
+                        <div class="trip-info-grid">
+                            <div class="trip-info-item">
+                                <div class="info-label">Scheduled Time</div>
+                                <div class="info-value">${new Date(trip.shippingTime).toLocaleString()}</div>
+                            </div>
+                            <div class="trip-info-item">
+                                <div class="info-label">Weight</div>
+                                <div class="info-value">${trip.weight}</div>
+                            </div>
+                            <div class="trip-info-item">
+                                <div class="info-label">Material</div>
+                                <div class="info-value">${trip.material}</div>
+                            </div>
+                            ${isRequest ? `
+                                <div class="trip-info-item">
+                                    <div class="info-label">Fare</div>
+                                    <div class="info-value">${trip.fare}</div>
+                                </div>
+                            ` : ''}
+                            ${isCompleted ? `
+                                <div class="trip-info-item">
+                                    <div class="info-label">Completed</div>
+                                    <div class="info-value">${new Date(trip.completedAt).toLocaleString()}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="location-row">
+                            <div class="location-icon">📍</div>
+                            <div class="location-address">
+                                <div class="info-label">Pickup</div>
+                                <div class="info-value">${trip.pickupAddress}</div>
+                            </div>
+                        </div>
+
+                        <div class="location-row">
+                            <div class="location-icon">📍</div>
+                            <div class="location-address">
+                                <div class="info-label">Drop Off</div>
+                                <div class="info-value">${trip.dropoffAddress}</div>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="customer-info">
+                            <div class="customer-avatar">👤</div>
+                            <div class="customer-details">
+                                <h4>${trip.customerName}</h4>
+                                <p class="customer-rating">⭐ ${trip.customerRating}</p>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            ${isRequest ? `
+                                <button class="btn btn-primary btn-accept" onclick="acceptTrip('${trip.id}', '${trip.customerName}')">✓ Accept Trip</button>
+                                <button class="btn btn-secondary btn-reject" onclick="rejectTrip('${trip.id}')">✗ Reject</button>
+                            ` : isCompleted ? `
+                                <button class="btn btn-primary" onclick="rateCustomer('${trip.customerName}')">Rate Customer</button>
+                            ` : `
+                                <button class="btn btn-primary" onclick="shareLocation('${trip.id}', '${trip.customerName}')">📍 Share Live Location</button>
+                                <button class="btn btn-primary" onclick="openContactModal('${trip.customerName}', '${trip.phone}', '${trip.email}', '${trip.whatsapp}')">Contact Customer</button>
+                                <button class="btn btn-secondary" onclick="markTripComplete('${trip.id}')">Mark Complete</button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function acceptTrip(tripId, customerName) {
+            alert(`✓ Trip ${tripId} accepted!\n\nYou can now see the customer's contact information.\n\n📍 Share your live location once you pick up the package.`);
+        }
+
+        function shareLocation(tripId, customerName) {
+            // Request geolocation permission and share with customer (truck stage)
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        alert(`✓ Live location shared with ${customerName}!\n\n📍 Coordinates:\nLat: ${lat.toFixed(4)}\nLng: ${lng.toFixed(4)}\n\nCustomer can now track your truck in real-time.`);
+                        // In production, send location to customer via backend
+                        localStorage.setItem('currentDriverLocation', JSON.stringify({ lat, lng, tripId }));
+                    },
+                    function(error) {
+                        alert(`Please enable location sharing to notify the customer of your truck location.`);
+                    }
+                );
+            } else {
+                alert(`Your browser doesn't support geolocation.`);
+            }
+        }
+
+        function rejectTrip(tripId) {
+            alert(`You rejected trip ${tripId}. This request will be sent to other drivers.`);
+        }
+
+        function openContactModal(customerName, phone, email, whatsapp) {
+            document.getElementById('modalCustomerName').textContent = customerName;
+            document.getElementById('phoneLink').textContent = phone;
+            document.getElementById('phoneLink').href = `tel:${phone}`;
+            document.getElementById('emailLink').textContent = email;
+            document.getElementById('emailLink').href = `mailto:${email}`;
+            document.getElementById('whatsappLink').textContent = whatsapp;
+            document.getElementById('whatsappLink').href = `https://wa.me/${whatsapp.replace(/\s+/g, '')}`;
+            document.getElementById('contactModal').classList.add('active');
+        }
+
+        function closeContactModal() {
+            document.getElementById('contactModal').classList.remove('active');
+        }
+
+        function viewRouteDetails(tripId) {
+            alert(`Viewing route details for trip ${tripId}...`);
+        }
+
+        function markTripComplete(tripId) {
+            alert(`✓ Trip ${tripId} marked as completed!\n\nPayment of $${Math.random() * 50 + 40}.00 has been processed and will be credited to your account within 24 hours.`);
+            // In production, this would trigger the payment flow
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('contactModal');
+            if (event.target === modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // Initialize trips
+        renderTrips(trips.requests, 'requestsTrips', true);
+        renderTrips(trips.upcoming, 'upcomingTrips', false);
+        renderTrips(trips.completed, 'completedTrips', false);
+    </script>
+</body>
+</html>
