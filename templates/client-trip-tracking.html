@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Live Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        /* Light mode (default) */
+        body.light-mode {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F5;
+            --bg-tertiary: #EBEBEB;
+            --card-bg: #FFFFFF;
+            --card-bg-hover: #F0F0F0;
+            --border-light: #DDDDDD;
+            --border-medium: #CCCCCC;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-tertiary: #6F6F6F;
+            --accent-1: #333333;
+            --accent-2: #4B4B4B;
+            --accent-3: #2F4F4F;
+            --accent-4: #5C5147;
+            --accent-5: #2F4F2F;
+            --gradient-1: linear-gradient(135deg, #333333, #4B4B4B);
+            --gradient-2: linear-gradient(135deg, #2F4F4F, #254B4B);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            --bg-primary: #2a2929;
+            --bg-secondary: #000000;
+            --bg-tertiary: #5f5f5f;
+            --card-bg: #424242;
+            --card-bg-hover: #7c7c7c;
+            --border-light: #ffffff;
+            --border-medium: #7a7a7a;
+            --text-primary: #88b6b6;
+            --text-secondary: #aeaeae;
+            --text-tertiary: #ffffff;
+            --accent-1: #223a22;
+            --accent-2: #4e4a4a;
+            --accent-3: #DDE1E4;
+            --accent-4: #926166;
+            --accent-5: #5b90b4;
+            --gradient-1: linear-gradient(135deg, #4b4b4b, #C0C0C0);
+            --gradient-2: linear-gradient(135deg, #9c9c9c, #B0E0E6);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border-radius: 30px;
+            padding: 2px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .theme-option {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-option.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 300px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .back-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .sidebar-content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .info-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .info-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: var(--accent-1);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            transition: width 0.3s;
+        }
+
+        .driver-info {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .driver-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .driver-details h4 {
+            color: var(--text-primary);
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .driver-details p {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .driver-rating {
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .location-item {
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--accent-1);
+        }
+
+        .location-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .location-address {
+            color: var(--text-primary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Map container */
+        .map-container {
+            margin-left: 300px;
+            height: 100vh;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-light);
+            z-index: 50;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-marker {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+
+        .marker-current {
+            background: var(--accent-1);
+        }
+
+        .marker-pickup {
+            background: var(--accent-5);
+        }
+
+        .marker-dropoff {
+            background: var(--accent-4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 40vh;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .map-container {
+                margin-left: 0;
+                height: 60vh;
+            }
+
+            .sidebar-header {
+                padding: 15px;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>Live Tracking</h2>
+        <a href="javascript:history.back()" class="back-btn">← Back</a>
+    </div>
+    <div class="sidebar-content">
+        <div class="info-section">
+            <div class="section-title">Trip Status</div>
+            <div class="info-item">
+                <span class="info-label">Trip ID</span>
+                <span class="info-value" id="tripId">TR001</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Status</span>
+                <span class="status-badge" id="tripStatus">In Progress</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Progress</span>
+                <span class="info-value" id="progressPercent">65%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 65%;"></div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="section-title">Driver Information</div>
+            <div class="driver-info">
+                <div class="driver-avatar" id="driverInitial">J</div>
+                <div class="driver-details">
+                    <h4 id="driverName">John Smith</h4>
+                    <p id="driverVehicle">Van</p>
+                    <p class="driver-rating" id="driverRating">⭐ 4.9</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="section-title">Locations</div>
+            <div class="location-item">
+                <div class="location-label">Current Location</div>
+                <div class="location-address" id="currentLocation">En route to drop-off</div>
+            </div>
+            <div class="location-item">
+                <div class="location-label">Pickup</div>
+                <div class="location-address" id="pickupAddress">222 Retail Park, Maadi, Cairo</div>
+            </div>
+            <div class="location-item">
+                <div class="location-label">Drop Off</div>
+                <div class="location-address" id="dropoffAddress">888 Shopping Center, New Cairo, Cairo</div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="reportProblem()">Report Problem</button>
+            <button class="btn btn-secondary" onclick="contactDriver()">Contact Driver</button>
+        </div>
+    </div>
+</div>
+
+<!-- Map Container -->
+<div class="map-container">
+    <div id="map"></div>
+    <div class="map-legend">
+        <div class="legend-item">
+            <div class="legend-marker marker-current">C</div>
+            <span>Current Location</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-marker marker-pickup">P</div>
+            <span>Pickup Point</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-marker marker-dropoff">D</div>
+            <span>Drop Off Point</span>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+    // Theme toggle
+    function toggleTheme() {
+        const body = document.body;
+        const lightOption = document.getElementById('theme-light');
+        const darkOption = document.getElementById('theme-dark');
+        if (body.classList.contains('light-mode')) {
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+            lightOption.classList.remove('active');
+            darkOption.classList.add('active');
+        } else {
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            darkOption.classList.remove('active');
+            lightOption.classList.add('active');
+        }
+        // Redraw map tiles if needed (leaflet handles it)
+    }
+
+    // ========== Realistic Tracking Simulation ==========
+
+    // Get trip data from localStorage (set by client-trips.html)
+    const tripData = JSON.parse(localStorage.getItem('tripData') || '{}');
+    const tripId = new URLSearchParams(window.location.search).get('trip') || 'TR001';
+
+    // Default coordinates (Cairo area)
+    const defaultPickup = { lat: 30.0131, lng: 31.3422 };
+    const defaultDropoff = { lat: 30.0466, lng: 31.4837 };
+    const defaultCurrent = { lat: 30.0200, lng: 31.3600 };
+
+    const pickupLat = tripData.pickupLat || defaultPickup.lat;
+    const pickupLng = tripData.pickupLng || defaultPickup.lng;
+    const dropoffLat = tripData.dropoffLat || defaultDropoff.lat;
+    const dropoffLng = tripData.dropoffLng || defaultDropoff.lng;
+    const currentLat = tripData.currentLat || defaultCurrent.lat;
+    const currentLng = tripData.currentLng || defaultCurrent.lng;
+
+    // Simulate a route: we'll generate intermediate points along a straight line
+    // For realism, we'll add slight randomness to simulate road curvature
+    const steps = 100; // number of points along route
+    const routePoints = [];
+    for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        // Linear interpolation with small random offset (max 0.002 deg ~ 200m)
+        const lat = pickupLat + (dropoffLat - pickupLat) * t + (Math.random() - 0.5) * 0.002;
+        const lng = pickupLng + (dropoffLng - pickupLng) * t + (Math.random() - 0.5) * 0.002;
+        routePoints.push([lat, lng]);
+    }
+
+    // Find the point on route closest to current position to start simulation
+    let startIndex = 0;
+    let minDist = Infinity;
+    routePoints.forEach((point, idx) => {
+        const dist = Math.hypot(point[0] - currentLat, point[1] - currentLng);
+        if (dist < minDist) {
+            minDist = dist;
+            startIndex = idx;
+        }
+    });
+
+    // Current simulation index
+    let currentIdx = startIndex;
+    const totalSteps = routePoints.length - 1;
+
+    // Update progress percentage
+    function updateProgress() {
+        const progress = (currentIdx / totalSteps) * 100;
+        document.getElementById('progressFill').style.width = progress + '%';
+        document.getElementById('progressPercent').innerText = Math.round(progress) + '%';
+    }
+
+    // Initialize map
+    const map = L.map('map').setView([currentLat, currentLng], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    // Custom icons (using simple div icons)
+    const currentIcon = L.divIcon({
+        className: 'custom-icon',
+        html: '<div class="legend-marker marker-current" style="width:30px;height:30px;border-radius:50%;background:var(--accent-1);color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">C</div>',
+        iconSize: [30, 30],
+        popupAnchor: [0, -15]
+    });
+
+    const pickupIcon = L.divIcon({
+        className: 'custom-icon',
+        html: '<div class="legend-marker marker-pickup" style="width:30px;height:30px;border-radius:50%;background:var(--accent-5);color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">P</div>',
+        iconSize: [30, 30],
+        popupAnchor: [0, -15]
+    });
+
+    const dropoffIcon = L.divIcon({
+        className: 'custom-icon',
+        html: '<div class="legend-marker marker-dropoff" style="width:30px;height:30px;border-radius:50%;background:var(--accent-4);color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">D</div>',
+        iconSize: [30, 30],
+        popupAnchor: [0, -15]
+    });
+
+    // Add markers
+    const currentMarker = L.marker([routePoints[currentIdx][0], routePoints[currentIdx][1]], { icon: currentIcon }).addTo(map)
+        .bindPopup('Current Location');
+    const pickupMarker = L.marker([pickupLat, pickupLng], { icon: pickupIcon }).addTo(map)
+        .bindPopup('Pickup Point');
+    const dropoffMarker = L.marker([dropoffLat, dropoffLng], { icon: dropoffIcon }).addTo(map)
+        .bindPopup('Drop Off Point');
+
+    // Draw route line
+    const routeLine = L.polyline(routePoints, {
+        color: 'var(--accent-1)',
+        weight: 3,
+        opacity: 0.7,
+        dashArray: '5, 8'
+    }).addTo(map);
+
+    // Fit bounds to include all markers
+    const bounds = L.latLngBounds([pickupLat, pickupLng], [dropoffLat, dropoffLng]);
+    map.fitBounds(bounds.pad(0.2));
+
+    // Simulate movement
+    let interval = setInterval(() => {
+        if (currentIdx < totalSteps) {
+            currentIdx++;
+            const [lat, lng] = routePoints[currentIdx];
+            currentMarker.setLatLng([lat, lng]);
+            map.panTo([lat, lng]); // optional, can be removed if annoying
+            updateProgress();
+
+            // Update current location text
+            document.getElementById('currentLocation').innerText = `En route (${Math.round((currentIdx/totalSteps)*100)}% complete)`;
+        } else {
+            // Arrived at destination
+            clearInterval(interval);
+            document.getElementById('currentLocation').innerText = 'Arrived at drop-off';
+            document.getElementById('tripStatus').innerText = 'Completed';
+            document.getElementById('tripStatus').className = 'status-badge'; // could change style
+        }
+    }, 3000); // update every 3 seconds
+
+    // Fill in sidebar with trip details (using sample data from client-trips)
+    document.getElementById('tripId').innerText = tripId;
+    document.getElementById('driverName').innerText = tripData.driverName || 'John Smith';
+    document.getElementById('driverInitial').innerText = (tripData.driverName || 'John Smith').charAt(0);
+    document.getElementById('driverVehicle').innerText = tripData.vehicle || 'Van';
+    document.getElementById('driverRating').innerHTML = `⭐ ${tripData.driverRating || 4.9}`;
+    document.getElementById('pickupAddress').innerText = tripData.pickupAddress || '222 Retail Park, Maadi, Cairo';
+    document.getElementById('dropoffAddress').innerText = tripData.dropoffAddress || '888 Shopping Center, New Cairo, Cairo';
+    document.getElementById('currentLocation').innerText = tripData.currentLocation || 'En route to drop-off';
+
+    // Actions
+    function reportProblem() {
+        alert('Report a problem with this trip (simulated).');
+    }
+
+    function contactDriver() {
+        alert('Contact driver via phone or chat (simulated).');
+    }
+
+    // Cleanup interval on page unload
+    window.addEventListener('beforeunload', function() {
+        clearInterval(interval);
+    });
+
+    // Add theme toggle to topbar (we don't have topbar in this layout, so add a floating button?)
+    // Since we don't have a topbar, we'll add a small theme toggle in the sidebar header
+    const themeToggleDiv = document.createElement('div');
+    themeToggleDiv.className = 'theme-toggle';
+    themeToggleDiv.style.marginLeft = '10px';
+    themeToggleDiv.innerHTML = `
+        <span class="theme-option active" id="theme-light" onclick="toggleTheme()">Light</span>
+        <span class="theme-option" id="theme-dark" onclick="toggleTheme()">Dark</span>
+    `;
+    document.querySelector('.sidebar-header').appendChild(themeToggleDiv);
+</script>
+</body>
+</html>
