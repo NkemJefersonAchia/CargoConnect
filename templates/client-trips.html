@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - My Trips</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        /* Light mode (default) */
+        body.light-mode {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F5;
+            --bg-tertiary: #EBEBEB;
+            --card-bg: #FFFFFF;
+            --card-bg-hover: #F0F0F0;
+            --border-light: #DDDDDD;
+            --border-medium: #CCCCCC;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-tertiary: #6F6F6F;
+            --accent-1: #333333;
+            --accent-2: #4B4B4B;
+            --accent-3: #2F4F4F;
+            --accent-4: #5C5147;
+            --accent-5: #2F4F2F;
+            --gradient-1: linear-gradient(135deg, #333333, #4B4B4B);
+            --gradient-2: linear-gradient(135deg, #2F4F4F, #254B4B);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            --bg-primary: #2a2929;
+            --bg-secondary: #000000;
+            --bg-tertiary: #5f5f5f;
+            --card-bg: #424242;
+            --card-bg-hover: #7c7c7c;
+            --border-light: #ffffff;
+            --border-medium: #7a7a7a;
+            --text-primary: #88b6b6;
+            --text-secondary: #aeaeae;
+            --text-tertiary: #ffffff;
+            --accent-1: #223a22;
+            --accent-2: #4e4a4a;
+            --accent-3: #DDE1E4;
+            --accent-4: #926166;
+            --accent-5: #5b90b4;
+            --gradient-1: linear-gradient(135deg, #4b4b4b, #C0C0C0);
+            --gradient-2: linear-gradient(135deg, #9c9c9c, #B0E0E6);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border-radius: 30px;
+            padding: 2px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .theme-option {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-option.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-bottom: 12px;
+        }
+
+        .logo-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-1);
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-family: 'Inter', monospace;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .sidebar-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .sidebar-sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        .nav {
+            padding: 16px 12px;
+            flex: 1;
+        }
+
+        .nav-section {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0 8px;
+            margin: 16px 0 6px;
+            font-weight: 500;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 400;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 500;
+            border-left: 3px solid var(--accent-1);
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .data-badge {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .data-badge-label {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-badge-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-primary);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Page content */
+        .page {
+            padding: 28px 32px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section header */
+        .section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .section-sub {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s;
+        }
+
+        .tab-button.active {
+            color: var(--accent-1);
+            border-bottom-color: var(--accent-1);
+        }
+
+        .tab-button:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Trips grid */
+        .trips-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .trip-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .trip-card:hover {
+            border-color: var(--border-medium);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+
+        .trip-header {
+            background: var(--gradient-1);
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .trip-header.in-progress {
+            background: var(--gradient-2);
+        }
+
+        .trip-header.completed {
+            background: var(--accent-5);
+        }
+
+        .trip-id {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .trip-status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .trip-body {
+            padding: 20px;
+        }
+
+        .trip-progress {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+
+        .progress-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+        }
+
+        .progress-step.active .progress-circle {
+            background: var(--accent-1);
+            color: white;
+        }
+
+        .progress-step.completed .progress-circle {
+            background: var(--accent-5);
+            color: white;
+        }
+
+        .progress-label {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            font-weight: 500;
+        }
+
+        .progress-line {
+            flex: 0.5;
+            height: 2px;
+            background: var(--bg-tertiary);
+            margin: 0 8px;
+            margin-top: 18px;
+        }
+
+        .trip-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .trip-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            color: var(--text-tertiary);
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .location-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .location-icon {
+            font-size: 14px;
+            margin-top: 3px;
+            flex-shrink: 0;
+            color: var(--text-tertiary);
+        }
+
+        .location-address {
+            flex: 1;
+        }
+
+        .divider {
+            border-top: 1px solid var(--border-light);
+            margin: 20px 0;
+        }
+
+        .driver-info {
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .driver-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .driver-details h4 {
+            color: var(--text-primary);
+            margin-bottom: 3px;
+            font-size: 14px;
+        }
+
+        .driver-details p {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .driver-rating {
+            color: #f39c12;
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .btn-small {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn-small:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-small.primary {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+        }
+
+        .btn-small.primary:hover {
+            opacity: 0.9;
+        }
+
+        .empty-state {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: var(--text-tertiary);
+        }
+
+        .empty-state-title {
+            font-size: 1.3em;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .empty-state-text {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 200;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3em;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-tertiary);
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .contact-icon {
+            font-size: 1.2em;
+            color: var(--accent-1);
+        }
+
+        .contact-details h3 {
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .contact-link {
+            color: var(--accent-1);
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-240px);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .trip-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .trip-progress {
+                flex-direction: column;
+            }
+
+            .progress-line {
+                width: 2px;
+                height: 20px;
+                margin: 8px 0;
+            }
+
+            .trip-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .driver-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+<!-- Sidebar (client) -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-badge">
+            <span class="logo-dot"></span>
+            <span class="logo-text">Client</span>
+        </div>
+        <div class="sidebar-title">CARGOCONNECT</div>
+        <div class="sidebar-sub">Your trips</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-section">Main</div>
+        <a class="nav-item" href="client-home.html">
+            Home
+        </a>
+        <a class="nav-item" href="client-booking.html">
+            Book a Cargo
+        </a>
+        <a class="nav-item" href="client-bookings.html">
+            My Bookings
+        </a>
+        <a class="nav-item active" href="client-trips.html">
+            My Trips
+        </a>
+
+        <div class="nav-section">Account</div>
+        <a class="nav-item" href="client-profile.html">
+            Profile
+        </a>
+        <a class="nav-item" href="index.html" onclick="logout()">
+            Logout
+        </a>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="data-badge">
+            <div class="data-badge-label">Welcome</div>
+            <div class="data-badge-value" id="username">John Doe</div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="page-title">My Trips</div>
+            <span style="color:var(--border-light)">|</span>
+            <span class="breadcrumb">Track your shipments</span>
+        </div>
+        <div class="topbar-right">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-option active" id="theme-light">Light</span>
+                <span class="theme-option" id="theme-dark">Dark</span>
+            </div>
+            <a href="client-booking.html" class="btn btn-primary">+ New Booking</a>
+            <a href="client-home.html" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page">
+        <div class="section-header">
+            <div>
+                <div class="section-title">My Trips</div>
+                <div class="section-sub">Track your approved cargo shipments</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('active', this)">Active Trips (2)</button>
+            <button class="tab-button" onclick="switchTab('upcoming', this)">Upcoming (2)</button>
+            <button class="tab-button" onclick="switchTab('completed', this)">Completed (5)</button>
+        </div>
+
+        <!-- ACTIVE TRIPS TAB -->
+        <div id="active" class="tab-content active">
+            <div class="trips-grid" id="activeTrips">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- UPCOMING TRIPS TAB -->
+        <div id="upcoming" class="tab-content">
+            <div class="trips-grid" id="upcomingTrips">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- COMPLETED TRIPS TAB -->
+        <div id="completed" class="tab-content">
+            <div class="trips-grid" id="completedTrips">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- CONTACT DRIVER MODAL -->
+<div id="contactModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Contact <span id="modalDriverName"></span></h2>
+            <button class="modal-close" onclick="closeContactModal()">×</button>
+        </div>
+        
+        <div class="contact-item">
+            <div class="contact-icon"></div>
+            <div class="contact-details">
+                <h3>Phone</h3>
+                <p><a href="tel:" id="phoneLink" class="contact-link"></a></p>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="contact-icon"></div>
+            <div class="contact-details">
+                <h3>WhatsApp</h3>
+                <p><a href="#" id="whatsappLink" class="contact-link" target="_blank"></a></p>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="contact-icon"></div>
+            <div class="contact-details">
+                <h3>Email</h3>
+                <p><a href="mailto:" id="emailLink" class="contact-link"></a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get username from localStorage
+    const username = localStorage.getItem('username') || 'John Doe';
+    document.getElementById('username').innerText = username;
+
+    // Theme toggle
+    function toggleTheme() {
+        const body = document.body;
+        const lightOption = document.getElementById('theme-light');
+        const darkOption = document.getElementById('theme-dark');
+        if (body.classList.contains('light-mode')) {
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+            lightOption.classList.remove('active');
+            darkOption.classList.add('active');
+        } else {
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            darkOption.classList.remove('active');
+            lightOption.classList.add('active');
+        }
+    }
+
+    // Logout
+    function logout() {
+        localStorage.removeItem('username');
+        window.location.href = 'index.html';
+        return false;
+    }
+
+    // ========== Original trips functionality ==========
+    // Sample trip data (from original client-trips.html)
+    const trips = {
+        active: [
+            {
+                id: "TR001",
+                driverName: "John Smith",
+                driverRating: 4.9,
+                vehicle: "Van",
+                pickupAddress: "222 Retail Park, Maadi, Cairo",
+                dropoffAddress: "888 Shopping Center, New Cairo, Cairo",
+                pickupLat: 30.0131,
+                pickupLng: 31.3422,
+                dropoffLat: 30.0466,
+                dropoffLng: 31.4837,
+                currentLat: 30.0200,
+                currentLng: 31.3600,
+                shippingTime: "2026-03-08 11:00",
+                weight: "10 - 40 kg",
+                material: "Glass",
+                status: "In Progress",
+                acceptedAt: "2026-03-08 11:00",
+                currentLocation: "En route to drop-off",
+                progress: 65,
+                phone: "+20 100 111 2222",
+                email: "john.smith@email.com",
+                whatsapp: "+20 100 111 2222"
+            },
+            {
+                id: "TR002",
+                driverName: "Sarah Johnson",
+                driverRating: 4.8,
+                vehicle: "Van",
+                pickupAddress: "777 Plaza District, Heliopolis, Cairo",
+                dropoffAddress: "444 Office Complex, Sheikh Zayed, Giza",
+                pickupLat: 30.0869,
+                pickupLng: 31.3317,
+                dropoffLat: 30.0131,
+                dropoffLng: 31.1903,
+                currentLat: 30.0869,
+                currentLng: 31.3317,
+                shippingTime: "2026-03-09 15:30",
+                weight: "5 - 35 kg",
+                material: "Mixture",
+                status: "Pending Pickup",
+                acceptedAt: "2026-03-09 15:30",
+                currentLocation: "Waiting at pickup location",
+                progress: 10,
+                phone: "+20 100 222 3333",
+                email: "sarah.johnson@email.com",
+                whatsapp: "+20 100 222 3333"
+            }
+        ],
+        upcoming: [
+            {
+                id: "TR008",
+                driverName: "Michael Brown",
+                driverRating: 4.7,
+                vehicle: "Truck",
+                pickupAddress: "100 Tech Park, New Cairo, Cairo",
+                dropoffAddress: "200 Innovation Hub, Sheikh Zayed, Giza",
+                pickupLat: 30.0131,
+                pickupLng: 31.4837,
+                dropoffLat: 30.0131,
+                dropoffLng: 31.1903,
+                shippingTime: "2026-03-11 09:00",
+                weight: "25 - 75 kg",
+                material: "Wood",
+                status: "Scheduled",
+                phone: "+20 100 333 4444",
+                email: "michael.brown@email.com",
+                whatsapp: "+20 100 333 4444"
+            },
+            {
+                id: "TR009",
+                driverName: "Emma Wilson",
+                driverRating: 4.9,
+                vehicle: "Van",
+                pickupAddress: "500 Business District, Downtown, Cairo",
+                dropoffAddress: "600 Commerce Center, New Cairo, Cairo",
+                pickupLat: 30.0434,
+                pickupLng: 31.2357,
+                dropoffLat: 30.0466,
+                dropoffLng: 31.4837,
+                shippingTime: "2026-03-11 14:00",
+                weight: "8 - 40 kg",
+                material: "Glass",
+                status: "Scheduled",
+                phone: "+20 100 444 5555",
+                email: "emma.wilson@email.com",
+                whatsapp: "+20 100 444 5555"
+            }
+        ],
+        completed: [
+            {
+                id: "TR003",
+                driverName: "Ahmed Hassan",
+                driverRating: 4.8,
+                vehicle: "Van",
+                pickupAddress: "123 Main Street, Downtown, Cairo",
+                dropoffAddress: "456 Business Ave, Giza, Cairo",
+                shippingTime: "2026-03-05 10:00",
+                weight: "5 - 50 kg",
+                material: "Glass",
+                status: "Completed",
+                completedAt: "2026-03-05 12:30"
+            },
+            {
+                id: "TR004",
+                driverName: "Maria Rodriguez",
+                driverRating: 4.6,
+                vehicle: "Truck",
+                pickupAddress: "789 Market Road, Helwan, Cairo",
+                dropoffAddress: "321 Industrial Zone, 6th of October, Giza",
+                shippingTime: "2026-03-06 14:30",
+                weight: "20 - 100 kg",
+                material: "Mixture",
+                status: "Completed",
+                completedAt: "2026-03-06 17:15"
+            },
+            {
+                id: "TR005",
+                driverName: "James Wilson",
+                driverRating: 4.5,
+                vehicle: "Truck",
+                pickupAddress: "555 Commercial St, Nasr City, Cairo",
+                dropoffAddress: "999 Logistics Hub, New Cairo, Cairo",
+                shippingTime: "2026-03-07 09:00",
+                weight: "30 - 80 kg",
+                material: "Wood",
+                status: "Completed",
+                completedAt: "2026-03-07 11:45"
+            },
+            {
+                id: "TR006",
+                driverName: "Fatima Ali",
+                driverRating: 4.7,
+                vehicle: "Van",
+                pickupAddress: "333 Fashion Street, Downtown, Cairo",
+                dropoffAddress: "666 Retail Hub, New Cairo, Cairo",
+                shippingTime: "2026-03-04 08:00",
+                weight: "10 - 25 kg",
+                material: "Glass",
+                status: "Completed",
+                completedAt: "2026-03-04 09:30"
+            },
+            {
+                id: "TR007",
+                driverName: "Hassan Mohamed",
+                driverRating: 4.6,
+                vehicle: "Van",
+                pickupAddress: "444 Commercial Ave, Giza, Cairo",
+                dropoffAddress: "777 Business Park, 6th of October, Giza",
+                shippingTime: "2026-03-03 16:00",
+                weight: "15 - 45 kg",
+                material: "Wood",
+                status: "Completed",
+                completedAt: "2026-03-03 18:20"
+            }
+        ]
+    };
+
+    function switchTab(tabName, btn) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('active');
+        });
+        document.getElementById(tabName).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function renderTrips(tripsList, containerId, isActive = true) {
+        const container = document.getElementById(containerId);
+
+        if (tripsList.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon"></div>
+                    <div class="empty-state-title">No Trips</div>
+                    <div class="empty-state-text">You don't have any trips in this category.</div>
+                    <a href="client-booking.html" class="btn btn-primary">Book a Cargo</a>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = tripsList.map(trip => {
+            const isUpcoming = containerId === 'upcomingTrips';
+            const isCompleted = containerId === 'completedTrips';
+
+            let headerClass = '';
+            if (isCompleted) headerClass = 'completed';
+            else if (isActive && !isUpcoming) headerClass = 'in-progress';
+
+            return `
+                <div class="trip-card">
+                    <div class="trip-header ${headerClass}">
+                        <div class="trip-id">Trip #${trip.id}</div>
+                        <div class="trip-status">${trip.status}</div>
+                    </div>
+                    <div class="trip-body">
+                        ${isActive && !isUpcoming ? `
+                            <div class="trip-progress">
+                                <div class="progress-step completed">
+                                    <div class="progress-circle">✓</div>
+                                    <div class="progress-label">Picked Up</div>
+                                </div>
+                                <div class="progress-line"></div>
+                                <div class="progress-step ${trip.progress > 50 ? 'active' : ''}">
+                                    <div class="progress-circle"></div>
+                                    <div class="progress-label">In Transit</div>
+                                </div>
+                                <div class="progress-line"></div>
+                                <div class="progress-step">
+                                    <div class="progress-circle"></div>
+                                    <div class="progress-label">Delivery</div>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                        <div class="trip-info-grid">
+                            <div class="trip-info-item">
+                                <div class="info-label">Scheduled Time</div>
+                                <div class="info-value">${new Date(trip.shippingTime).toLocaleString()}</div>
+                            </div>
+                            <div class="trip-info-item">
+                                <div class="info-label">Weight</div>
+                                <div class="info-value">${trip.weight}</div>
+                            </div>
+                            <div class="trip-info-item">
+                                <div class="info-label">Material</div>
+                                <div class="info-value">${trip.material}</div>
+                            </div>
+                            ${isCompleted ? `
+                                <div class="trip-info-item">
+                                    <div class="info-label">Completed</div>
+                                    <div class="info-value">${new Date(trip.completedAt).toLocaleString()}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="location-row">
+                            <div class="location-icon"></div>
+                            <div class="location-address">
+                                <div class="info-label">Pickup</div>
+                                <div class="info-value">${trip.pickupAddress}</div>
+                            </div>
+                        </div>
+
+                        <div class="location-row">
+                            <div class="location-icon"></div>
+                            <div class="location-address">
+                                <div class="info-label">Drop Off</div>
+                                <div class="info-value">${trip.dropoffAddress}</div>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="driver-info">
+                            <div class="driver-avatar">${trip.driverName.charAt(0)}</div>
+                            <div class="driver-details">
+                                <h4>${trip.driverName}</h4>
+                                <p>${trip.vehicle}</p>
+                                <p class="driver-rating"> ${trip.driverRating}</p>
+                            </div>
+                        </div>
+
+                        <div class="button-group">
+                            ${isActive && !isUpcoming ? `
+                                <button class="btn-small primary" onclick="trackTrip('${trip.id}', ${trip.currentLat}, ${trip.currentLng}, ${trip.dropoffLat}, ${trip.dropoffLng})">Track Live</button>
+                                <button class="btn-small" onclick="openContactModal('${trip.driverName}', '${trip.phone}', '${trip.email}', '${trip.whatsapp}')">Contact Driver</button>
+                            ` : isActive && isUpcoming ? `
+                                <button class="btn-small primary" onclick="openContactModal('${trip.driverName}', '${trip.phone}', '${trip.email}', '${trip.whatsapp}')">Contact Driver</button>
+                                <button class="btn-small" onclick="viewTripDetails('${trip.id}')">View Details</button>
+                            ` : `
+                                <button class="btn-small primary" onclick="reviewDriver('${trip.driverName}')">Review Driver</button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function trackTrip(tripId, currentLat, currentLng, dropoffLat, dropoffLng) {
+        // Store trip data and redirect to map
+        localStorage.setItem('tripData', JSON.stringify({
+            tripId,
+            currentLat,
+            currentLng,
+            dropoffLat,
+            dropoffLng
+        }));
+        window.location.href = 'client-trip-tracking.html?trip=' + tripId;
+    }
+
+    function openContactModal(driverName, phone, email, whatsapp) {
+        document.getElementById('modalDriverName').textContent = driverName;
+        document.getElementById('phoneLink').textContent = phone;
+        document.getElementById('phoneLink').href = `tel:${phone}`;
+        document.getElementById('emailLink').textContent = email;
+        document.getElementById('emailLink').href = `mailto:${email}`;
+        document.getElementById('whatsappLink').textContent = whatsapp;
+        document.getElementById('whatsappLink').href = `https://wa.me/${whatsapp.replace(/\s+/g, '')}`;
+        document.getElementById('contactModal').classList.add('active');
+    }
+
+    function closeContactModal() {
+        document.getElementById('contactModal').classList.remove('active');
+    }
+
+    function viewTripDetails(tripId) {
+        alert(`Viewing details for trip ${tripId}...`);
+    }
+
+    function reviewDriver(driverName) {
+        alert(`Opening review form for driver ${driverName}...`);
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('contactModal');
+        if (event.target === modal) {
+            modal.classList.remove('active');
+        }
+    };
+
+    // Initialize trips
+    renderTrips(trips.active, 'activeTrips', true);
+    renderTrips(trips.upcoming, 'upcomingTrips', true);
+    renderTrips(trips.completed, 'completedTrips', false);
+</script>
+</body>
+</html>
