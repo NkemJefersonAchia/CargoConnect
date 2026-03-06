@@ -1,60 +1,750 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}CargoConnect{% endblock %}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-  {% block head %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Professional Logistics & Hauling</title>
+    <!-- Font Awesome (icons without emojis) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- YTPlayer for YouTube video background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mb.YTPlayer/3.3.9/jquery.mb.YTPlayer.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        /* Light mode (default) */
+        body.light-mode {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F5;
+            --bg-tertiary: #EBEBEB;
+            --card-bg: #FFFFFF;
+            --card-bg-hover: #F0F0F0;
+            --border-light: #DDDDDD;
+            --border-medium: #CCCCCC;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-tertiary: #6F6F6F;
+            --accent-1: #333333;
+            --accent-2: #4B4B4B;
+            --accent-3: #2F4F4F;
+            --accent-4: #5C5147;
+            --accent-5: #2F4F2F;
+            --gradient-1: linear-gradient(135deg, #333333, #4B4B4B);
+            --gradient-2: linear-gradient(135deg, #2F4F4F, #254B4B);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            --bg-primary: #2a2929;
+            --bg-secondary: #000000;
+            --bg-tertiary: #5f5f5f;
+            --card-bg: #424242;
+            --card-bg-hover: #7c7c7c;
+            --border-light: #ffffff;
+            --border-medium: #7a7a7a;
+            --text-primary: #88b6b6;
+            --text-secondary: #aeaeae;
+            --text-tertiary: #ffffff;
+            --accent-1: #223a22;
+            --accent-2: #4e4a4a;
+            --accent-3: #DDE1E4;
+            --accent-4: #926166;
+            --accent-5: #5b90b4;
+            --gradient-1: linear-gradient(135deg, #4b4b4b, #C0C0C0);
+            --gradient-2: linear-gradient(135deg, #9c9c9c, #B0E0E6);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border-radius: 30px;
+            padding: 2px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        .theme-option {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-option.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            color: var(--accent-1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Hero section with video background */
+        .hero {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        #video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            color: white;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Trust badges */
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .trust-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .trust-item i {
+            font-size: 20px;
+            color: var(--accent-5);
+        }
+
+        /* Sections */
+        .section {
+            padding: 80px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--text-primary);
+        }
+
+        /* Services grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--border-medium);
+        }
+
+        .service-card i {
+            font-size: 40px;
+            color: var(--accent-1);
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .service-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Stats section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent-1);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .testimonial {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .author-info h4 {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .author-info p {
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        /* CTA section */
+        .cta-section {
+            background: var(--gradient-2);
+            border-radius: 10px;
+            padding: 60px;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .cta-section .btn-primary {
+            background: white;
+            color: var(--accent-1);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .footer-links a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-1);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        /* Image gallery from Pexels (simulated) */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .gallery-item {
+            height: 200px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            background-color: var(--bg-tertiary);
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            .nav {
+                gap: 15px;
+            }
+            .hero-content h1 {
+                font-size: 32px;
+            }
+            .hero-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
-<body>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <div class="flash-container">
-        {% for category, message in messages %}
-          <div class="flash flash--{{ category }}">{{ message }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
-  {% endwith %}
-
-  {% block body %}
-  <div class="layout">
-    <!-- Sidebar -->
-    <nav class="sidebar" id="sidebar">
-      <div class="sidebar__logo">
-        <span class="sidebar__logo-icon">&#128666;</span>
-        <span class="sidebar__logo-text">CargoConnect</span>
-      </div>
-      <ul class="sidebar__nav">
-        {% block sidebar_links %}{% endblock %}
-      </ul>
-      <div class="sidebar__footer">
-        <a href="{{ url_for('auth.logout') }}" class="sidebar__logout">&#x2192; Logout</a>
-      </div>
-    </nav>
-
-    <!-- Main content -->
-    <main class="main-content">
-      <header class="topbar">
-        <button class="topbar__hamburger" id="hamburgerBtn" aria-label="Toggle sidebar">
-          <span></span><span></span><span></span>
-        </button>
-        <div class="topbar__right">
-          {% block topbar_right %}{% endblock %}
+<body class="light-mode">
+    <!-- Header -->
+    <header class="header">
+        <a href="base.html" class="logo">CargoConnect</a>
+        <div class="nav">
+            <a href="#services">Services</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="track.html">Track</a>
+            <a href="login.html" class="btn btn-secondary">Sign In</a>
+            <a href="index.html" class="btn btn-primary">Get Quote</a>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-option active" id="theme-light">Light</span>
+                <span class="theme-option" id="theme-dark">Dark</span>
+            </div>
         </div>
-      </header>
-      <section class="page-content">
-        {% block content %}{% endblock %}
-      </section>
-    </main>
-  </div>
-  {% endblock %}
+    </header>
 
-  <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
-  {% block scripts %}{% endblock %}
+    <!-- Hero with video background -->
+    <section class="hero">
+        <div id="video-bg" class="player" data-property="{
+            videoURL: 'https://youtu.be/YW2Aa4CJEgY',
+            containment: 'self',
+            autoPlay: true,
+            mute: true,
+            startAt: 0,
+            opacity: 1,
+            loop: true,
+            quality: 'default'
+        }"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Professional Logistics & Hauling Services</h1>
+            <p>Simple, Transparent, Reliable — Request a quote, schedule your job, and manage everything in one place.</p>
+            <div class="hero-buttons">
+                <a href="index.html" class="btn btn-primary">Get a Quote</a>
+                <a href="track.html" class="btn btn-secondary">Track Existing Job</a>
+            </div>
+            <div class="trust-badges">
+                <div class="trust-item"><i class="fas fa-star"></i> Rated 4.9 by customers</div>
+                <div class="trust-item"><i class="fas fa-shield-alt"></i> Licensed & Insured</div>
+                <div class="trust-item"><i class="fas fa-clock"></i> Fast Scheduling</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="section">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-truck"></i>
+                <h3>Junk Removal</h3>
+                <p>Efficient removal of unwanted items, furniture, and debris.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-boxes"></i>
+                <h3>Hauling</h3>
+                <p>Heavy‑duty hauling for construction materials and large loads.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-ship"></i>
+                <h3>Logistics / Transport</h3>
+                <p>Coordinated freight and cargo transport across the region.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-question-circle"></i>
+                <h3>Other</h3>
+                <p>Custom logistics solutions tailored to your needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <div class="section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">15K+</div>
+                <div class="stat-label">Completed Trips</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">584</div>
+                <div class="stat-label">Active Drivers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.9</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Customer Support</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dynamic Image Gallery (Pexels API simulation) -->
+    <section class="section">
+        <h2 class="section-title">Real‑Time Fleet Imagery</h2>
+        <div class="gallery" id="gallery"></div>
+        <p style="text-align: center; margin-top: 20px; color: var(--text-tertiary); font-size: 12px;">Images provided by Pexels (simulated for demo)</p>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="section">
+        <h2 class="section-title">How It Works</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fas fa-file-alt"></i>
+                <h3>1. Request a Quote</h3>
+                <p>Tell us what you need moved – quick online form with photos.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-check-circle"></i>
+                <h3>2. Get Matched</h3>
+                <p>We connect you with available, vetted drivers in your area.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-map-marked-alt"></i>
+                <h3>3. Track & Relax</h3>
+                <p>Follow your shipment live and get notified when it arrives.</p>
+            </div>
+            <div class="service-card">
+                <i class="fas fa-star"></i>
+                <h3>4. Review & Repeat</h3>
+                <p>Rate your driver and enjoy seamless logistics next time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section">
+        <h2 class="section-title">What Our Customers Say</h2>
+        <div class="testimonials">
+            <div class="testimonial">
+                <div class="testimonial-text">"Professional, on time, and careful with my furniture. Highly recommend!"</div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SJ</div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Client since 2025</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial">
+                <div class="testimonial-text">"The live tracking feature is amazing – I knew exactly where my cargo was."</div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MC</div>
+                    <div class="author-info">
+                        <h4>Michael Chen</h4>
+                        <p>Business Owner</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial">
+                <div class="testimonial-text">"Quick response, fair pricing, and great communication. My go‑to for hauling."</div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">LR</div>
+                    <div class="author-info">
+                        <h4>Lisa Rodriguez</h4>
+                        <p>Homeowner</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="section">
+        <div class="cta-section">
+            <h2>Ready to move your cargo?</h2>
+            <p>Join thousands of satisfied customers who trust CargoConnect.</p>
+            <a href="index.html" class="btn btn-primary">Get a Free Quote</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="about.html">About Us</a>
+                <a href="creers.html">Careers</a>
+                <a href="press.html">Press</a>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <a href="#">Junk Removal</a>
+                <a href="#">Hauling</a>
+                <a href="#">Logistics</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 CargoConnect. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const lightOption = document.getElementById('theme-light');
+            const darkOption = document.getElementById('theme-dark');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                lightOption.classList.remove('active');
+                darkOption.classList.add('active');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                darkOption.classList.remove('active');
+                lightOption.classList.add('active');
+            }
+        }
+
+        // Initialize video background
+        $(function () {
+            $(".player").YTPlayer();
+        });
+
+        // Simulate fetching images from Pexels API (for demo, we'll use placeholder images)
+        // In production, replace with actual API call using your key
+        const gallery = document.getElementById('gallery');
+        const imageUrls = [
+            'https://images.pexels.com/photos/2199293/pexels-photo-2199293.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/6169668/pexels-photo-6169668.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/4481256/pexels-photo-4481256.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/4391478/pexels-photo-4391478.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/4623077/pexels-photo-4623077.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/6169666/pexels-photo-6169666.jpeg?auto=compress&cs=tinysrgb&w=600'
+        ];
+        imageUrls.forEach(url => {
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
+            div.style.backgroundImage = `url('${url}')`;
+            gallery.appendChild(div);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 </body>
 </html>
