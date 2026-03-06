@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Terms of Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        body.light-mode {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F5;
+            --bg-tertiary: #EBEBEB;
+            --card-bg: #FFFFFF;
+            --card-bg-hover: #F0F0F0;
+            --border-light: #DDDDDD;
+            --border-medium: #CCCCCC;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-tertiary: #6F6F6F;
+            --accent-1: #333333;
+            --accent-2: #4B4B4B;
+            --accent-3: #2F4F4F;
+            --accent-4: #5C5147;
+            --accent-5: #2F4F2F;
+            --gradient-1: linear-gradient(135deg, #333333, #4B4B4B);
+            --gradient-2: linear-gradient(135deg, #2F4F4F, #254B4B);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode {
+            --bg-primary: #2a2929;
+            --bg-secondary: #000000;
+            --bg-tertiary: #5f5f5f;
+            --card-bg: #424242;
+            --card-bg-hover: #7c7c7c;
+            --border-light: #ffffff;
+            --border-medium: #7a7a7a;
+            --text-primary: #88b6b6;
+            --text-secondary: #aeaeae;
+            --text-tertiary: #ffffff;
+            --accent-1: #223a22;
+            --accent-2: #4e4a4a;
+            --accent-3: #DDE1E4;
+            --accent-4: #926166;
+            --accent-5: #5b90b4;
+            --gradient-1: linear-gradient(135deg, #4b4b4b, #C0C0C0);
+            --gradient-2: linear-gradient(135deg, #9c9c9c, #B0E0E6);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border-radius: 30px;
+            padding: 2px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        .theme-option {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-option.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .nav a:hover {
+            color: var(--accent-1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .main {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .main h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .main p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .main h2 {
+            font-size: 24px;
+            margin: 40px 0 20px;
+            color: var(--text-primary);
+        }
+
+        .footer {
+            background: var(--bg-secondary);
+            padding: 40px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .footer-links a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-1);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            .nav {
+                gap: 15px;
+            }
+            .main h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <header class="header">
+        <a href="base.html" class="logo">CargoConnect</a>
+        <div class="nav">
+            <a href="base.html#services">Services</a>
+            <a href="base.html#how-it-works">How It Works</a>
+            <a href="track.html">Track</a>
+            <a href="index.html" class="btn btn-secondary">Sign In</a>
+            <a href="index.html" class="btn btn-primary">Get Quote</a>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-option active" id="theme-light">Light</span>
+                <span class="theme-option" id="theme-dark">Dark</span>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <h1>Terms of Service</h1>
+        <p>Last updated: March 2026</p>
+        <h2>1. Introduction</h2>
+        <p>Welcome to CargoConnect. By using our platform, you agree to these terms.</p>
+        <h2>2. User Responsibilities</h2>
+        <p>You agree to provide accurate information and not misuse the service.</p>
+        <h2>3. Payments</h2>
+        <p>All payments are processed securely. Cancellations may be subject to fees.</p>
+        <!-- more legal text – shortened for demo -->
+    </main>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h4>Company</h4>
+                <a href="about.html">About Us</a>
+                <a href="careers.html">Careers</a>
+                <a href="press.html">Press</a>
+            </div>
+            <div class="footer-links">
+                <h4>Services</h4>
+                <a href="junk-removal.html">Junk Removal</a>
+                <a href="hauling.html">Hauling</a>
+                <a href="logistics.html">Logistics</a>
+            </div>
+            <div class="footer-links">
+                <h4>Support</h4>
+                <a href="help-center.html">Help Center</a>
+                <a href="contact.html">Contact Us</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+            <div class="footer-links">
+                <h4>Connect</h4>
+                <a href="https://www.facebook.com/cargo.connect/"><i class="fab fa-facebook"></i> Facebook</a>
+                <a href="https://www.twitter.com/cargo.connect/"><i class="fab fa-twitter"></i> Twitter</a>
+                <a href="https://www.instagram.com/cargo.connect/"><i class="fab fa-instagram"></i> Instagram</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 CargoConnect. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const light = document.getElementById('theme-light');
+            const dark = document.getElementById('theme-dark');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                light.classList.remove('active');
+                dark.classList.add('active');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                dark.classList.remove('active');
+                light.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
