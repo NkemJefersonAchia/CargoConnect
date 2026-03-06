@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Admin Drivers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        /* Light mode (default) */
+        body.light-mode {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F5;
+            --bg-tertiary: #EBEBEB;
+            --card-bg: #FFFFFF;
+            --card-bg-hover: #F0F0F0;
+            --border-light: #DDDDDD;
+            --border-medium: #CCCCCC;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-tertiary: #6F6F6F;
+            --accent-1: #333333;
+            --accent-2: #4B4B4B;
+            --accent-3: #2F4F4F;
+            --accent-4: #5C5147;
+            --accent-5: #2F4F2F;
+            --gradient-1: linear-gradient(135deg, #333333, #4B4B4B);
+            --gradient-2: linear-gradient(135deg, #2F4F4F, #254B4B);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Dark mode */
+        body.dark-mode {
+            --bg-primary: #2a2929;
+            --bg-secondary: #000000;
+            --bg-tertiary: #5f5f5f;
+            --card-bg: #424242;
+            --card-bg-hover: #7c7c7c;
+            --border-light: #ffffff;
+            --border-medium: #7a7a7a;
+            --text-primary: #88b6b6;
+            --text-secondary: #aeaeae;
+            --text-tertiary: #ffffff;
+            --accent-1: #223a22;
+            --accent-2: #4e4a4a;
+            --accent-3: #DDE1E4;
+            --accent-4: #926166;
+            --accent-5: #5b90b4;
+            --gradient-1: linear-gradient(135deg, #4b4b4b, #C0C0C0);
+            --gradient-2: linear-gradient(135deg, #9c9c9c, #B0E0E6);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        /* Theme toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border-radius: 30px;
+            padding: 2px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
+        .theme-option {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-option.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .logo-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin-bottom: 12px;
+        }
+
+        .logo-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-1);
+            border-radius: 50%;
+        }
+
+        .logo-text {
+            font-family: 'Inter', monospace;
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .sidebar-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .sidebar-sub {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        .nav {
+            padding: 16px 12px;
+            flex: 1;
+        }
+
+        .nav-section {
+            font-size: 10px;
+            color: var(--text-tertiary);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0 8px;
+            margin: 16px 0 6px;
+            font-weight: 500;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 400;
+            margin-bottom: 2px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 500;
+            border-left: 3px solid var(--accent-1);
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            font-size: 9px;
+            background: var(--bg-tertiary);
+            color: var(--text-tertiary);
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .data-badge {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-medium);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .data-badge-label {
+            font-size: 9px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .data-badge-value {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-top: 4px;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-primary);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .breadcrumb {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Page content */
+        .page {
+            padding: 28px 32px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section header */
+        .section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .section-sub {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        /* Controls */
+        .controls {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 12px;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent-1);
+            background: var(--bg-primary);
+        }
+
+        .search-box input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            font-size: 12px;
+        }
+
+        .filter-btn.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: var(--accent-1);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--border-medium);
+            background: var(--card-bg-hover);
+            color: var(--text-primary);
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sort-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            font-size: 12px;
+        }
+
+        .sort-btn.active {
+            background: var(--gradient-1);
+            color: white;
+            border-color: var(--accent-1);
+        }
+
+        .sort-btn:hover {
+            border-color: var(--border-medium);
+            background: var(--card-bg-hover);
+            color: var(--text-primary);
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+
+        thead th {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 11px;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        thead th:hover {
+            color: var(--text-primary);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.1s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        td {
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        td.highlight {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .user-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+            border: 1px solid var(--border-light);
+        }
+
+        .status-verified {
+            background: #d4edda;
+            color: #155724;
+            border-color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+            border-color: #856404;
+        }
+
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #721c24;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-icon {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.15s;
+        }
+
+        .btn-icon:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-icon.approve {
+            background: #d4edda;
+            color: #155724;
+            border-color: #155724;
+        }
+
+        .btn-icon.approve:hover {
+            background: #155724;
+            color: white;
+        }
+
+        .btn-icon.reject {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #721c24;
+        }
+
+        .btn-icon.reject:hover {
+            background: #721c24;
+            color: white;
+        }
+
+        .btn-icon.disable {
+            background: #ffe0e0;
+            color: #d32f2f;
+            border-color: #d32f2f;
+        }
+
+        .btn-icon.disable:hover {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-icon.view {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-color: #1976d2;
+        }
+
+        .btn-icon.view:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        /* Pagination */
+        .pagination {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .pagination-info {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .pagination-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .page-btn:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--border-medium);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .page-btn.active {
+            background: var(--bg-primary);
+            border-color: var(--accent-1);
+            color: var(--text-primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-tertiary);
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-240px);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .filter-controls,
+            .sort-controls {
+                justify-content: flex-start;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 1000px;
+            }
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-badge">
+            <span class="logo-dot"></span>
+            <span class="logo-text">Admin</span>
+        </div>
+        <div class="sidebar-title">CARGOCONNECT ADMIN</div>
+        <div class="sidebar-sub">Drivers Management</div>
+    </div>
+
+    <div class="nav">
+        <div class="nav-section">General</div>
+        <a class="nav-item" href="admin-dashboard.html">
+            Dashboard
+        </a>
+        <a class="nav-item" href="admin-users.html">
+            Users
+            <span class="nav-badge">2.8K</span>
+        </a>
+        <a class="nav-item active" href="admin-drivers.html">
+            Drivers
+            <span class="nav-badge">584</span>
+        </a>
+        <a class="nav-item" href="admin-trips.html">
+            Trips
+            <span class="nav-badge">18K</span>
+        </a>
+
+        <div class="nav-section">Finance</div>
+        <a class="nav-item" href="admin-payments.html">
+            Payments
+        </a>
+        <a class="nav-item" href="admin-disputes.html">
+            Disputes
+        </a>
+
+        <div class="nav-section">Insights</div>
+        <a class="nav-item" href="admin-analytics.html">
+            Analytics
+        </a>
+        <a class="nav-item" href="admin-settings.html">
+            Settings
+        </a>
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="data-badge">
+            <div class="data-badge-label">Active Drivers</div>
+            <div class="data-badge-value">584</div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <div class="page-title">Drivers Management</div>
+            <span style="color:var(--border-light)">|</span>
+            <span class="breadcrumb">View and manage drivers</span>
+        </div>
+        <div class="topbar-right">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-option active" id="theme-light">Light</span>
+                <span class="theme-option" id="theme-dark">Dark</span>
+            </div>
+            <a href="admin-settings.html" class="btn btn-secondary">Settings</a>
+            <button class="btn btn-primary" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page">
+        <div class="section-header">
+            <div>
+                <div class="section-title">Drivers Management</div>
+                <div class="section-sub">View and manage all registered drivers on the platform</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name, email, or license...">
+            </div>
+            <div class="filter-controls">
+                <button class="filter-btn active" onclick="filterBy('all', this)">All Drivers</button>
+                <button class="filter-btn" onclick="filterBy('pending', this)">Pending</button>
+                <button class="filter-btn" onclick="filterBy('verified', this)">Verified</button>
+            </div>
+            <div class="sort-controls">
+                <button class="sort-btn active" onclick="sortBy('registration', this)">Latest</button>
+                <button class="sort-btn" onclick="sortBy('rating', this)">Top Rated</button>
+                <button class="sort-btn" onclick="sortBy('trips', this)">Most Trips</button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">Driver List</div>
+                <div class="pagination-info" id="tableInfo"></div>
+            </div>
+            <table id="driversTable">
+                <thead>
+                    <tr>
+                        <th>Driver Name</th>
+                        <th>License #</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Trips Completed</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">🚗</div>
+                <p>No drivers found</p>
+            </div>
+            <div class="pagination">
+                <div class="pagination-info" id="paginationInfo"></div>
+                <div class="pagination-btns" id="paginationBtns">
+                    <button class="page-btn" onclick="previousPage()" disabled>‹</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn" onclick="goToPage(2)">2</button>
+                    <button class="page-btn" onclick="goToPage(3)">3</button>
+                    <button class="page-btn" onclick="nextPage()">›</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Original driver data (from the original admin-drivers.html)
+    const driversData = [
+        { id: 1, name: 'Ahmed Hassan', license: 'DL-2024-001', email: 'ahmed.h@email.com', phone: '+1-555-0201', trips: 45, rating: 4.9, verification: 'verified', registered: '2026-03-01' },
+        { id: 2, name: 'Marcus Johnson', license: 'DL-2024-002', email: 'm.johnson@email.com', phone: '+1-555-0202', trips: 0, rating: 0, verification: 'pending', registered: '2026-03-03' },
+        { id: 3, name: 'Sofia Rodriguez', license: 'DL-2024-003', email: 'sofia.r@email.com', phone: '+1-555-0203', trips: 38, rating: 4.8, verification: 'verified', registered: '2026-02-28' },
+        { id: 4, name: 'Raj Patel', license: 'DL-2024-004', email: 'raj.p@email.com', phone: '+1-555-0204', trips: 0, rating: 0, verification: 'pending', registered: '2026-02-27' },
+        { id: 5, name: 'Elena Moretti', license: 'DL-2024-005', email: 'elena.m@email.com', phone: '+1-555-0205', trips: 52, rating: 5.0, verification: 'verified', registered: '2026-02-25' },
+        { id: 6, name: 'Carlos Mendez', license: 'DL-2024-006', email: 'carlos.m@email.com', phone: '+1-555-0206', trips: 31, rating: 4.7, verification: 'verified', registered: '2026-02-22' },
+        { id: 7, name: 'Wei Zhang', license: 'DL-2024-007', email: 'wei.z@email.com', phone: '+1-555-0207', trips: 0, rating: 0, verification: 'pending', registered: '2026-02-20' },
+        { id: 8, name: 'Yuki Tanaka', license: 'DL-2024-008', email: 'yuki.t@email.com', phone: '+1-555-0208', trips: 28, rating: 4.6, verification: 'verified', registered: '2026-02-18' },
+        { id: 9, name: 'Andre Santos', license: 'DL-2024-009', email: 'andre.s@email.com', phone: '+1-555-0209', trips: 41, rating: 4.8, verification: 'verified', registered: '2026-02-15' },
+        { id: 10, name: 'Nina Sjoberg', license: 'DL-2024-010', email: 'nina.s@email.com', phone: '+1-555-0210', trips: 0, rating: 0, verification: 'pending', registered: '2026-02-13' },
+        { id: 11, name: 'Ivan Volkov', license: 'DL-2024-011', email: 'ivan.v@email.com', phone: '+1-555-0211', trips: 35, rating: 4.5, verification: 'verified', registered: '2026-02-10' },
+        { id: 12, name: 'Amara Okafor', license: 'DL-2024-012', email: 'amara.o@email.com', phone: '+1-555-0212', trips: 27, rating: 4.9, verification: 'verified', registered: '2026-02-08' }
+    ];
+
+    let currentFilter = 'all';
+    let currentSort = 'registration';
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let filteredData = [...driversData];
+
+    function renderTable() {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageData = filteredData.slice(startIndex, endIndex);
+
+        const tbody = document.getElementById('tableBody');
+        const emptyState = document.getElementById('emptyState');
+        const tableInfo = document.getElementById('tableInfo');
+        const paginationInfo = document.getElementById('paginationInfo');
+
+        if (pageData.length === 0) {
+            tbody.innerHTML = '';
+            emptyState.style.display = 'block';
+            document.querySelector('.pagination').style.display = 'none';
+            tableInfo.innerText = 'No drivers found';
+            return;
+        }
+
+        emptyState.style.display = 'none';
+        document.querySelector('.pagination').style.display = 'flex';
+
+        tbody.innerHTML = pageData.map(driver => {
+            let statusClass = '';
+            let statusText = driver.verification;
+            if (driver.verification === 'verified') statusClass = 'status-verified';
+            else if (driver.verification === 'pending') statusClass = 'status-pending';
+            else statusClass = 'status-rejected';
+
+            const ratingDisplay = driver.rating > 0 ? driver.rating.toFixed(1) : '-';
+
+            return `
+                <tr>
+                    <td>
+                        <div class="user-name">
+                            <div class="user-avatar">${driver.name.charAt(0)}</div>
+                            <span>${driver.name}</span>
+                        </div>
+                    </td>
+                    <td>${driver.license}</td>
+                    <td>${driver.email}</td>
+                    <td>${driver.phone}</td>
+                    <td>${driver.trips}</td>
+                    <td>${ratingDisplay}</td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            ${statusText}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon view" onclick="viewDriver(${driver.id})">View</button>
+                            ${driver.verification === 'pending' ? `
+                                <button class="btn-icon approve" onclick="approveDriver(${driver.id})">Approve</button>
+                                <button class="btn-icon reject" onclick="rejectDriver(${driver.id})">Reject</button>
+                            ` : `
+                                <button class="btn-icon disable" onclick="disableDriver(${driver.id})">Disable</button>
+                            `}
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        updatePagination();
+    }
+
+    function updatePagination() {
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        const paginationBtns = document.getElementById('paginationBtns');
+        const tableInfo = document.getElementById('tableInfo');
+        const paginationInfo = document.getElementById('paginationInfo');
+
+        tableInfo.innerText = `Showing ${(currentPage-1)*itemsPerPage+1}–${Math.min(currentPage*itemsPerPage, filteredData.length)} of ${filteredData.length} drivers`;
+        paginationInfo.innerText = `Page ${currentPage} of ${totalPages}`;
+
+        let btns = `<button class="page-btn" onclick="previousPage()" ${currentPage === 1 ? 'disabled' : ''}>‹</button>`;
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                btns += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            } else if (i === currentPage - 2 || i === currentPage + 2) {
+                btns += `<span class="page-btn" style="cursor:default;">…</span>`;
+            }
+        }
+
+        btns += `<button class="page-btn" onclick="nextPage()" ${currentPage === totalPages ? 'disabled' : ''}>›</button>`;
+        paginationBtns.innerHTML = btns;
+    }
+
+    function filterBy(filterType, button) {
+        currentFilter = filterType;
+        currentPage = 1;
+
+        let temp = [...driversData];
+        if (filterType === 'pending') {
+            temp = temp.filter(d => d.verification === 'pending');
+        } else if (filterType === 'verified') {
+            temp = temp.filter(d => d.verification === 'verified');
+        }
+
+        filteredData = temp;
+        applySort();
+
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        renderTable();
+    }
+
+    function sortBy(sortType, button) {
+        currentSort = sortType;
+        currentPage = 1;
+        applySort();
+
+        document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        renderTable();
+    }
+
+    function applySort() {
+        if (currentSort === 'registration') {
+            filteredData.sort((a, b) => new Date(b.registered) - new Date(a.registered));
+        } else if (currentSort === 'rating') {
+            filteredData.sort((a, b) => b.rating - a.rating);
+        } else if (currentSort === 'trips') {
+            filteredData.sort((a, b) => b.trips - a.trips);
+        }
+    }
+
+    function searchDrivers() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        currentPage = 1;
+
+        let temp = driversData.filter(driver =>
+            driver.name.toLowerCase().includes(searchTerm) ||
+            driver.email.toLowerCase().includes(searchTerm) ||
+            driver.license.toLowerCase().includes(searchTerm)
+        );
+
+        if (currentFilter === 'pending') {
+            temp = temp.filter(d => d.verification === 'pending');
+        } else if (currentFilter === 'verified') {
+            temp = temp.filter(d => d.verification === 'verified');
+        }
+
+        filteredData = temp;
+        applySort();
+        renderTable();
+    }
+
+    function viewDriver(driverId) {
+        const driver = driversData.find(d => d.id === driverId);
+        alert(`Driver: ${driver.name}\nLicense: ${driver.license}\nStatus: ${driver.verification}`);
+    }
+
+    function approveDriver(driverId) {
+        const driver = driversData.find(d => d.id === driverId);
+        if (driver) {
+            driver.verification = 'verified';
+            filterBy(currentFilter, document.querySelector('.filter-btn.active'));
+            alert(`✓ ${driver.name} has been approved!`);
+        }
+    }
+
+    function rejectDriver(driverId) {
+        const driver = driversData.find(d => d.id === driverId);
+        if (driver) {
+            driver.verification = 'rejected';
+            filterBy(currentFilter, document.querySelector('.filter-btn.active'));
+            alert(`✗ ${driver.name} has been rejected!`);
+        }
+    }
+
+    function disableDriver(driverId) {
+        alert(`Driver #${driverId} has been disabled.`);
+    }
+
+    function nextPage() {
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+            window.scrollTo(0, 0);
+        }
+    }
+
+    function previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+            window.scrollTo(0, 0);
+        }
+    }
+
+    function goToPage(page) {
+        const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+        if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderTable();
+            window.scrollTo(0, 0);
+        }
+    }
+
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = 'admin-auth.html';
+        }
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+        const body = document.body;
+        const lightOption = document.getElementById('theme-light');
+        const darkOption = document.getElementById('theme-dark');
+        if (body.classList.contains('light-mode')) {
+            body.classList.remove('light-mode');
+            body.classList.add('dark-mode');
+            lightOption.classList.remove('active');
+            darkOption.classList.add('active');
+        } else {
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            darkOption.classList.remove('active');
+            lightOption.classList.add('active');
+        }
+    }
+
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', searchDrivers);
+
+    // Initial render
+    renderTable();
+</script>
+</body>
+</html>
