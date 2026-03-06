@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CargoConnect - Track Your Shipment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.2s ease;
+        }
+
+        body.light-mode {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F5F5F5;
+            --bg-tertiary: #EBEBEB;
+            --card-bg: #FFFFFF;
+            --card-bg-hover: #F0F0F0;
+            --border-light: #DDDDDD;
+            --border-medium: #CCCCCC;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-tertiary: #6F6F6F;
+            --accent-1: #333333;
+            --accent-2: #4B4B4B;
+            --accent-3: #2F4F4F;
+            --accent-4: #5C5147;
+            --accent-5: #2F4F2F;
+            --gradient-1: linear-gradient(135deg, #333333, #4B4B4B);
+            --gradient-2: linear-gradient(135deg, #2F4F4F, #254B4B);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode {
+            --bg-primary: #2a2929;
+            --bg-secondary: #000000;
+            --bg-tertiary: #5f5f5f;
+            --card-bg: #424242;
+            --card-bg-hover: #7c7c7c;
+            --border-light: #ffffff;
+            --border-medium: #7a7a7a;
+            --text-primary: #88b6b6;
+            --text-secondary: #aeaeae;
+            --text-tertiary: #ffffff;
+            --accent-1: #223a22;
+            --accent-2: #4e4a4a;
+            --accent-3: #DDE1E4;
+            --accent-4: #926166;
+            --accent-5: #5b90b4;
+            --gradient-1: linear-gradient(135deg, #4b4b4b, #C0C0C0);
+            --gradient-2: linear-gradient(135deg, #9c9c9c, #B0E0E6);
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border-radius: 30px;
+            padding: 2px;
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .theme-option {
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .theme-option.active {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .track-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .track-card h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .track-card p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            background: var(--bg-primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+            text-decoration: none;
+            background: var(--gradient-1);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h3 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .result p {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--accent-1);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <span class="theme-option active" id="theme-light">Light</span>
+        <span class="theme-option" id="theme-dark">Dark</span>
+    </div>
+
+    <div class="container">
+        <div class="track-card">
+            <h1>Track Your Shipment</h1>
+            <p>Enter your trip ID to see the current status.</p>
+
+            <div class="form-group">
+                <label for="tripId">Trip ID (e.g., TR001)</label>
+                <input type="text" id="tripId" placeholder="TR001" required>
+            </div>
+            <button class="btn" onclick="trackTrip()">Track Now</button>
+
+            <div id="result" class="result"></div>
+            <a href="base.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const light = document.getElementById('theme-light');
+            const dark = document.getElementById('theme-dark');
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                light.classList.remove('active');
+                dark.classList.add('active');
+            } else {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                dark.classList.remove('active');
+                light.classList.add('active');
+            }
+        }
+
+        // Combined trip data from all our sample pages (client-trips, driver-trips, etc.)
+        const trips = {
+            // Active / In Progress (from client-trips active)
+            TR001: { status: 'in_progress', driver: 'John Smith', pickup: '222 Retail Park, Maadi', dropoff: '888 Shopping Center, New Cairo', currentLat: 30.0200, currentLng: 31.3600, dropoffLat: 30.0466, dropoffLng: 31.4837 },
+            TR002: { status: 'in_progress', driver: 'Sarah Johnson', pickup: '777 Plaza District, Heliopolis', dropoff: '444 Office Complex, Sheikh Zayed', currentLat: 30.0869, currentLng: 31.3317, dropoffLat: 30.0131, dropoffLng: 31.1903 },
+            // Upcoming / Scheduled (not started)
+            TR008: { status: 'scheduled', driver: 'Michael Brown', pickup: '100 Tech Park, New Cairo', dropoff: '200 Innovation Hub, Sheikh Zayed', scheduledTime: '2026-03-11 09:00' },
+            TR009: { status: 'scheduled', driver: 'Emma Wilson', pickup: '500 Business District, Downtown', dropoff: '600 Commerce Center, New Cairo', scheduledTime: '2026-03-11 14:00' },
+            // Completed (from client-trips completed)
+            TR003: { status: 'completed', driver: 'Ahmed Hassan', pickup: '123 Main Street, Downtown', dropoff: '456 Business Ave, Giza', completedAt: '2026-03-05 12:30' },
+            TR004: { status: 'completed', driver: 'Maria Rodriguez', pickup: '789 Market Road, Helwan', dropoff: '321 Industrial Zone, 6th of October', completedAt: '2026-03-06 17:15' },
+            TR005: { status: 'completed', driver: 'James Wilson', pickup: '555 Commercial St, Nasr City', dropoff: '999 Logistics Hub, New Cairo', completedAt: '2026-03-07 11:45' },
+            TR006: { status: 'completed', driver: 'Fatima Ali', pickup: '333 Fashion Street, Downtown', dropoff: '666 Retail Hub, New Cairo', completedAt: '2026-03-04 09:30' },
+            TR007: { status: 'completed', driver: 'Hassan Mohamed', pickup: '444 Commercial Ave, Giza', dropoff: '777 Business Park, 6th of October', completedAt: '2026-03-03 18:20' },
+            // Additional for demo
+            TR010: { status: 'completed', driver: 'Wei Zhang', pickup: '222 Retail Park', dropoff: '888 Shopping Center', completedAt: '2026-02-28 12:00' },
+            TR011: { status: 'scheduled', driver: 'Yuki Tanaka', pickup: '555 Commercial St', dropoff: '999 Logistics Hub', scheduledTime: '2026-03-12 10:00' },
+            TR012: { status: 'in_progress', driver: 'Andre Santos', pickup: '123 Main Street', dropoff: '456 Business Ave', currentLat: 30.0250, currentLng: 31.3500, dropoffLat: 30.0466, dropoffLng: 31.4837 }
+        };
+
+        function trackTrip() {
+            const tripId = document.getElementById('tripId').value.trim().toUpperCase();
+            const resultDiv = document.getElementById('result');
+            const trip = trips[tripId];
+
+            if (!trip) {
+                resultDiv.innerHTML = `<h3>Not Found</h3><p>No trip with ID ${tripId} found. Please check the ID and try again.</p>`;
+                resultDiv.classList.add('show');
+                return;
+            }
+
+            if (trip.status === 'in_progress') {
+                // Redirect to live tracking page with trip data
+                localStorage.setItem('tripData', JSON.stringify({
+                    tripId: tripId,
+                    driverName: trip.driver,
+                    pickupAddress: trip.pickup,
+                    dropoffAddress: trip.dropoff,
+                    currentLat: trip.currentLat,
+                    currentLng: trip.currentLng,
+                    dropoffLat: trip.dropoffLat,
+                    dropoffLng: trip.dropoffLng,
+                    status: 'in_progress'
+                }));
+                window.location.href = 'client-trip-tracking.html?trip=' + tripId;
+            } else if (trip.status === 'completed') {
+                resultDiv.innerHTML = `
+                    <h3>Trip Completed</h3>
+                    <p><strong>Trip ID:</strong> ${tripId}</p>
+                    <p><strong>Driver:</strong> ${trip.driver}</p>
+                    <p><strong>Pickup:</strong> ${trip.pickup}</p>
+                    <p><strong>Dropoff:</strong> ${trip.dropoff}</p>
+                    <p><strong>Completed:</strong> ${trip.completedAt}</p>
+                    <p>This trip has been completed. Thank you for using CargoConnect!</p>
+                `;
+                resultDiv.classList.add('show');
+            } else if (trip.status === 'scheduled') {
+                resultDiv.innerHTML = `
+                    <h3>Trip Scheduled</h3>
+                    <p><strong>Trip ID:</strong> ${tripId}</p>
+                    <p><strong>Driver:</strong> ${trip.driver}</p>
+                    <p><strong>Pickup:</strong> ${trip.pickup}</p>
+                    <p><strong>Dropoff:</strong> ${trip.dropoff}</p>
+                    <p><strong>Scheduled Time:</strong> ${trip.scheduledTime}</p>
+                    <p>This trip has not started yet. Please check back closer to the scheduled time.</p>
+                `;
+                resultDiv.classList.add('show');
+            } else {
+                resultDiv.innerHTML = `<h3>Unknown Status</h3><p>Trip ${tripId} has an unknown status.</p>`;
+                resultDiv.classList.add('show');
+            }
+        }
+    </script>
+</body>
+</html>
