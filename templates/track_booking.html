@@ -1,0 +1,71 @@
+{% extends "dashboard_base.html" %}
+{# Live GPS tracking page — shows a Leaflet map with the driver's live position #}
+
+{% block title %}Track Booking #{{ booking.booking_id }} — CargoConnect{% endblock %}
+{% block page_title %}Live Tracking{% endblock %}
+{% block breadcrumb %}Booking #{{ booking.booking_id }}{% endblock %}
+
+{% block head_extra %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">Live Tracking</div>
+        <div class="section-sub">Follow your driver in real time — Booking #{{ booking.booking_id }}</div>
+    </div>
+</div>
+
+<div class="tracking-layout">
+    <!-- Sidebar Info Panel -->
+    <div class="tracking-info">
+        <div class="card">
+            <h3 class="card__title">Trip Details</h3>
+            <dl class="detail-list">
+                <dt>Booking ID</dt>
+                <dd>#{{ booking.booking_id }}</dd>
+                <dt>Status</dt>
+                <dd><span class="badge badge--{{ booking.status }}">{{ booking.status | title }}</span></dd>
+                <dt>Pickup</dt>
+                <dd>{{ booking.pickup_address }}</dd>
+                <dt>Dropoff</dt>
+                <dd>{{ booking.dropoff_address }}</dd>
+                <dt>Scheduled</dt>
+                <dd>{{ booking.scheduled_time.strftime('%d %b %Y, %H:%M') if booking.scheduled_time else '—' }}</dd>
+                <dt>Est. Cost</dt>
+                <dd>{{ '{:,.0f}'.format(booking.estimated_cost or 0) }} RWF</dd>
+            </dl>
+        </div>
+
+        <div class="card">
+            <h3 class="card__title">Driver</h3>
+            <dl class="detail-list">
+                <dt>Name</dt>
+                <dd>{{ booking.driver.user.user_name if booking.driver else '—' }}</dd>
+                <dt>Phone</dt>
+                <dd>{{ booking.driver.user.user_phone_no if booking.driver else '—' }}</dd>
+                <dt>Rating</dt>
+                <dd>⭐ {{ '%.1f' | format(booking.driver.rating) if booking.driver else '—' }}</dd>
+                <dt>Plate</dt>
+                <dd>{{ booking.truck.plate_no if booking.truck else '—' }}</dd>
+            </dl>
+        </div>
+
+        <p class="tracking-note" id="locationStatus">Waiting for the driver to share their GPS position…</p>
+    </div>
+
+    <!-- Map -->
+    <div class="map-container" id="map"></div>
+</div>
+
+<script>
+    /* Pass booking context from Flask to the JS tracking module */
+    const BOOKING_ID = {{ booking.booking_id }};
+    const DROPOFF_LAT = {{ booking.driver.latitude if booking.driver and booking.driver.latitude else -1.9441 }};
+    const DROPOFF_LNG = {{ booking.driver.longitude if booking.driver and booking.driver.longitude else 30.0619 }};
+</script>
+<script src="{{ url_for('static', filename='js/tracking.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,227 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Driver Dashboard — CargoConnect{% endblock %}
+{% block page_title %}Driver Dashboard{% endblock %}
+{% block breadcrumb %}Overview{% endblock %}
+
+{% block content %}
+<!-- Show verification notice or full dashboard depending on driver status -->
+{% if not driver.is_verified %}
+<div class="card">
+    <div class="verification-pending">
+        <div class="verification-pending__icon">⏳</div>
+        <p class="verification-pending__text">Your account is still being reviewed. As soon as an admin confirms your driving licence you’ll be able to go online and start earning.</p>
+    </div>
+</div>
+{% else %}
+
+<!-- Availability Toggle -->
+<div class="card availability-card {% if driver.is_available %}availability-card--online{% endif %}" id="availabilityCard">
+    <div class="availability-toggle-wrapper">
+        <div>
+            <div class="availability-label" id="availLabel">{{ 'You are Online' if driver.is_available else 'You are Offline' }}</div>
+            <div class="availability-hint" id="availHint">{{ 'Accepting new job requests' if driver.is_available else 'Toggle to start receiving jobs' }}</div>
+        </div>
+        <label class="toggle-switch">
+            <input type="checkbox" id="availToggle" {{ 'checked' if driver.is_available }}>
+            <span class="toggle-switch__track"></span>
+        </label>
+    </div>
+</div>
+
+<!-- KPI Stats -->
+<div class="kpi-grid" id="statsRow">
+    <div class="kpi-card"><div class="kpi-label">Total Jobs</div><div class="kpi-value" id="statJobs">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Avg Rating</div><div class="kpi-value" id="statRating">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Weekly Earnings</div><div class="kpi-value" id="statEarnings">—</div></div>
+    <div class="kpi-card"><div class="kpi-label">Pending Jobs</div><div class="kpi-value" id="statPending">—</div></div>
+</div>
+
+<!-- Active Job -->
+<div class="card" id="activeJobCard" style="display:none;">
+    <h3 class="card__title">Active Job</h3>
+    <div id="activeJobContent"></div>
+</div>
+
+<!-- Incoming Jobs -->
+<div class="section-header">
+    <div><div class="section-title">Incoming Job Requests</div></div>
+</div>
+<div id="pendingJobsList">
+    <p class="empty-state__text">Loading…</p>
+</div>
+
+<!-- Job History -->
+<div class="table-container">
+    <div class="table-header"><div class="table-title">Job History</div></div>
+    <table>
+        <thead><tr><th>ID</th><th>Customer</th><th>Date</th><th>Earnings</th><th>Rating</th></tr></thead>
+        <tbody id="jobHistoryBody">
+            <tr><td colspan="5" class="table-empty">Loading…</td></tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+const DRIVER_ID = {{ driver.driver_id }};
+const IS_VERIFIED = {{ 'true' if driver.is_verified else 'false' }};
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (!IS_VERIFIED) return;
+    loadDriverStats();
+    loadActiveJob();
+    loadPendingJobs();
+    loadJobHistory();
+    setupAvailabilityToggle();
+});
+
+function formatRWF(n) { return new Intl.NumberFormat('en-RW').format(Math.round(n)) + ' RWF'; }
+
+async function api(url, method, body) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(url, opts);
+    return res.json();
+}
+
+async function loadDriverStats() {
+    const res = await api('/driver/stats', 'GET');
+    if (res.status === 'success') {
+        const d = res.data;
+        document.getElementById('statJobs').textContent = d.total_jobs;
+        document.getElementById('statRating').textContent = '⭐ ' + d.average_rating;
+        document.getElementById('statEarnings').textContent = formatRWF(d.weekly_earnings);
+        document.getElementById('statPending').textContent = d.pending_jobs;
+    }
+}
+
+async function loadActiveJob() {
+    const res = await api('/driver/active-job', 'GET');
+    const card = document.getElementById('activeJobCard');
+    const content = document.getElementById('activeJobContent');
+    if (res.status === 'success' && res.data) {
+        const b = res.data;
+        card.style.display = '';
+        content.innerHTML = `
+            <dl class="detail-list">
+                <dt>Customer</dt><dd>${b.customer_name}</dd>
+                <dt>Phone</dt><dd>${b.customer_phone}</dd>
+                <dt>Pickup</dt><dd>${b.pickup_address}</dd>
+                <dt>Dropoff</dt><dd>${b.dropoff_address}</dd>
+                <dt>Earnings</dt><dd>${formatRWF(b.estimated_cost)}</dd>
+            </dl>
+            <div class="btn-row">
+                <a href="/driver/job/${b.booking_id}" class="btn btn--primary">View Job</a>
+                <button class="btn btn--success" onclick="completeTrip(${b.booking_id})">Complete Trip</button>
+            </div>`;
+    } else {
+        card.style.display = 'none';
+    }
+}
+
+async function loadPendingJobs() {
+    const res = await api('/driver/pending-jobs', 'GET');
+    const el = document.getElementById('pendingJobsList');
+    if (res.status === 'success' && res.data.length > 0) {
+        el.innerHTML = res.data.map(b => `
+            <div class="job-card">
+                <div>
+                    <div class="job-card__name">${b.customer_name}</div>
+                    <div class="job-card__route">${b.pickup_address} → ${b.dropoff_address}</div>
+                    <div class="job-card__meta">${formatRWF(b.estimated_cost)} · ${b.scheduled_time ? new Date(b.scheduled_time).toLocaleString() : '—'}</div>
+                </div>
+                <div class="job-card__actions">
+                    <button class="btn btn--success btn--sm" onclick="acceptJob(${b.booking_id})">Accept</button>
+                    <button class="btn btn--danger btn--sm" onclick="declineJob(${b.booking_id})">Decline</button>
+                </div>
+            </div>`).join('');
+    } else {
+        el.innerHTML = '<p class="empty-state__text">No incoming job requests.</p>';
+    }
+}
+
+async function loadJobHistory() {
+    const res = await api('/driver/job-history', 'GET');
+    const tbody = document.getElementById('jobHistoryBody');
+    if (res.status === 'success' && res.data.length > 0) {
+        tbody.innerHTML = res.data.map(j => `
+            <tr>
+                <td>#${j.booking_id}</td>
+                <td>${j.customer_name}</td>
+                <td>${j.date}</td>
+                <td>${formatRWF(j.earnings)}</td>
+                <td>${j.rating ? '⭐ ' + j.rating : '—'}</td>
+            </tr>`).join('');
+    } else {
+        tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No completed jobs yet.</td></tr>';
+    }
+}
+
+function setupAvailabilityToggle() {
+    const toggle = document.getElementById('availToggle');
+    if (!toggle) return;
+    toggle.addEventListener('change', async function () {
+        const res = await api('/driver/availability', 'PATCH', { is_available: toggle.checked });
+        if (res.status === 'success') {
+            const card = document.getElementById('availabilityCard');
+            const label = document.getElementById('availLabel');
+            const hint = document.getElementById('availHint');
+            if (toggle.checked) {
+                card.classList.add('availability-card--online');
+                label.textContent = 'You are Online';
+                hint.textContent = 'Accepting new job requests';
+            } else {
+                card.classList.remove('availability-card--online');
+                label.textContent = 'You are Offline';
+                hint.textContent = 'Toggle to start receiving jobs';
+            }
+        }
+    });
+}
+
+async function acceptJob(id) {
+    await api(`/driver/job/${id}/accept`, 'POST');
+    loadPendingJobs();
+    loadActiveJob();
+    loadDriverStats();
+}
+
+async function declineJob(id) {
+    if (!confirm('Decline this job?')) return;
+    await api(`/driver/job/${id}/decline`, 'POST');
+    loadPendingJobs();
+    loadDriverStats();
+}
+
+async function completeTrip(id) {
+    if (!confirm('Mark this trip as completed?')) return;
+    await api(`/driver/job/${id}/complete`, 'POST');
+    loadActiveJob();
+    loadJobHistory();
+    loadDriverStats();
+}
+
+// GPS sharing via Socket.IO
+const socket = io();
+function updateLocation() {
+    if (!navigator.geolocation) { alert('Geolocation not supported.'); return; }
+    navigator.geolocation.getCurrentPosition(function (pos) {
+        // Find active booking to get booking_id
+        fetch('/driver/active-job').then(r => r.json()).then(res => {
+            if (res.status === 'success' && res.data) {
+                socket.emit('driver_location_update', {
+                    driver_id: DRIVER_ID,
+                    booking_id: res.data.booking_id,
+                    latitude: pos.coords.latitude,
+                    longitude: pos.coords.longitude
+                });
+            }
+        });
+    }, function () { alert('Unable to get location.'); });
+}
+</script>
+{% endblock %}

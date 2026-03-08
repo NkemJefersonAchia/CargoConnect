@@ -1,0 +1,118 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Admin Dashboard — CargoConnect{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block breadcrumb %}Platform overview{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">Admin Dashboard</div>
+        <div class="section-sub">Platform overview and key metrics</div>
+    </div>
+</div>
+
+<!-- KPI Grid -->
+<div class="kpi-grid" id="adminStats">
+    <div class="kpi-card"><div class="kpi-label">Total Clients</div><div class="kpi-value" id="statUsers">—</div><div class="kpi-sub">Registered users</div></div>
+    <div class="kpi-card"><div class="kpi-label">Active Drivers</div><div class="kpi-value" id="statDrivers">—</div><div class="kpi-sub">All drivers</div></div>
+    <div class="kpi-card"><div class="kpi-label">Verified Drivers</div><div class="kpi-value" id="statVerified">—</div><div class="kpi-sub">Licence checked</div></div>
+    <div class="kpi-card"><div class="kpi-label">Total Bookings</div><div class="kpi-value" id="statBookings">—</div><div class="kpi-sub">All time</div></div>
+    <div class="kpi-card"><div class="kpi-label">Completed Trips</div><div class="kpi-value" id="statCompleted">—</div><div class="kpi-sub">Successfully delivered</div></div>
+    <div class="kpi-card"><div class="kpi-label">Platform Revenue</div><div class="kpi-value" id="statRevenue">—</div><div class="kpi-sub">RWF total</div></div>
+</div>
+
+<!-- Management Cards (matches admin-dashboard mockup) -->
+<h3 style="margin: 30px 0 20px; color: var(--text-primary); font-size: 1.3em;">Management</h3>
+<div class="cards-grid">
+    <a href="{{ url_for('admin.users_page') }}" class="management-card">
+        <div class="card-icon">👥</div>
+        <div class="card-title">Users Management</div>
+        <div class="card-description">Manage client accounts, view profiles, and handle account issues</div>
+        <button class="card-button">Manage Users →</button>
+    </a>
+    <a href="{{ url_for('admin.drivers_page') }}" class="management-card">
+        <div class="card-icon">🚗</div>
+        <div class="card-title">Drivers Management</div>
+        <div class="card-description">Oversee driver applications, verifications, and performance</div>
+        <button class="card-button">Manage Drivers →</button>
+    </a>
+    <a href="{{ url_for('admin.bookings_page') }}" class="management-card">
+        <div class="card-icon">📦</div>
+        <div class="card-title">Trips Management</div>
+        <div class="card-description">Monitor active trips, completed deliveries, and manage issues</div>
+        <button class="card-button">Manage Trips →</button>
+    </a>
+</div>
+
+<!-- Driver Verification Queue -->
+<div class="table-container">
+    <div class="table-header">
+        <div class="table-title">Driver Verification Queue</div>
+    </div>
+    <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Licence</th><th>Registered</th><th>Actions</th></tr></thead>
+        <tbody id="verifyBody">
+            <tr><td colspan="5" class="table-empty">Loading…</td></tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    loadAdminStats();
+    loadUnverified();
+});
+
+function formatRWF(n) { return new Intl.NumberFormat('en-RW').format(Math.round(n)); }
+
+async function loadAdminStats() {
+    const res = await apiRequest('/admin/stats');
+    if (res.status === 'success') {
+        const d = res.data;
+        document.getElementById('statUsers').textContent = d.total_users;
+        document.getElementById('statDrivers').textContent = d.total_drivers;
+        document.getElementById('statVerified').textContent = d.verified_drivers;
+        document.getElementById('statBookings').textContent = d.total_bookings;
+        document.getElementById('statCompleted').textContent = d.completed_bookings;
+        document.getElementById('statRevenue').textContent = formatRWF(d.total_revenue);
+    }
+}
+
+async function loadUnverified() {
+    const res = await apiRequest('/admin/unverified-drivers');
+    const tbody = document.getElementById('verifyBody');
+    if (res.status === 'success' && res.data.length > 0) {
+        tbody.innerHTML = res.data.map(d => `
+            <tr>
+                <td>${d.name}</td>
+                <td>${truncate(d.email, 25)}</td>
+                <td>${d.licence_no || '—'}</td>
+                <td>${formatDate(d.created_at)}</td>
+                <td class="actions-cell">
+                    <button class="btn btn--success btn--sm" onclick="verifyDriver(${d.driver_id})">Verify</button>
+                    <button class="btn btn--danger btn--sm" onclick="rejectDriver(${d.driver_id})">Reject</button>
+                </td>
+            </tr>`).join('');
+    } else {
+        tbody.innerHTML = '<tr><td colspan="5" class="table-empty">No drivers pending verification.</td></tr>';
+    }
+}
+
+async function verifyDriver(id) {
+    await apiRequest(`/admin/drivers/${id}/verify`, 'POST');
+    loadUnverified();
+    loadAdminStats();
+}
+
+async function rejectDriver(id) {
+    if (!confirm('Reject and remove this driver?')) return;
+    await apiRequest(`/admin/drivers/${id}/reject`, 'DELETE');
+    loadUnverified();
+    loadAdminStats();
+}
+</script>
+{% endblock %}

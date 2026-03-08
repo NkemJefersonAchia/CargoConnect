@@ -1,0 +1,74 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Job #{{ booking.booking_id }} — CargoConnect{% endblock %}
+{% block page_title %}Active Job{% endblock %}
+{% block breadcrumb %}Booking #{{ booking.booking_id }}{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">Trip Details</div>
+        <div class="section-sub">Booking #{{ booking.booking_id }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3 class="card__title">Trip Details</h3>
+    <dl class="detail-list">
+        <dt>Customer</dt>
+        <dd>{{ booking.customer.user.user_name if booking.customer else '—' }}</dd>
+        <dt>Phone</dt>
+        <dd>{{ booking.customer.user.user_phone_no if booking.customer else '—' }}</dd>
+        <dt>Pickup</dt>
+        <dd>{{ booking.pickup_address }}</dd>
+        <dt>Dropoff</dt>
+        <dd>{{ booking.dropoff_address }}</dd>
+        <dt>Scheduled</dt>
+        <dd>{{ booking.scheduled_time.strftime('%d %b %Y, %H:%M') if booking.scheduled_time else '—' }}</dd>
+        <dt>Status</dt>
+        <dd><span class="badge badge--{{ booking.status }}">{{ booking.status | title }}</span></dd>
+        <dt>Est. Cost</dt>
+        <dd>{{ '{:,.0f}'.format(booking.estimated_cost or 0) }} RWF</dd>
+    </dl>
+    <div class="btn-row">
+        <button class="btn btn--primary" onclick="updateLocation()">📍 Update Location</button>
+        {% if booking.status == 'confirmed' %}
+        <button class="btn btn--success" onclick="completeTrip({{ booking.booking_id }})">✅ Complete Trip</button>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+const DRIVER_ID = {{ driver.driver_id }};
+const BOOKING_ID = {{ booking.booking_id }};
+const socket = io();
+
+function updateLocation() {
+    if (!navigator.geolocation) { alert('Geolocation not supported.'); return; }
+    navigator.geolocation.getCurrentPosition(function (pos) {
+        socket.emit('driver_location_update', {
+            driver_id: DRIVER_ID,
+            booking_id: BOOKING_ID,
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude
+        });
+        alert('Location updated!');
+    }, function () { alert('Unable to get your location.'); });
+}
+
+async function completeTrip(id) {
+    if (!confirm('Mark this trip as completed?')) return;
+    const res = await fetch(`/driver/job/${id}/complete`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+    const data = await res.json();
+    if (data.status === 'success') {
+        alert('Trip completed!');
+        window.location.href = '/driver/dashboard';
+    } else {
+        alert(data.message);
+    }
+}
+</script>
+{% endblock %}

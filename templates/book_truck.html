@@ -1,0 +1,62 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Book a Truck — CargoConnect{% endblock %}
+{% block page_title %}Book a Truck{% endblock %}
+{% block breadcrumb %}Find a driver{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">Book a Truck</div>
+        <div class="section-sub">Find a verified driver for your cargo</div>
+    </div>
+</div>
+
+<div class="card booking-form">
+    <form id="searchForm">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="pickupAddress">Pickup Address</label>
+                <input class="form-input" type="text" id="pickupAddress" placeholder="e.g. Kimironko Market" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="dropoffAddress">Dropoff Address</label>
+                <input class="form-input" type="text" id="dropoffAddress" placeholder="e.g. Nyabugogo Bus Park" required>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="cargoWeight">Cargo Weight (tons)</label>
+                <input class="form-input" type="number" id="cargoWeight" min="0.1" step="0.1" placeholder="e.g. 2.5" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="scheduledTime">Preferred Date &amp; Time</label>
+                <input class="form-input" type="datetime-local" id="scheduledTime" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn--action">Search Available Trucks</button>
+    </form>
+</div>
+
+<div class="truck-results" id="truckResults" style="display:none;">
+    <h2 class="section-title">Available Trucks</h2>
+    <div class="truck-list" id="truckList"></div>
+</div>
+
+<!-- Booking Confirmation Modal -->
+<div class="modal" id="confirmModal">
+    <div class="modal__backdrop" id="modalBackdrop"></div>
+    <div class="modal__box">
+        <h3 class="modal__title">Confirm Booking</h3>
+        <div class="modal__body" id="modalDetails"></div>
+        <div class="modal__actions">
+            <button class="btn btn--ghost" id="modalCancel">Cancel</button>
+            <button class="btn btn--action" id="modalConfirm">Confirm Booking</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+{% endblock %}

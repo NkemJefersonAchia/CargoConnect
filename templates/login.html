@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — CargoConnect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+<div class="auth-container">
+    <div class="auth-brand">
+        <div class="auth-brand__icon">🚛</div>
+        <div class="auth-brand__name">CargoConnect</div>
+        <div class="auth-brand__tagline">Move anything, anywhere in Kigali</div>
+    </div>
+
+    <div class="auth-card">
+        <h1 class="auth-card__title">Welcome back</h1>
+        <p class="auth-card__subtitle">Log in to your account</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert--{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-input" type="password" id="password" name="password" placeholder="Your password" required>
+            </div>
+            <button type="submit" class="btn btn--primary btn--full">Log In</button>
+        </form>
+
+        <div class="auth-card__footer">
+            Don't have an account? <a href="{{ url_for('auth.register') }}">Register here</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

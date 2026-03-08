@@ -1,0 +1,95 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Manage Users — CargoConnect{% endblock %}
+{% block page_title %}Users{% endblock %}
+{% block breadcrumb %}Manage platform accounts{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">User Management</div>
+        <div class="section-sub">Search and manage every account on the platform</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <div class="table-title">All Users</div>
+        <input style="max-width:260px;" type="text" id="userSearch" placeholder="Search by name, email or role…" oninput="filterUsers()">
+    </div>
+    <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody id="usersBody">
+            <tr><td colspan="6" class="table-empty">Loading…</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal__backdrop" onclick="closeDeleteModal()"></div>
+    <div class="modal__box">
+        <h3 class="modal__title">Confirm Deletion</h3>
+        <div class="modal__body">Are you sure you want to delete this user? This cannot be undone.</div>
+        <div class="modal__actions">
+            <button class="btn btn--ghost" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn btn--danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+let allUsers = [];
+
+document.addEventListener('DOMContentLoaded', loadUsers);
+
+async function loadUsers() {
+    const res = await apiRequest('/admin/users');
+    if (res.status === 'success') {
+        allUsers = res.data;
+        renderUsers(allUsers);
+    }
+}
+
+function renderUsers(list) {
+    const tbody = document.getElementById('usersBody');
+    if (!list.length) { tbody.innerHTML = '<tr><td colspan="6" class="table-empty">No users found.</td></tr>'; return; }
+    tbody.innerHTML = list.map(u => `
+        <tr>
+            <td>${u.user_name}</td>
+            <td>${truncate(u.email, 28)}</td>
+            <td>${u.user_phone_no || '—'}</td>
+            <td><span class="badge badge--role-${u.role}">${u.role}</span></td>
+            <td>${formatDate(u.created_at)}</td>
+            <td><button class="btn btn--danger btn--sm" onclick="promptDelete(${u.user_id})">Delete</button></td>
+        </tr>`).join('');
+}
+
+function filterUsers() {
+    const q = document.getElementById('userSearch').value.toLowerCase();
+    renderUsers(allUsers.filter(u =>
+        u.user_name.toLowerCase().includes(q) ||
+        u.email.toLowerCase().includes(q) ||
+        u.role.toLowerCase().includes(q)
+    ));
+}
+
+let deleteTarget = null;
+function promptDelete(id) {
+    deleteTarget = id;
+    document.getElementById('deleteModal').classList.add('modal--open');
+    document.getElementById('confirmDeleteBtn').onclick = async function () {
+        await apiRequest(`/admin/users/${deleteTarget}`, 'DELETE');
+        closeDeleteModal();
+        loadUsers();
+    };
+}
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('modal--open');
+    deleteTarget = null;
+}
+</script>
+{% endblock %}

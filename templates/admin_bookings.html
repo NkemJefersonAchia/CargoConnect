@@ -1,0 +1,106 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Manage Bookings — CargoConnect{% endblock %}
+{% block page_title %}Bookings{% endblock %}
+{% block breadcrumb %}Browse and filter trips{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">All Bookings</div>
+        <div class="section-sub">Browse and filter every trip made through CargoConnect</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <div class="table-title">Bookings</div>
+        <select style="max-width:200px;" id="statusFilter" onchange="loadBookings()">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+    </div>
+    <table>
+        <thead><tr><th>ID</th><th>Customer</th><th>Driver</th><th>Pickup</th><th>Dropoff</th><th>Cost</th><th>Status</th><th>Payment</th><th>Date</th></tr></thead>
+        <tbody id="bookingsBody">
+            <tr><td colspan="9" class="table-empty">Loading…</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Booking Detail Modal -->
+<div class="modal" id="detailModal">
+    <div class="modal__backdrop" onclick="closeDetailModal()"></div>
+    <div class="modal__box modal__box--wide">
+        <h3 class="modal__title">Booking Details</h3>
+        <div class="modal__body" id="detailBody"></div>
+        <div class="modal__actions">
+            <button class="btn btn--ghost" onclick="closeDetailModal()">Close</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', loadBookings);
+
+function formatRWF(n) { return new Intl.NumberFormat('en-RW').format(Math.round(n)); }
+
+/* Keep the full booking list so we can look up details by index */
+let bookingCache = [];
+
+async function loadBookings() {
+    const status = document.getElementById('statusFilter').value;
+    const url = status === 'all' ? '/admin/bookings' : `/admin/bookings?status=${status}`;
+    const res = await apiRequest(url);
+    const tbody = document.getElementById('bookingsBody');
+    if (res.status === 'success' && res.data.length > 0) {
+        bookingCache = res.data;
+        tbody.innerHTML = res.data.map((b, idx) => `
+            <tr style="cursor:pointer;" onclick="showDetail(${idx})">
+                <td>#${b.booking_id}</td>
+                <td>${b.customer_name}</td>
+                <td>${b.driver_name}</td>
+                <td>${truncate(b.pickup_address, 20)}</td>
+                <td>${truncate(b.dropoff_address, 20)}</td>
+                <td>${formatRWF(b.estimated_cost)}</td>
+                <td><span class="badge badge--${b.status}">${b.status}</span></td>
+                <td>${b.payment_status ? `<span class="badge badge--${b.payment_status === 'paid' ? 'completed' : 'pending'}">${b.payment_status}</span>` : '—'}</td>
+                <td>${formatDate(b.created_at)}</td>
+            </tr>`).join('');
+    } else {
+        bookingCache = [];
+        tbody.innerHTML = '<tr><td colspan="9" class="table-empty">No bookings found.</td></tr>';
+    }
+}
+
+function showDetail(idx) {
+    const b = bookingCache[idx];
+    if (!b) return;
+    document.getElementById('detailBody').innerHTML = `
+        <dl class="detail-list">
+            <dt>Booking ID</dt><dd>#${b.booking_id}</dd>
+            <dt>Customer</dt><dd>${b.customer_name}</dd>
+            <dt>Driver</dt><dd>${b.driver_name}</dd>
+            <dt>Plate</dt><dd>${b.plate_no || '—'}</dd>
+            <dt>Pickup</dt><dd>${b.pickup_address}</dd>
+            <dt>Dropoff</dt><dd>${b.dropoff_address}</dd>
+            <dt>Scheduled</dt><dd>${b.scheduled_time ? new Date(b.scheduled_time).toLocaleString() : '—'}</dd>
+            <dt>Cost</dt><dd>${formatRWF(b.estimated_cost)} RWF</dd>
+            <dt>Status</dt><dd><span class="badge badge--${b.status}">${b.status}</span></dd>
+            <dt>Payment</dt><dd>${b.payment_status || 'No payment'}</dd>
+            <dt>Created</dt><dd>${formatDate(b.created_at)}</dd>
+        </dl>`;
+    document.getElementById('detailModal').classList.add('modal--open');
+}
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.remove('modal--open');
+}
+</script>
+{% endblock %}

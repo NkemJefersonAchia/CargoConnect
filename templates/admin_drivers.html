@@ -1,0 +1,94 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Manage Drivers — CargoConnect{% endblock %}
+{% block page_title %}Drivers{% endblock %}
+{% block breadcrumb %}Availability, verification & records{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">Driver Management</div>
+        <div class="section-sub">Control availability, verification status and driver records</div>
+    </div>
+</div>
+
+<div class="table-container">
+    <div class="table-header">
+        <div class="table-title">All Drivers</div>
+    </div>
+    <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Licence</th><th>Rating</th><th>Available</th><th>Verified</th><th>Actions</th></tr></thead>
+        <tbody id="driversBody">
+            <tr><td colspan="7" class="table-empty">Loading…</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal" id="deleteModal">
+    <div class="modal__backdrop" onclick="closeDeleteModal()"></div>
+    <div class="modal__box">
+        <h3 class="modal__title">Confirm Deletion</h3>
+        <div class="modal__body">Are you sure you want to delete this driver record? This cannot be undone.</div>
+        <div class="modal__actions">
+            <button class="btn btn--ghost" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn btn--danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', loadDrivers);
+
+async function loadDrivers() {
+    const res = await apiRequest('/admin/drivers');
+    const tbody = document.getElementById('driversBody');
+    if (res.status === 'success' && res.data.length > 0) {
+        tbody.innerHTML = res.data.map(d => `
+            <tr>
+                <td>${d.name}</td>
+                <td>${truncate(d.email, 25)}</td>
+                <td>${d.licence_no || '—'}</td>
+                <td>⭐ ${d.rating.toFixed(1)}</td>
+                <td>${d.is_available ? '🟢 Online' : '⚫ Offline'}</td>
+                <td>${d.is_verified ? '✅ Yes' : '❌ No'}</td>
+                <td class="actions-cell">
+                    <button class="btn btn--ghost btn--sm" onclick="toggleAvail(${d.driver_id})">${d.is_available ? 'Set Offline' : 'Set Online'}</button>
+                    ${d.is_verified ? `<button class="btn btn--ghost btn--sm" onclick="removeVerify(${d.driver_id})">Unverify</button>` : ''}
+                    <button class="btn btn--danger btn--sm" onclick="promptDelete(${d.driver_id})">Delete</button>
+                </td>
+            </tr>`).join('');
+    } else {
+        tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No driver records.</td></tr>';
+    }
+}
+
+async function toggleAvail(id) {
+    await apiRequest(`/admin/drivers/${id}/toggle-availability`, 'PATCH');
+    loadDrivers();
+}
+
+async function removeVerify(id) {
+    await apiRequest(`/admin/drivers/${id}/remove-verification`, 'PATCH');
+    loadDrivers();
+}
+
+let deleteTarget = null;
+function promptDelete(id) {
+    deleteTarget = id;
+    document.getElementById('deleteModal').classList.add('modal--open');
+    document.getElementById('confirmDeleteBtn').onclick = async function () {
+        await apiRequest(`/admin/drivers/${deleteTarget}`, 'DELETE');
+        closeDeleteModal();
+        loadDrivers();
+    };
+}
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.remove('modal--open');
+    deleteTarget = null;
+}
+</script>
+{% endblock %}

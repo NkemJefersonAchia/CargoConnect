@@ -1,11 +1,10 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, abort
 from flask_login import login_required, current_user
 from extensions import socketio
 from flask_socketio import join_room, emit
 from models import db
 from models.driver import Driver
 from models.booking import Booking
-from models.customer import Customer
 
 tracking_bp = Blueprint("tracking", __name__)
 
@@ -13,8 +12,25 @@ tracking_bp = Blueprint("tracking", __name__)
 @tracking_bp.route("/track/<int:booking_id>")
 @login_required
 def track_booking(booking_id):
-    """Render the live tracking map for a booking."""
+    """Render the live tracking map for a specific booking."""
     booking = Booking.query.get_or_404(booking_id)
+
+    # Only the customer who owns this booking, the assigned driver, or an admin may view it
+    is_customer = (
+        current_user.role == "customer"
+        and booking.customer
+        and booking.customer.user_id == current_user.user_id
+    )
+    is_driver = (
+        current_user.role == "driver"
+        and booking.driver
+        and booking.driver.user_id == current_user.user_id
+    )
+    is_admin = current_user.role == "admin"
+
+    if not (is_customer or is_driver or is_admin):
+        abort(403)
+
     return render_template("track_booking.html", booking=booking, user=current_user)
 
 

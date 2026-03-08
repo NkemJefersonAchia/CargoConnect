@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register — CargoConnect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-page">
+<div class="auth-container">
+    <div class="auth-brand">
+        <div class="auth-brand__icon">🚛</div>
+        <div class="auth-brand__name">CargoConnect</div>
+        <div class="auth-brand__tagline">Move anything, anywhere in Kigali</div>
+    </div>
+
+    <div class="auth-card">
+        <h1 class="auth-card__title">Create an account</h1>
+        <p class="auth-card__subtitle">Join CargoConnect today</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert--{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('auth.register') }}" class="auth-form">
+            <div class="form-group">
+                <label class="form-label" for="user_name">Full Name</label>
+                <input class="form-input" type="text" id="user_name" name="user_name" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-input" type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="user_phone_no">Phone Number</label>
+                <input class="form-input" type="tel" id="user_phone_no" name="user_phone_no" placeholder="+250 7XX XXX XXX" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-input" type="password" id="password" name="password" placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">I am a&hellip;</label>
+                <div class="role-toggle">
+                    <div class="role-option">
+                        <input type="radio" id="role-customer" name="role" value="customer" checked>
+                        <label class="role-option__label" for="role-customer">📦 Customer</label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" id="role-driver" name="role" value="driver">
+                        <label class="role-option__label" for="role-driver">🚛 Driver</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="licenceGroup" style="display:none;">
+                <label class="form-label" for="licence_no">Licence Number</label>
+                <input class="form-input" type="text" id="licence_no" name="licence_no" placeholder="e.g. DL-123456">
+            </div>
+            <button type="submit" class="btn btn--primary btn--full">Register</button>
+        </form>
+
+        <div class="auth-card__footer">
+            Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

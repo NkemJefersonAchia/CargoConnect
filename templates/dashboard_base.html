@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+{# Shared layout — mirrors team mockup sidebar / topbar / theme toggle #}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CargoConnect{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="light-mode">
+
+<!-- Sidebar — structure follows the team mockup exactly -->
+<nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+        <div class="logo-badge">
+            <span class="logo-dot"></span>
+            <span class="logo-text">
+                {% if user.role == 'admin' %}Admin{% elif user.role == 'driver' %}Driver{% else %}Client Portal{% endif %}
+            </span>
+        </div>
+        <div class="sidebar-title">
+            {% if user.role == 'admin' %}CARGOCONNECT ADMIN{% else %}CARGOCONNECT{% endif %}
+        </div>
+        <div class="sidebar-sub">
+            {% if user.role == 'admin' %}Platform Management{% elif user.role == 'driver' %}Drive & Earn{% else %}Ship with ease{% endif %}
+        </div>
+    </div>
+
+    <div class="nav">
+        {% if user.role == 'customer' %}
+        <div class="nav-section">Main</div>
+        <a class="nav-item {% if request.endpoint == 'customer.dashboard' %}active{% endif %}" href="{{ url_for('customer.dashboard') }}">
+            Dashboard
+        </a>
+        <a class="nav-item" href="{{ url_for('customer.dashboard') }}#book">
+            Book a Cargo
+        </a>
+
+        <div class="nav-section">Account</div>
+        <a class="nav-item" href="{{ url_for('auth.logout') }}">
+            Logout
+        </a>
+
+        {% elif user.role == 'driver' %}
+        <div class="nav-section">Main</div>
+        <a class="nav-item {% if request.endpoint == 'driver.dashboard' %}active{% endif %}" href="{{ url_for('driver.dashboard') }}">
+            Dashboard
+        </a>
+
+        <div class="nav-section">Account</div>
+        <a class="nav-item" href="{{ url_for('auth.logout') }}">
+            Logout
+        </a>
+
+        {% elif user.role == 'admin' %}
+        <div class="nav-section">General</div>
+        <a class="nav-item {% if request.endpoint == 'admin.dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+            Dashboard
+        </a>
+        <a class="nav-item {% if request.endpoint == 'admin.users_page' %}active{% endif %}" href="{{ url_for('admin.users_page') }}">
+            Users
+        </a>
+        <a class="nav-item {% if request.endpoint == 'admin.drivers_page' %}active{% endif %}" href="{{ url_for('admin.drivers_page') }}">
+            Drivers
+        </a>
+        <a class="nav-item {% if request.endpoint == 'admin.bookings_page' %}active{% endif %}" href="{{ url_for('admin.bookings_page') }}">
+            Bookings
+        </a>
+
+        <div class="nav-section">Account</div>
+        <a class="nav-item" href="{{ url_for('auth.logout') }}">
+            Logout
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="sidebar-footer">
+        <div class="data-badge">
+            <div class="data-badge-label">Logged in as</div>
+            <div class="data-badge-value">{{ user.user_name }}</div>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main">
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="topbar__hamburger" id="hamburgerBtn" aria-label="Toggle sidebar">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="page-title">{% block page_title %}Dashboard{% endblock %}</div>
+            <span style="color:var(--border-light)">|</span>
+            <span class="breadcrumb">{% block breadcrumb %}Overview{% endblock %}</span>
+        </div>
+        <div class="topbar-right">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-option active" id="theme-light">Light</span>
+                <span class="theme-option" id="theme-dark">Dark</span>
+            </div>
+            <button class="topbar__notif-btn" id="notifBtn">
+                🔔 <span id="notifBadgeTop">0</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash flash--{{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Page Content -->
+    <div class="page">
+        {% block content %}{% endblock %}
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+<script>
+/* Theme toggle — keeps preference in localStorage */
+function toggleTheme() {
+    const body = document.body;
+    const lightOpt = document.getElementById('theme-light');
+    const darkOpt  = document.getElementById('theme-dark');
+    if (body.classList.contains('light-mode')) {
+        body.classList.replace('light-mode', 'dark-mode');
+        lightOpt.classList.remove('active');
+        darkOpt.classList.add('active');
+        localStorage.setItem('cc-theme', 'dark');
+    } else {
+        body.classList.replace('dark-mode', 'light-mode');
+        darkOpt.classList.remove('active');
+        lightOpt.classList.add('active');
+        localStorage.setItem('cc-theme', 'light');
+    }
+}
+/* Restore saved theme on load */
+(function() {
+    var saved = localStorage.getItem('cc-theme');
+    if (saved === 'dark') {
+        document.body.classList.replace('light-mode', 'dark-mode');
+        var l = document.getElementById('theme-light');
+        var d = document.getElementById('theme-dark');
+        if (l) l.classList.remove('active');
+        if (d) d.classList.add('active');
+    }
+})();
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,91 @@
+{% extends "dashboard_base.html" %}
+{# Customer landing page — overview stats, active trip, recent bookings and quick-book form #}
+
+{% block title %}Dashboard — CargoConnect{% endblock %}
+{% block page_title %}Client Dashboard{% endblock %}
+{% block breadcrumb %}Overview of your shipments{% endblock %}
+
+{% block content %}
+<div class="section-header">
+    <div>
+        <div class="section-title">Welcome back, {{ user.user_name }}</div>
+        <div class="section-sub">Your logistics at a glance — Kigali and beyond</div>
+    </div>
+</div>
+
+<!-- KPI Cards — IDs match booking.js -->
+<div class="kpi-grid" id="statsRow">
+    <div class="kpi-card"><div class="kpi-label">Total Trips</div><div class="kpi-value" id="statTotal">—</div><div class="kpi-sub">All time</div></div>
+    <div class="kpi-card"><div class="kpi-label">Completed</div><div class="kpi-value" id="statCompleted">—</div><div class="kpi-sub">Successfully delivered</div></div>
+    <div class="kpi-card"><div class="kpi-label">Pending</div><div class="kpi-value" id="statPending">—</div><div class="kpi-sub">Awaiting response</div></div>
+    <div class="kpi-card"><div class="kpi-label">Total Spent</div><div class="kpi-value" id="statSpent">—</div><div class="kpi-sub">Lifetime (RWF)</div></div>
+</div>
+
+<!-- Active Booking -->
+<div class="card" id="activeBookingCard">
+    <h3 class="card__title">Active Booking</h3>
+    <div id="activeBookingContent"><p class="empty-state__text">Loading…</p></div>
+</div>
+
+<!-- Recent Bookings -->
+<div class="table-container">
+    <div class="table-header">
+        <div class="table-title">Recent Bookings</div>
+    </div>
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Pickup</th><th>Dropoff</th><th>Date</th><th>Status</th><th>Cost (RWF)</th><th>Action</th></tr>
+        </thead>
+        <tbody id="recentTableBody">
+            <tr><td colspan="7" class="table-empty">Loading…</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Quick Book Form -->
+<div class="quick-booking" id="book">
+    <h3>Book a Cargo</h3>
+    <form id="searchForm" class="booking-form">
+        <div class="form-group">
+            <label>Pickup Address</label>
+            <input type="text" id="pickupAddress" placeholder="e.g. Kimironko Market" required>
+        </div>
+        <div class="form-group">
+            <label>Dropoff Address</label>
+            <input type="text" id="dropoffAddress" placeholder="e.g. Nyabugogo Bus Park" required>
+        </div>
+        <div class="form-group">
+            <label>Weight (tons)</label>
+            <input type="number" id="cargoWeight" min="0.1" step="0.1" placeholder="e.g. 2.5" required>
+        </div>
+        <div class="form-group">
+            <label>When?</label>
+            <input type="datetime-local" id="scheduledTime" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Find Drivers</button>
+    </form>
+</div>
+
+<!-- Truck Results -->
+<div class="truck-results" id="truckResults" style="display:none;">
+    <h3 style="margin-bottom:16px; color:var(--text-primary);">Available Trucks</h3>
+    <div class="truck-list" id="truckList"></div>
+</div>
+
+<!-- Booking Confirmation Modal -->
+<div class="modal" id="confirmModal">
+    <div class="modal__backdrop" id="modalBackdrop"></div>
+    <div class="modal__box">
+        <h3 class="modal__title">Confirm Booking</h3>
+        <div class="modal__body" id="modalDetails"></div>
+        <div class="modal__actions">
+            <button class="btn btn-secondary" id="modalCancel">Cancel</button>
+            <button class="btn btn-primary" id="modalConfirm">Confirm Booking</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+{% endblock %}
