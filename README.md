@@ -1,7 +1,7 @@
 # CargoConnect
 
 > A full-stack logistics and relocation web platform built for **Kigali, Rwanda**.
-> CargoConnect connects customers who need to move cargo or relocate with verified truck drivers — in real time.
+> CargoConnect connects customers who need to move cargo or relocate with verified truck drivers,  in real time.
 
 ---
 
