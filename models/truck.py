@@ -3,7 +3,7 @@ from models import db
 
 class Truck(db.Model):
     # Truck vehicle registered and owned by a driver
-    # Tracks truck details including identification and cargo capacity
+    # Tracking truck details including identification and cargo capacity
 
     __tablename__ = "trucks"
 
