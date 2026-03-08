@@ -11,6 +11,7 @@ from models.customer import Customer
 tracking_bp = Blueprint("tracking", __name__)
 
 
+# ── Route: render the live tracking page for a given booking ──
 @tracking_bp.route("/track/<int:booking_id>")
 @login_required
 def track_booking(booking_id):
