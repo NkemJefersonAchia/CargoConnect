@@ -4,7 +4,7 @@ from models import db
 
 class Rating(db.Model):
     # Customer review and rating for a driver after a completed booking
-    # Records feedback score and optional comment about the delivery service
+    # Recording feedback score and optional comment about the delivery service
 
     __tablename__ = "ratings"
 
