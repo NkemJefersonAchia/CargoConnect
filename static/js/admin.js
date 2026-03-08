@@ -1,4 +1,5 @@
 /* ── Admin Panel Utilities ────────────────────────────────── */
+/* Handles sidebar toggle and admin-specific UI interactions   */
 
 document.addEventListener('DOMContentLoaded', function () {
   setupHamburger();
