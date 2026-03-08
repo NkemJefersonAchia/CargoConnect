@@ -1,4 +1,5 @@
 /* ── Live GPS Tracking — Customer View ───────────────────── */
+/* Renders Leaflet map and listens for real-time driver location via SocketIO */
 
 document.addEventListener('DOMContentLoaded', function () {
   initMap();
