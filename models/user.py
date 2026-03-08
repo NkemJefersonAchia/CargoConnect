@@ -5,7 +5,7 @@ from models import db
 
 class User(UserMixin, db.Model):
     # Base user account shared across customers, drivers, and admins
-    # Handles authentication, profile links, and notifications for all user types
+    # Handling authentication, profile links, and notifications for all user types
 
     __tablename__ = "users"
 
