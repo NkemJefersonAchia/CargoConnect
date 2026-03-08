@@ -85,7 +85,7 @@ def initiate_payment(booking_id):
             timeout=15,
         )
         if resp.status_code == 202:
-            return success({"payment_id": payment.payment_id}, "Payment request sent to customer phone.")
+            return success({"payment_id": payment.payment_id}, "Payment request successfully sent to customer phone.")
         else:
             return error(f"MoMo API error: {resp.text}", 502)
 
