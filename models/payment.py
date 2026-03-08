@@ -3,7 +3,8 @@ from models import db
 
 
 class Payment(db.Model):
-    """Payment record for a booking."""
+    # Payment transaction record associated with a booking
+    # Tracks payment method, amount, status, and completion timestamp
 
     __tablename__ = "payments"
 

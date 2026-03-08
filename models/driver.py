@@ -3,7 +3,8 @@ from models import db
 
 
 class Driver(db.Model):
-    """Driver profile linked to a user account."""
+    # Driver profile linked to user account with location tracking and availability status
+    # Manages driver information, verification, ratings, and relationships to trucks and bookings
 
     __tablename__ = "drivers"
 
@@ -17,5 +18,6 @@ class Driver(db.Model):
     longitude = db.Column(db.Float, nullable=True)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    # Relationships to associated trucks and bookings
     trucks = db.relationship("Truck", backref="driver", lazy=True)
     bookings = db.relationship("Booking", backref="driver", lazy=True)

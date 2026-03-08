@@ -4,7 +4,8 @@ from models import db
 
 
 class User(UserMixin, db.Model):
-    """User account shared across all roles."""
+    # Base user account shared across customers, drivers, and admins
+    # Handles authentication, profile links, and notifications for all user types
 
     __tablename__ = "users"
 
@@ -16,10 +17,11 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Enum("customer", "driver", "admin", name="user_role"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Relationships to role-specific profiles and notifications
     customer_profile = db.relationship("Customer", backref="user", uselist=False, lazy=True)
     driver_profile = db.relationship("Driver", backref="user", uselist=False, lazy=True)
     notifications = db.relationship("Notification", backref="user", lazy=True)
 
     def get_id(self):
-        """Return user_id as string for Flask-Login."""
+        # Return user_id as string for Flask-Login compatibility
         return str(self.user_id)
