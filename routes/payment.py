@@ -1,3 +1,4 @@
+# Payment module — MTN MoMo Collections API integration for cargo payments
 import uuid
 import requests
 import os
