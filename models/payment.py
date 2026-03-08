@@ -4,7 +4,7 @@ from models import db
 
 class Payment(db.Model):
     # Payment transaction record associated with a booking
-    # Tracks payment method, amount, status, and completion timestamp
+    # Tracks payment method, amount, and completion timestamp
 
     __tablename__ = "payments"
 
