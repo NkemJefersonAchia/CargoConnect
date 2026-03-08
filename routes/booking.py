@@ -100,7 +100,7 @@ def serialize_driver_result(item):
 @booking_bp.route("/search", methods=["POST"])
 @login_required
 def search_trucks():
-    """Search for available drivers matching cargo requirements."""
+    """Search for available drivers truck matching cargo requirements."""
     data = request.get_json() or request.form
     try:
         weight = float(data.get("weight", 0))
