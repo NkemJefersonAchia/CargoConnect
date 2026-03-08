@@ -1,4 +1,5 @@
 /* ── Booking Form & Truck Search ─────────────────────────── */
+/* Customer-facing booking logic: search trucks, confirm, view stats */
 
 document.addEventListener('DOMContentLoaded', function () {
   loadCustomerStats();
