@@ -206,7 +206,7 @@ There are 7 members on this team. Each person owns a clear slice of the project 
 
 ###  Member 2 — Database Engineer
 
-**Name:** *(Add name)*
+**Name:** Grace Karimi Njunge
 **Responsible for:** Designing and building every database table. Every other team member depends on this work, so it should be done first.
 
 | File / Area | Task |
@@ -317,19 +317,19 @@ There are 7 members on this team. Each person owns a clear slice of the project 
 
 | # | Member | Main Area | Key Files |
 |---|--------|-----------|-----------|
-| 1 | *(name)* | Project Lead & Architecture | `app.py`, `extensions.py`, `config/`, `README.md` |
-| 2 | *(name)* | Database | All `models/*.py` files |
-| 3 | *(name)* | Auth & Admin | `routes/auth.py`, `routes/admin.py`, login/register/admin templates |
+| 1 | Jeferson Nkem | Project Lead & Architecture | `app.py`, `extensions.py`, `config/`, `README.md` |
+| 2 | Karimi Grace | Database | All `models/*.py` files |
+| 3 | Christian Mpano | Auth & Admin | `routes/auth.py`, `routes/admin.py`, login/register/admin templates |
 | 4 | *(name)* | Customer Backend | `routes/customer.py`, `routes/booking.py`, driver search algorithm |
-| 5 | *(name)* | Customer Frontend | `templates/customer_dashboard.html`, `book_truck.html`, `booking.js`, `dashboard.js`, `auth.js` |
+| 5 | Cherish Yusuf | Customer Frontend | `templates/customer_dashboard.html`, `book_truck.html`, `booking.js`, `dashboard.js`, `auth.js` |
 | 6 | *(name)* | Driver Dashboard | `routes/driver.py`, `driver_dashboard.html`, `driver_job.html` |
-| 7 | *(name)* | Tracking, Payments & CSS | `routes/tracking.py`, `routes/payment.py`, `track_booking.html`, `tracking.js`, `style.css` |
+| 7 |Temiola| Tracking, Payments & CSS | `routes/tracking.py`, `routes/payment.py`, `track_booking.html`, `tracking.js`, `style.css` |
 
 ---
 
 ## Task Sheet
 
-📋 **Team Task Sheet:** *(Paste your Google Sheets / Notion / Trello link here)*
+📋 **Team Task Sheet:** (https://docs.google.com/spreadsheets/d/1FXN12YCHVTAyDKEj0lz6V6Auk-nctcITA0M05qB4VHc/edit?usp=sharing)
 
 ---
 
