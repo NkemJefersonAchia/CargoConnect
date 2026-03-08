@@ -4,7 +4,8 @@ from models import db
 
 
 class Booking(db.Model):
-    """Booking record linking customer, driver, and truck."""
+    # Core booking entity that connects customers, drivers, and trucks for cargo transport
+    # Tracks all details from creation through completion of a cargo transportation job
 
     __tablename__ = "bookings"
 
@@ -22,6 +23,7 @@ class Booking(db.Model):
     )
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Relationships to related models: payment, ratings, and truck details
     payment = db.relationship("Payment", backref="booking", uselist=False, lazy=True)
     ratings = db.relationship("Rating", backref="booking", lazy=True)
     truck = db.relationship("Truck", backref="bookings", lazy=True)
