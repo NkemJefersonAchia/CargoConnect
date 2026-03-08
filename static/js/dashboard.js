@@ -1,4 +1,5 @@
 /* ── Shared Dashboard Utilities ──────────────────────────── */
+/* Sidebar hamburger toggle and auto-close for mobile viewports */
 
 document.addEventListener('DOMContentLoaded', function () {
   setupHamburger();
