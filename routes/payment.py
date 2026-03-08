@@ -13,6 +13,7 @@ from models.notification import Notification
 payment_bp = Blueprint("payment", __name__)
 
 
+# ── Helper: standardised JSON response wrappers ──
 def success(data, message="OK"):
     """Return a standard success JSON response."""
     return jsonify({"status": "success", "data": data, "message": message})
