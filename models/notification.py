@@ -3,7 +3,7 @@ from models import db
 
 
 class Notification(db.Model):
-    # In-app notification message sent to a user
+    # notification message sent to a user
     # Tracks message content, delivery channel, and read status
 
     __tablename__ = "notifications"
