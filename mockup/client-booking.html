@@ -326,7 +326,7 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="navbar-brand">📦 CargoConnect</div>
+        <div class="navbar-brand">CargoConnect</div>
         <a href="client-home.html" class="navbar-back">← Back to Home</a>
     </div>
 
@@ -412,7 +412,7 @@
                         </div>
                         <div class="material-option">
                             <input type="radio" id="other" name="material" value="other">
-                            <label for="other">📦 Other</label>
+                            <label for="other">Other</label>
                         </div>
                     </div>
                 </div>
@@ -470,8 +470,8 @@
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
                         document.getElementById('locationStatus').textContent = 
-                            `✓ Location captured (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-                        document.getElementById('shareLocation').textContent = '✓ Location Shared';
+                            `Location captured (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+                        document.getElementById('shareLocation').textContent = 'Location Shared';
                         document.getElementById('shareLocation').disabled = true;
                     },
                     function() {

@@ -447,7 +447,7 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="navbar-brand">🚚 CargoConnect</div>
+        <div class="navbar-brand">CargoConnect</div>
         <a href="driver-home.html" class="navbar-back">← Back to Dashboard</a>
     </div>
 
@@ -782,13 +782,13 @@
                             <div class="customer-avatar">👤</div>
                             <div class="customer-details">
                                 <h4>${trip.customerName}</h4>
-                                <p class="customer-rating">⭐ ${trip.customerRating}</p>
+                                <p class="customer-rating">${trip.customerRating}</p>
                             </div>
                         </div>
 
                         <div class="button-group">
                             ${isRequest ? `
-                                <button class="btn btn-primary btn-accept" onclick="acceptTrip('${trip.id}', '${trip.customerName}')">✓ Accept Trip</button>
+                                <button class="btn btn-primary btn-accept" onclick="acceptTrip('${trip.id}', '${trip.customerName}')">Accept Trip</button>
                                 <button class="btn btn-secondary btn-reject" onclick="rejectTrip('${trip.id}')">✗ Reject</button>
                             ` : isCompleted ? `
                                 <button class="btn btn-primary" onclick="rateCustomer('${trip.customerName}')">Rate Customer</button>
@@ -804,7 +804,7 @@
         }
 
         function acceptTrip(tripId, customerName) {
-            alert(`✓ Trip ${tripId} accepted!\n\nYou can now see the customer's contact information.\n\n📍 Share your live location once you pick up the package.`);
+            alert(`Trip ${tripId} accepted!\n\nYou can now see the customer's contact information.\n\nShare your live location once you pick up the package.`);
         }
 
         function shareLocation(tripId, customerName) {
@@ -814,7 +814,7 @@
                     function(position) {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        alert(`✓ Live location shared with ${customerName}!\n\n📍 Coordinates:\nLat: ${lat.toFixed(4)}\nLng: ${lng.toFixed(4)}\n\nCustomer can now track your truck in real-time.`);
+                        alert(`Live location shared with ${customerName}!\n\nCoordinates:\nLat: ${lat.toFixed(4)}\nLng: ${lng.toFixed(4)}\n\nCustomer can now track your truck in real-time.`);
                         // In production, send location to customer via backend
                         localStorage.setItem('currentDriverLocation', JSON.stringify({ lat, lng, tripId }));
                     },
@@ -851,7 +851,7 @@
         }
 
         function markTripComplete(tripId) {
-            alert(`✓ Trip ${tripId} marked as completed!\n\nPayment of $${Math.random() * 50 + 40}.00 has been processed and will be credited to your account within 24 hours.`);
+            alert(`Trip ${tripId} marked as completed!\n\nPayment of $${Math.random() * 50 + 40}.00 has been processed and will be credited to your account within 24 hours.`);
             // In production, this would trigger the payment flow
         }
 

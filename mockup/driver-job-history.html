@@ -292,7 +292,7 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="navbar-brand">🚚 CargoConnect</div>
+        <div class="navbar-brand">CargoConnect</div>
         <a href="driver-home.html" class="navbar-back">← Back to Dashboard</a>
     </div>
 
@@ -449,7 +449,7 @@
                     day: 'numeric'
                 });
 
-                const stars = '⭐'.repeat(job.rating) + '☆'.repeat(5 - job.rating);
+                const stars = ' '.repeat(job.rating) + ' '.repeat(5 - job.rating);
 
                 return `
                     <div class="history-card">

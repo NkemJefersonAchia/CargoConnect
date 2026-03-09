@@ -265,7 +265,7 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="navbar-brand">📦 CargoConnect</div>
+        <div class="navbar-brand">CargoConnect</div>
         <a href="client-home.html" class="navbar-back">← Back to Home</a>
     </div>
 
@@ -344,7 +344,7 @@
         if (drivers.length === 0) {
             driverList.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-state-icon">🚚</div>
+                    <div class="empty-state-icon"></div>
                     <div class="empty-state-title">No Drivers Available</div>
                     <div class="empty-state-text">Unfortunately, no drivers are available for your route at this time.</div>
                     <a href="client-booking.html" class="back-btn">← Back to Booking</a>
@@ -352,9 +352,9 @@
             `;
         } else {
             drivers.forEach(driver => {
-                const starRating = '⭐'.repeat(Math.floor(driver.rating));
+                const starRating = '';  // Rating shown via CSS
                 const previousWorkBadge = driver.previousWork 
-                    ? `<div class="previous-work">✓ Worked before (${driver.trips} trips)</div>`
+                    ? `<div class="previous-work">Worked before (${driver.trips} trips)</div>`
                     : `<div class="previous-work no">◯ New Driver</div>`;
 
                 const driverCard = document.createElement('div');

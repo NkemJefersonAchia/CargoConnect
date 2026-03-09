@@ -544,7 +544,7 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="navbar-brand">📦 CargoConnect</div>
+        <div class="navbar-brand">CargoConnect</div>
         <a href="client-home.html" class="navbar-back">← Back to Home</a>
     </div>
 
@@ -795,7 +795,7 @@
             if (tripsList.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">🚚</div>
+                        <div class="empty-state-icon"></div>
                         <div class="empty-state-title">No ${isActive ? 'Active' : 'Upcoming'} Trips</div>
                         <div class="empty-state-text">You don't have any ${isActive ? 'active' : 'upcoming'} trips at the moment.</div>
                         <a href="client-booking.html" class="book-btn">Book a Cargo</a>
@@ -816,12 +816,12 @@
                         ${isActive && !isUpcoming ? `
                             <div class="trip-progress">
                                 <div class="progress-step completed">
-                                    <div class="progress-circle">✓</div>
+                                    <div class="progress-circle"></div>
                                     <div class="progress-label">Picked Up</div>
                                 </div>
                                 <div class="progress-line"></div>
                                 <div class="progress-step ${trip.progress > 50 ? 'active' : ''}">
-                                    <div class="progress-circle">🚚</div>
+                                    <div class="progress-circle"></div>
                                     <div class="progress-label">In Transit</div>
                                 </div>
                                 <div class="progress-line"></div>
@@ -876,7 +876,7 @@
                             <div class="driver-details">
                                 <h4>${trip.driverName}</h4>
                                 <p>${trip.vehicle}</p>
-                                <p class="driver-rating">⭐ ${trip.driverRating}</p>
+                                <p class="driver-rating">${trip.driverRating}</p>
                             </div>
                         </div>
 

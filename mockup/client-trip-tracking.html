@@ -341,7 +341,7 @@
                         <div class="driver-details">
                             <h4 id="driverName">John Smith</h4>
                             <p id="driverVehicle">Van</p>
-                            <p class="driver-rating">⭐ <span id="driverRating">4.9</span></p>
+                            <p class="driver-rating"><span id="driverRating">4.9</span></p>
                         </div>
                     </div>
                 </div>
@@ -353,7 +353,7 @@
                         <div class="location-address" id="currentLocation">En route</div>
                     </div>
                     <div class="location-item">
-                        <div class="location-label">📦 Pickup</div>
+                        <div class="location-label">Pickup</div>
                         <div class="location-address" id="pickupAddress">Loading...</div>
                     </div>
                     <div class="location-item">
@@ -373,11 +373,11 @@
             <div id="map"></div>
             <div class="map-legend">
                 <div class="legend-item">
-                    <div class="legend-marker marker-current">📦</div>
+                    <div class="legend-marker marker-current"></div>
                     <span>Current Location</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-marker marker-pickup">✓</div>
+                    <div class="legend-marker marker-pickup"></div>
                     <span>Pickup Point</span>
                 </div>
                 <div class="legend-item">
@@ -405,7 +405,7 @@
         // Create custom icons
         const currentIcon = L.divIcon({
             className: 'custom-icon',
-            html: '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">📦</div>',
+            html: '<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
             iconSize: [40, 40],
             popupAnchor: [0, -20]
         });
@@ -419,7 +419,7 @@
 
         const pickupIcon = L.divIcon({
             className: 'custom-icon',
-            html: '<div style="background: #27ae60; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">✓</div>',
+            html: '<div style="background: #27ae60; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
             iconSize: [40, 40],
             popupAnchor: [0, -20]
         });

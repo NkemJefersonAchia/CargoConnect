@@ -445,7 +445,7 @@
     <div class="sidebar">
         <div class="sidebar-menu">
             <a href="admin-dashboard.html" class="sidebar-item">
-                <span>📊</span> Dashboard
+                <span></span> Dashboard
             </a>
             <a href="admin-users.html" class="sidebar-item">
                 <span>👥</span> Users Management
@@ -454,7 +454,7 @@
                 <span>🚗</span> Drivers Management
             </a>
             <a href="admin-trips.html" class="sidebar-item">
-                <span>📦</span> Trips Management
+                <span></span> Trips Management
             </a>
             <a href="admin-payments.html" class="sidebar-item">
                 <span>💰</span> Payments & Revenue
@@ -480,8 +480,8 @@
             </div>
             <div class="filter-controls">
                 <button class="filter-btn active" onclick="filterBy('all', this)">All Drivers</button>
-                <button class="filter-btn" onclick="filterBy('pending', this)">⏳ Pending</button>
-                <button class="filter-btn" onclick="filterBy('verified', this)">✓ Verified</button>
+                <button class="filter-btn" onclick="filterBy('pending', this)">Pending</button>
+                <button class="filter-btn" onclick="filterBy('verified', this)">Verified</button>
             </div>
             <div class="sort-controls">
                 <button class="sort-btn active" onclick="sortBy('registration', this)">Latest</button>
@@ -573,11 +573,11 @@
                     <td>${driver.phone}</td>
                     <td>${driver.trips}</td>
                     <td>
-                        ${driver.rating > 0 ? `<span class="rating">⭐ ${driver.rating}</span>` : '<span>-</span>'}
+                        ${driver.rating > 0 ? `<span class="rating">${driver.rating}</span>` : '<span>-</span>'}
                     </td>
                     <td>
                         <span class="status-badge status-${driver.verification}">
-                            ${driver.verification === 'verified' ? '✓ Verified' : driver.verification === 'pending' ? '⏳ Pending' : '✗ Rejected'}
+                            ${driver.verification === 'verified' ? 'Verified' : driver.verification === 'pending' ? 'Pending' : 'Rejected'}
                         </span>
                     </td>
                     <td>
@@ -678,7 +678,7 @@
             if (driver) {
                 driver.verification = 'verified';
                 filterBy(currentFilter, document.querySelector('.filter-btn.active'));
-                alert(`✓ ${driver.name} has been approved!`);
+                alert(`${driver.name} has been approved!`);
             }
         }
 
@@ -687,7 +687,7 @@
             if (driver) {
                 driver.verification = 'rejected';
                 filterBy(currentFilter, document.querySelector('.filter-btn.active'));
-                alert(`✗ ${driver.name} has been rejected!`);
+                alert(`${driver.name} has been rejected!`);
             }
         }
 

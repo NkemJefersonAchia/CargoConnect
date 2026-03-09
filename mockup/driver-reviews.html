@@ -311,7 +311,7 @@
 </head>
 <body>
     <div class="navbar">
-        <div class="navbar-brand">🚚 CargoConnect</div>
+        <div class="navbar-brand">CargoConnect</div>
         <a href="driver-home.html" class="navbar-back">← Back to Dashboard</a>
     </div>
 
@@ -326,7 +326,7 @@
             <div class="summary-card">
                 <h3>Average Rating</h3>
                 <div class="value">4.8</div>
-                <div class="stars">⭐⭐⭐⭐⭐</div>
+                <div class="stars"></div>
                 <div class="detail">Out of 5.0</div>
             </div>
             <div class="summary-card">
@@ -344,9 +344,9 @@
         <!-- Filters -->
         <div class="filters">
             <button class="filter-btn active" onclick="filterReviews('all')">All Reviews</button>
-            <button class="filter-btn" onclick="filterReviews('5')">⭐⭐⭐⭐⭐ 5 Stars</button>
-            <button class="filter-btn" onclick="filterReviews('4')">⭐⭐⭐⭐ 4 Stars</button>
-            <button class="filter-btn" onclick="filterReviews('3')">⭐⭐⭐ 3 Stars</button>
+            <button class="filter-btn" onclick="filterReviews('5')">5 Stars</button>
+            <button class="filter-btn" onclick="filterReviews('4')">4 Stars</button>
+            <button class="filter-btn" onclick="filterReviews('3')">3 Stars</button>
             <button class="filter-btn" onclick="filterReviews('below3')">Below 3 Stars</button>
         </div>
 
@@ -478,7 +478,7 @@
             }
 
             container.innerHTML = reviewsToShow.map(review => {
-                const stars = '⭐'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                const stars = ' '.repeat(review.rating) + ' '.repeat(5 - review.rating);
                 const date = new Date(review.timestamp);
                 const formattedDate = date.toLocaleDateString('en-US', { 
                     year: 'numeric', 
