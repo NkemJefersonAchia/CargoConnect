@@ -15,6 +15,8 @@ class Booking(db.Model):
     driver_id = db.Column(db.Integer, db.ForeignKey("drivers.driver_id"), nullable=False)
     pickup_address = db.Column(db.Text, nullable=False)
     dropoff_address = db.Column(db.Text, nullable=False)
+    dropoff_lat = db.Column(db.Float, nullable=True)   # GPS latitude of drop-off point (optional)
+    dropoff_lng = db.Column(db.Float, nullable=True)   # GPS longitude of drop-off point (optional)
     scheduled_time = db.Column(db.DateTime, nullable=False)
     estimated_cost = db.Column(db.Numeric(10, 2))
     status = db.Column(

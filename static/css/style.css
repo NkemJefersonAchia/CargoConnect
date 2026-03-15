@@ -223,7 +223,9 @@ background:#94A3B8;
 }
 
 /* ====================================================
-   BEM COMPONENT CLASSES  (Task 7.5 — Teniola / Member 7)
+   BEM classes for badges, buttons, cards and modals
+   added these because the JS files were using them but
+   they weren't defined anywhere - Teniola
    ==================================================== */
 
 /* ---------- Status badges (BEM) ---------- */
@@ -278,9 +280,8 @@ background:#94A3B8;
 .modal__actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
 
 
-/* ====================================================
-   MOBILE-RESPONSIVE UTILITIES  (Task 7.6 — Teniola)
-   ==================================================== */
+/* mobile responsive - tested on 375px
+   sidebar stacks, cards go full width - Teniola */
 
 @media (max-width:768px){
   .kpi-grid{grid-template-columns:1fr 1fr;}
