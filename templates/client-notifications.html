@@ -522,7 +522,7 @@
                 <span class="theme-option active" id="theme-light">Light</span>
                 <span class="theme-option" id="theme-dark">Dark</span>
             </div>
-            <button class="btn btn-secondary" onclick="markAllRead()">Mark All Read</button>
+            <button id="markAllReadBtn" class="btn btn-secondary" onclick="markAllRead()">Mark All Read</button>
             <a href="client-dashboard.html" class="btn btn-secondary">Back</a>
         </div>
     </div>
@@ -572,56 +572,29 @@
         return false;
     }
 
-    // Sample notifications data
-    const notifications = [
-        {
-            id: 1,
-            title: 'Trip Completed',
-            message: 'Your trip TR001 from Downtown to Giza has been completed successfully.',
-            time: '2 hours ago',
-            read: false,
-            icon: '✓'
-        },
-        {
-            id: 2,
-            title: 'Driver Accepted',
-            message: 'Driver Ahmed Hassan has accepted your booking BK002.',
-            time: '5 hours ago',
-            read: false,
-            icon: '✓'
-        },
-        {
-            id: 3,
-            title: 'Payment Received',
-            message: 'Payment of $45.50 for trip TR003 has been processed.',
-            time: '1 day ago',
-            read: false,
-            icon: '$'
-        },
-        {
-            id: 4,
-            title: 'Booking Confirmed',
-            message: 'Your booking BK004 has been confirmed. Driver is on the way.',
-            time: '2 days ago',
-            read: true,
-            icon: '✓'
-        },
-        {
-            id: 5,
-            title: 'New Message',
-            message: 'You have a new message from driver support.',
-            time: '3 days ago',
-            read: true,
-            icon: '✉'
-        }
-    ];
+    // Load notifications from backend
+function loadNotifications() {
+    fetch('/customer/notifications')
+        .then(res => res.json())
+        .then(data => {
+            const notifications = data.data.notifications || [];
+            const unreadCount = data.data.unread_count || 0;
+            document.getElementById('unreadCount').innerText = unreadCount;
+            renderNotifications(notifications);
+        })
+        .catch(() => {
+            document.getElementById('notificationsList').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <div class="empty-state-title">Could not load notifications</div>
+                    <div class="empty-state-text">Please try again later</div>
+                </div>`;
+        });
+}
 
-    let unreadCount = notifications.filter(n => !n.read).length;
-    document.getElementById('unreadCount').innerText = unreadCount;
-
-    function renderNotifications() {
-        const container = document.getElementById('notificationsList');
-        if (notifications.length === 0) {
+    function renderNotifications(notifications) {
+    const container = document.getElementById('notificationsList');
+    if (notifications.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <div class="empty-state-icon">📋</div>
@@ -656,14 +629,15 @@
     }
 
     function markAllRead() {
-        notifications.forEach(n => n.read = true);
-        unreadCount = 0;
-        document.getElementById('unreadCount').innerText = unreadCount;
-        renderNotifications();
+    fetch('/customer/notifications/mark-read', { method: 'POST' })
+        .then(() => {
+            document.getElementById('unreadCount').innerText = 0;
+            loadNotifications();
+        });
     }
 
-    // Initial render
-    renderNotifications();
+    // Initial load
+    loadNotifications();
 </script>
 </body>
 </html>
