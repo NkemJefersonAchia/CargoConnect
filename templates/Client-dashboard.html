@@ -11,7 +11,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
             min-height: 100vh;
@@ -154,7 +153,8 @@
             color: var(--text-tertiary);
             margin-top: 4px;
         }
-
+        
+        /* Nav section */
         .nav {
             padding: 16px 12px;
             flex: 1;
@@ -328,7 +328,7 @@
             margin-top: 4px;
         }
 
-        /* KPI grid */
+        /* KPI grids */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -706,23 +706,23 @@
         <!-- KPI Cards -->
         <div class="kpi-grid">
             <div class="kpi-card">
-                <div class="kpi-label">Total Trips</div>
-                <div class="kpi-value" id="totalTrips">24</div>
+                <div class="kpi-label">statTotal</div>
+                <div class="kpi-value" id="statTotal">24</div>
                 <div class="kpi-sub">All time</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Pending</div>
-                <div class="kpi-value" id="pendingTrips">2</div>
+                <div class="kpi-value" id="statPending">2</div>
                 <div class="kpi-sub">Awaiting response</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Completed</div>
-                <div class="kpi-value" id="completedTrips">22</div>
+                <div class="kpi-value" id="statCompleted">22</div>
                 <div class="kpi-sub">Successfully delivered</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Total Spent</div>
-                <div class="kpi-value" id="totalSpent">$1,240</div>
+                <div class="kpi-value" id="statSpent">$1,240</div>
                 <div class="kpi-sub">Lifetime</div>
             </div>
         </div>
@@ -730,26 +730,27 @@
         <!-- Quick Booking Form -->
         <div class="quick-booking">
             <h3>Book a Cargo Quickly</h3>
-            <div class="booking-form">
+            <form id="searchForm" class="booking-form">
                 <div class="form-group">
                     <label>Pickup Address</label>
-                    <input type="text" id="pickupQuick" placeholder="Enter pickup location">
+                    <input type="text" id="pickup_lat" placeholder="Enter pickup location">
                 </div>
                 <div class="form-group">
                     <label>Dropoff Address</label>
-                    <input type="text" id="dropoffQuick" placeholder="Enter destination">
+                    <input type="text" id="pickup_lng" placeholder="Enter destination">
                 </div>
                 <div class="form-group">
                     <label>Weight (kg)</label>
-                    <input type="number" id="weightQuick" placeholder="e.g. 50" min="1">
+                    <input type="number" id="weight" placeholder="e.g. 50" min="1">
                 </div>
                 <div class="form-group">
                     <label>When?</label>
                     <input type="datetime-local" id="timeQuick">
                 </div>
-                <button class="btn btn-primary" onclick="quickBook()">Find Drivers</button>
-            </div>
+                <button type="submit" class="btn btn-primary">Find Drivers</button>
+            </form>
         </div>
+        <div id="truckResults"></div>
 
         <!-- Recent Bookings -->
         <div class="table-container">
@@ -777,7 +778,7 @@
 </main>
 
 <!-- Modal for quick actions (optional) -->
-<div id="quickModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:200;" onclick="if(event.target===this) closeQuickModal()">
+<div id="confirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:200;" onclick="if(event.target===this) closeQuickModal()">
     <div style="background:var(--card-bg); border-radius:10px; padding:30px; max-width:400px; width:90%; box-shadow:var(--shadow-hover);">
         <h3 style="margin-bottom:15px; color:var(--text-primary);">Quick Booking</h3>
         <p id="quickModalMessage"></p>
