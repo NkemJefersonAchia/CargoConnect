@@ -547,15 +547,6 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Preferred Payment Method</label>
-                    <select id="paymentMethod">
-                        <option value="card" selected>Credit Card</option>
-                        <option value="cash">Cash</option>
-                        <option value="momo">MTN MoMo</option>
-                    </select>
-                </div>
-
                 <div class="button-group">
                     <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -566,47 +557,49 @@
 </main>
 
 <script>
-    // Get username from localStorage
-    const username = localStorage.getItem('username') || 'John Doe';
-    document.getElementById('displayName').innerText = username;
-    document.getElementById('avatarInitial').innerText = username.charAt(0);
-    document.getElementById('fullName').value = username;
-    document.getElementById('username').innerText = username;
+    // Load profile from session
+function loadProfile() {
+    const name = localStorage.getItem('username') || 'Customer';
+    document.getElementById('displayName').innerText = name;
+    document.getElementById('avatarInitial').innerText = name.charAt(0).toUpperCase();
+    document.getElementById('fullName').value = name;
+    document.getElementById('username').innerText = name;
+}
 
-    // Theme toggle
-    function toggleTheme() {
-        const body = document.body;
-        const lightOption = document.getElementById('theme-light');
-        const darkOption = document.getElementById('theme-dark');
-        if (body.classList.contains('light-mode')) {
-            body.classList.remove('light-mode');
-            body.classList.add('dark-mode');
-            lightOption.classList.remove('active');
-            darkOption.classList.add('active');
-        } else {
-            body.classList.remove('dark-mode');
-            body.classList.add('light-mode');
-            darkOption.classList.remove('active');
-            lightOption.classList.add('active');
-        }
+// Save changes - ready for PATCH /customer/profile when backend is done
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('Profile updated successfully!');
+});
+
+function cancelEdit() {
+    window.location.href = 'Client-dashboard.html';
+}
+
+function toggleTheme() {
+    const body = document.body;
+    const lightOption = document.getElementById('theme-light');
+    const darkOption = document.getElementById('theme-dark');
+    if (body.classList.contains('light-mode')) {
+        body.classList.remove('light-mode');
+        body.classList.add('dark-mode');
+        lightOption.classList.remove('active');
+        darkOption.classList.add('active');
+    } else {
+        body.classList.remove('dark-mode');
+        body.classList.add('light-mode');
+        darkOption.classList.remove('active');
+        lightOption.classList.add('active');
     }
+}
 
-    // Logout
-    function logout() {
-        localStorage.removeItem('username');
-        window.location.href = 'index.html';
-        return false;
-    }
+function logout() {
+    localStorage.removeItem('username');
+    window.location.href = 'index.html';
+    return false;
+}
 
-    // Form submission (demo)
-    document.getElementById('profileForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        alert('Profile updated successfully (demo).');
-    });
-
-    function cancelEdit() {
-        window.location.href = 'client-home.html';
-    }
+loadProfile();
 </script>
 </body>
 </html>
