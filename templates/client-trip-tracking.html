@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -409,7 +409,13 @@
 <div class="sidebar">
     <div class="sidebar-header">
         <h2>Live Tracking</h2>
-        <a href="javascript:history.back()" class="back-btn">← Back</a>
+        <div style="display:flex;gap:8px;align-items:center;">
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-option active" id="theme-light">Light</span>
+                <span class="theme-option" id="theme-dark">Dark</span>
+            </div>
+            <a href="javascript:history.back()" class="back-btn">← Back</a>
+        </div>
     </div>
     <div class="sidebar-content">
         <div class="info-section">
@@ -421,6 +427,10 @@
             <div class="info-item">
                 <span class="info-label">Status</span>
                 <span class="status-badge" id="tripStatus">In Progress</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Payment</span>
+                <span class="status-badge" id="paymentStatus" style="background:#856404;">Payment pending</span>
             </div>
             <div class="info-item">
                 <span class="info-label">Progress</span>
@@ -445,9 +455,10 @@
 
         <div class="info-section">
             <div class="section-title">Locations</div>
+            <div id="locationStatus" style="background:#fff3cd;color:#856404;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:8px;">⏳ Waiting for driver to share location…</div>
             <div class="location-item">
                 <div class="location-label">Current Location</div>
-                <div class="location-address" id="currentLocation">En route to drop-off</div>
+                <div class="location-address" id="currentLocation">—</div>
             </div>
             <div class="location-item">
                 <div class="location-label">Pickup</div>
@@ -485,6 +496,7 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
     // Theme toggle
@@ -506,162 +518,99 @@
         // Redraw map tiles if needed (leaflet handles it)
     }
 
-    // ========== Realistic Tracking Simulation ==========
+    // ── Backend data injected by Jinja2 (task 7.1) ──
+    const BOOKING_ID = {{ booking.booking_id }};
+    const PICKUP_ADDRESS = {{ (booking.pickup_address or '') | tojson }};
+    const DROPOFF_ADDRESS = {{ (booking.dropoff_address or '') | tojson }};
+    const DRIVER_NAME = {{ ((booking.driver.user.user_name) if booking.driver else 'Your Driver') | tojson }};
+    const DRIVER_VEHICLE = {{ ((booking.driver.truck.plate_no) if (booking.driver and booking.driver.truck) else 'Truck') | tojson }};
+    const DRIVER_RATING = {{ (booking.driver.rating | float) if booking.driver else 0 }};
+    const PAYMENT_STATUS = {{ ((booking.payment.status) if booking.payment else 'pending') | tojson }};
 
-    // Get trip data from localStorage (set by client-trips.html)
-    const tripData = JSON.parse(localStorage.getItem('tripData') || '{}');
-    const tripId = new URLSearchParams(window.location.search).get('trip') || 'TR001';
+    // ── Populate sidebar with real booking data ──
+    document.getElementById('tripId').textContent = '#' + BOOKING_ID;
+    document.getElementById('tripStatus').textContent = {{ booking.status | tojson }};
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('progressPercent').textContent = 'Live';
+    document.getElementById('driverName').textContent = DRIVER_NAME;
+    document.getElementById('driverInitial').textContent = DRIVER_NAME.charAt(0).toUpperCase();
+    document.getElementById('driverVehicle').textContent = DRIVER_VEHICLE;
+    document.getElementById('driverRating').textContent = '\u2b50 ' + DRIVER_RATING;
+    document.getElementById('pickupAddress').textContent = PICKUP_ADDRESS;
+    document.getElementById('dropoffAddress').textContent = DROPOFF_ADDRESS;
 
-    // Default coordinates (Cairo area)
-    const defaultPickup = { lat: 30.0131, lng: 31.3422 };
-    const defaultDropoff = { lat: 30.0466, lng: 31.4837 };
-    const defaultCurrent = { lat: 30.0200, lng: 31.3600 };
-
-    const pickupLat = tripData.pickupLat || defaultPickup.lat;
-    const pickupLng = tripData.pickupLng || defaultPickup.lng;
-    const dropoffLat = tripData.dropoffLat || defaultDropoff.lat;
-    const dropoffLng = tripData.dropoffLng || defaultDropoff.lng;
-    const currentLat = tripData.currentLat || defaultCurrent.lat;
-    const currentLng = tripData.currentLng || defaultCurrent.lng;
-
-    // Simulate a route: we'll generate intermediate points along a straight line
-    // For realism, we'll add slight randomness to simulate road curvature
-    const steps = 100; // number of points along route
-    const routePoints = [];
-    for (let i = 0; i <= steps; i++) {
-        const t = i / steps;
-        // Linear interpolation with small random offset (max 0.002 deg ~ 200m)
-        const lat = pickupLat + (dropoffLat - pickupLat) * t + (Math.random() - 0.5) * 0.002;
-        const lng = pickupLng + (dropoffLng - pickupLng) * t + (Math.random() - 0.5) * 0.002;
-        routePoints.push([lat, lng]);
+    // ── Payment status indicator (task 7.9) ──
+    var paymentEl = document.getElementById('paymentStatus');
+    if (paymentEl) {
+        var statusLabels = { pending: 'Payment pending', paid: 'Payment confirmed', failed: 'Payment failed' };
+        var statusBg    = { pending: '#856404',          paid: '#155724',           failed: '#721c24' };
+        paymentEl.textContent = statusLabels[PAYMENT_STATUS] || 'Payment pending';
+        paymentEl.style.background = statusBg[PAYMENT_STATUS] || '#856404';
     }
 
-    // Find the point on route closest to current position to start simulation
-    let startIndex = 0;
-    let minDist = Infinity;
-    routePoints.forEach((point, idx) => {
-        const dist = Math.hypot(point[0] - currentLat, point[1] - currentLng);
-        if (dist < minDist) {
-            minDist = dist;
-            startIndex = idx;
-        }
-    });
-
-    // Current simulation index
-    let currentIdx = startIndex;
-    const totalSteps = routePoints.length - 1;
-
-    // Update progress percentage
-    function updateProgress() {
-        const progress = (currentIdx / totalSteps) * 100;
-        document.getElementById('progressFill').style.width = progress + '%';
-        document.getElementById('progressPercent').innerText = Math.round(progress) + '%';
-    }
-
-    // Initialize map
-    const map = L.map('map').setView([currentLat, currentLng], 13);
-
+    // ── Leaflet map centred on Kigali (task 7.2 / 7.7) ──
+    var map = L.map('map').setView([-1.9441, 30.0619], 14);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
     }).addTo(map);
 
-    // Custom icons (using simple div icons)
-    const currentIcon = L.divIcon({
-        className: 'custom-icon',
-        html: '<div class="legend-marker marker-current" style="width:30px;height:30px;border-radius:50%;background:var(--accent-1);color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">C</div>',
-        iconSize: [30, 30],
-        popupAnchor: [0, -15]
+    var driverMarker = null;
+
+    // Orange truck divIcon (task 7.7)
+    function createDriverIcon() {
+        return L.divIcon({
+            html: '<div style="background:#E85D04;width:20px;height:20px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:10px;">&#128666;</div>',
+            className: '',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+        });
+    }
+
+    // ── Socket.IO real-time GPS (task 7.2) ──
+    var socket = io();
+    var locationStatusEl = document.getElementById('locationStatus');
+    var receivedFirstUpdate = false;
+
+    socket.on('connect', function () {
+        socket.emit('join_tracking_room', { booking_id: BOOKING_ID });
     });
 
-    const pickupIcon = L.divIcon({
-        className: 'custom-icon',
-        html: '<div class="legend-marker marker-pickup" style="width:30px;height:30px;border-radius:50%;background:var(--accent-5);color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">P</div>',
-        iconSize: [30, 30],
-        popupAnchor: [0, -15]
-    });
-
-    const dropoffIcon = L.divIcon({
-        className: 'custom-icon',
-        html: '<div class="legend-marker marker-dropoff" style="width:30px;height:30px;border-radius:50%;background:var(--accent-4);color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">D</div>',
-        iconSize: [30, 30],
-        popupAnchor: [0, -15]
-    });
-
-    // Add markers
-    const currentMarker = L.marker([routePoints[currentIdx][0], routePoints[currentIdx][1]], { icon: currentIcon }).addTo(map)
-        .bindPopup('Current Location');
-    const pickupMarker = L.marker([pickupLat, pickupLng], { icon: pickupIcon }).addTo(map)
-        .bindPopup('Pickup Point');
-    const dropoffMarker = L.marker([dropoffLat, dropoffLng], { icon: dropoffIcon }).addTo(map)
-        .bindPopup('Drop Off Point');
-
-    // Draw route line
-    const routeLine = L.polyline(routePoints, {
-        color: 'var(--accent-1)',
-        weight: 3,
-        opacity: 0.7,
-        dashArray: '5, 8'
-    }).addTo(map);
-
-    // Fit bounds to include all markers
-    const bounds = L.latLngBounds([pickupLat, pickupLng], [dropoffLat, dropoffLng]);
-    map.fitBounds(bounds.pad(0.2));
-
-    // Simulate movement
-    let interval = setInterval(() => {
-        if (currentIdx < totalSteps) {
-            currentIdx++;
-            const [lat, lng] = routePoints[currentIdx];
-            currentMarker.setLatLng([lat, lng]);
-            map.panTo([lat, lng]); // optional, can be removed if annoying
-            updateProgress();
-
-            // Update current location text
-            document.getElementById('currentLocation').innerText = `En route (${Math.round((currentIdx/totalSteps)*100)}% complete)`;
-        } else {
-            // Arrived at destination
-            clearInterval(interval);
-            document.getElementById('currentLocation').innerText = 'Arrived at drop-off';
-            document.getElementById('tripStatus').innerText = 'Completed';
-            document.getElementById('tripStatus').className = 'status-badge'; // could change style
+    // ── First location_update hides the 'Waiting...' banner (task 7.8) ──
+    socket.on('location_update', function (data) {
+        var lat = data.latitude;
+        var lng = data.longitude;
+        if (!receivedFirstUpdate) {
+            receivedFirstUpdate = true;
+            if (locationStatusEl) locationStatusEl.style.display = 'none';
         }
-    }, 3000); // update every 3 seconds
+        document.getElementById('currentLocation').textContent =
+            'En route (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')';
+        if (driverMarker) {
+            driverMarker.setLatLng([lat, lng]);
+        } else {
+            driverMarker = L.marker([lat, lng], { icon: createDriverIcon() })
+                .addTo(map)
+                .bindPopup('Your driver');
+        }
+        map.panTo([lat, lng]);
+    });
 
-    // Fill in sidebar with trip details (using sample data from client-trips)
-    document.getElementById('tripId').innerText = tripId;
-    document.getElementById('driverName').innerText = tripData.driverName || 'John Smith';
-    document.getElementById('driverInitial').innerText = (tripData.driverName || 'John Smith').charAt(0);
-    document.getElementById('driverVehicle').innerText = tripData.vehicle || 'Van';
-    document.getElementById('driverRating').innerHTML = `⭐ ${tripData.driverRating || 4.9}`;
-    document.getElementById('pickupAddress').innerText = tripData.pickupAddress || '222 Retail Park, Maadi, Cairo';
-    document.getElementById('dropoffAddress').innerText = tripData.dropoffAddress || '888 Shopping Center, New Cairo, Cairo';
-    document.getElementById('currentLocation').innerText = tripData.currentLocation || 'En route to drop-off';
+    socket.on('disconnect', function () {
+        if (locationStatusEl) {
+            locationStatusEl.textContent = '\u26a0 Connection lost. Reconnecting...';
+            locationStatusEl.style.display = 'block';
+        }
+    });
 
-    // Actions
     function reportProblem() {
-        alert('Report a problem with this trip (simulated).');
+        alert('Please contact support to report a problem with this trip.');
     }
 
     function contactDriver() {
-        alert('Contact driver via phone or chat (simulated).');
+        alert('Contact your driver via phone. Their details are shown in your bookings page.');
     }
 
-    // Cleanup interval on page unload
-    window.addEventListener('beforeunload', function() {
-        clearInterval(interval);
-    });
-
-    // Add theme toggle to topbar (we don't have topbar in this layout, so add a floating button?)
-    // Since we don't have a topbar, we'll add a small theme toggle in the sidebar header
-    const themeToggleDiv = document.createElement('div');
-    themeToggleDiv.className = 'theme-toggle';
-    themeToggleDiv.style.marginLeft = '10px';
-    themeToggleDiv.innerHTML = `
-        <span class="theme-option active" id="theme-light" onclick="toggleTheme()">Light</span>
-        <span class="theme-option" id="theme-dark" onclick="toggleTheme()">Dark</span>
-    `;
-    document.querySelector('.sidebar-header').appendChild(themeToggleDiv);
 </script>
 </body>
 </html>

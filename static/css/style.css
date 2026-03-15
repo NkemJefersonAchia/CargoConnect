@@ -54,7 +54,7 @@ body.light-mode{
 /* SIDEBAR IMPROVEMENT */
 
 .sidebar{
-background:#0F2A44;
+background:var(--bg-secondary);
 color:white;
 }
 
@@ -76,9 +76,9 @@ color:white;
 }
 
 .nav-item.active{
-background:#C65D1A;
+background:var(--accent-1);
 color:white;
-border-left:4px solid #E27A33;
+border-left:4px solid var(--accent-2);
 }
 
 
@@ -95,7 +95,7 @@ box-shadow:0 10px 25px rgba(0,0,0,0.08);
 }
 
 .kpi-value{
-color:#0F2A44;
+color:var(--accent-4);
 font-weight:700;
 }
 
@@ -107,7 +107,7 @@ border-radius:12px;
 }
 
 .quick-booking h3{
-color:#0F2A44;
+color:var(--accent-4);
 }
 
 
@@ -120,7 +120,7 @@ border:1px solid #E2E8F0;
 }
 
 .form-group input:focus{
-border-color:#C65D1A;
+border-color:var(--accent-1);
 box-shadow:0 0 0 2px rgba(198,93,26,0.15);
 }
 
@@ -128,13 +128,13 @@ box-shadow:0 0 0 2px rgba(198,93,26,0.15);
 /* BUTTONS */
 
 .btn-primary{
-background:#C65D1A;
+background:var(--accent-1);
 color:white;
 font-weight:600;
 }
 
 .btn-primary:hover{
-background:#E27A33;
+background:var(--accent-2);
 transform:translateY(-2px);
 }
 
@@ -220,4 +220,82 @@ border-radius:10px;
 
 ::-webkit-scrollbar-thumb:hover{
 background:#94A3B8;
+}
+
+/* ====================================================
+   BEM COMPONENT CLASSES  (Task 7.5 — Teniola / Member 7)
+   ==================================================== */
+
+/* ---------- Status badges (BEM) ---------- */
+.badge--pending{background:#FEF3C7;color:#92400E;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.badge--completed{background:#DCFCE7;color:#166534;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.badge--cancelled{background:#FEE2E2;color:#991B1B;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.badge--confirmed{background:#DBEAFE;color:#1E40AF;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+
+/* ---------- Buttons (BEM) ---------- */
+.btn--primary{background:var(--accent-1);color:white;font-weight:600;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;transition:background 0.2s,transform 0.15s;}
+.btn--primary:hover{background:var(--accent-2);transform:translateY(-2px);}
+.btn--secondary{background:#F1F5F9;color:#1E293B;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;transition:background 0.2s;}
+.btn--secondary:hover{background:#E2E8F0;}
+.btn--ghost{background:transparent;color:var(--accent-1);border:1.5px solid var(--accent-1);border-radius:8px;padding:9px 19px;cursor:pointer;transition:all 0.2s;}
+.btn--ghost:hover{background:var(--accent-1);color:white;}
+.btn--action{background:var(--gradient-1);color:white;border:none;border-radius:8px;padding:10px 20px;cursor:pointer;font-weight:600;transition:opacity 0.2s,transform 0.15s;}
+.btn--action:hover{opacity:0.9;transform:translateY(-2px);}
+.btn--sm{padding:6px 12px;font-size:13px;}
+.btn--full{width:100%;}
+
+/* ---------- Stat / KPI grid (BEM) ---------- */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
+.kpi-label{font-size:13px;color:var(--text-secondary);margin-bottom:4px;}
+
+/* ---------- Stat card (BEM) ---------- */
+.stat-card{background:var(--card-bg);border-radius:12px;padding:20px;box-shadow:var(--shadow);transition:transform 0.25s,box-shadow 0.25s;}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);}
+
+/* ---------- Truck card (BEM) ---------- */
+.truck-card{background:var(--card-bg);border-radius:12px;padding:16px;box-shadow:var(--shadow);display:flex;gap:14px;align-items:flex-start;transition:transform 0.2s,box-shadow 0.2s;}
+.truck-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);}
+.truck-card__info{flex:1;}
+.truck-card__name{font-weight:700;color:var(--text-primary);margin-bottom:4px;}
+.truck-card__meta{font-size:13px;color:var(--text-secondary);}
+.truck-card__price{font-weight:600;color:var(--accent-1);white-space:nowrap;}
+
+/* ---------- Job card (BEM) ---------- */
+.job-card{background:var(--card-bg);border-radius:12px;padding:16px;box-shadow:var(--shadow);transition:transform 0.2s;}
+.job-card:hover{transform:translateY(-3px);}
+.job-card__name{font-weight:700;color:var(--text-primary);}
+.job-card__route{font-size:13px;color:var(--text-secondary);margin:4px 0;}
+.job-card__meta{font-size:12px;color:var(--text-tertiary);}
+.job-card__actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+
+/* ---------- Modal (BEM) ---------- */
+.modal{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;}
+.modal--open{display:flex;}
+.modal__backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);}
+.modal__box{position:relative;background:var(--card-bg);border-radius:14px;padding:28px 32px;width:min(480px,90vw);max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal__title{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:16px;}
+.modal__body{color:var(--text-secondary);line-height:1.6;}
+.modal__actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
+
+
+/* ====================================================
+   MOBILE-RESPONSIVE UTILITIES  (Task 7.6 — Teniola)
+   ==================================================== */
+
+@media (max-width:768px){
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .truck-card{flex-direction:column;}
+  .truck-card__price{margin-top:6px;}
+  .job-card__actions{flex-direction:column;}
+  .modal__box{padding:20px 18px;}
+  .modal__actions{flex-direction:column-reverse;}
+  .btn--full-sm{width:100%;}
+  .sidebar{width:100%;min-height:unset;}
+}
+
+@media (max-width:480px){
+  .kpi-grid{grid-template-columns:1fr;}
+  .stat-card{padding:14px;}
+  .truck-card{padding:12px;}
+  .job-card{padding:12px;}
 }
