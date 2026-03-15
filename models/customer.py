@@ -7,7 +7,7 @@ class Customer(db.Model):
     __tablename__ = "customers"
 
     customer_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
     default_address = db.Column(db.Text, nullable=True)
 
     bookings = db.relationship("Booking", backref="customer", lazy=True)

@@ -18,9 +18,10 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships to role-specific profiles and notifications
-    customer_profile = db.relationship("Customer", backref="user", uselist=False, lazy=True)
-    driver_profile = db.relationship("Driver", backref="user", uselist=False, lazy=True)
-    notifications = db.relationship("Notification", backref="user", lazy=True)
+    # cascade="all, delete-orphan" ensures related rows are deleted when a User is deleted
+    customer_profile = db.relationship("Customer", backref="user", uselist=False, lazy=True, cascade="all, delete-orphan")
+    driver_profile = db.relationship("Driver", backref="user", uselist=False, lazy=True, cascade="all, delete-orphan")
+    notifications = db.relationship("Notification", backref="user", lazy=True, cascade="all, delete-orphan")
 
     def get_id(self):
         # Return user_id as string for Flask-Login compatibility
