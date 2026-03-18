@@ -1,0 +1,1835 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "Decimal",
+        "importPath": "decimal",
+        "description": "decimal",
+        "isExtraImport": true,
+        "detail": "decimal",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "models",
+        "description": "models",
+        "isExtraImport": true,
+        "detail": "models",
+        "documentation": {}
+    },
+    {
+        "label": "UserMixin",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "logout_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "login_required",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "current_user",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "LoginManager",
+        "importPath": "flask_login",
+        "description": "flask_login",
+        "isExtraImport": true,
+        "detail": "flask_login",
+        "documentation": {}
+    },
+    {
+        "label": "wraps",
+        "importPath": "functools",
+        "description": "functools",
+        "isExtraImport": true,
+        "detail": "functools",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "flash",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "models.user",
+        "description": "models.user",
+        "isExtraImport": true,
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "models.user",
+        "description": "models.user",
+        "isExtraImport": true,
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "importPath": "models.driver",
+        "description": "models.driver",
+        "isExtraImport": true,
+        "detail": "models.driver",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "importPath": "models.driver",
+        "description": "models.driver",
+        "isExtraImport": true,
+        "detail": "models.driver",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "importPath": "models.driver",
+        "description": "models.driver",
+        "isExtraImport": true,
+        "detail": "models.driver",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "importPath": "models.driver",
+        "description": "models.driver",
+        "isExtraImport": true,
+        "detail": "models.driver",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "importPath": "models.driver",
+        "description": "models.driver",
+        "isExtraImport": true,
+        "detail": "models.driver",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "importPath": "models.driver",
+        "description": "models.driver",
+        "isExtraImport": true,
+        "detail": "models.driver",
+        "documentation": {}
+    },
+    {
+        "label": "Booking",
+        "importPath": "models.booking",
+        "description": "models.booking",
+        "isExtraImport": true,
+        "detail": "models.booking",
+        "documentation": {}
+    },
+    {
+        "label": "Booking",
+        "importPath": "models.booking",
+        "description": "models.booking",
+        "isExtraImport": true,
+        "detail": "models.booking",
+        "documentation": {}
+    },
+    {
+        "label": "Booking",
+        "importPath": "models.booking",
+        "description": "models.booking",
+        "isExtraImport": true,
+        "detail": "models.booking",
+        "documentation": {}
+    },
+    {
+        "label": "Booking",
+        "importPath": "models.booking",
+        "description": "models.booking",
+        "isExtraImport": true,
+        "detail": "models.booking",
+        "documentation": {}
+    },
+    {
+        "label": "Booking",
+        "importPath": "models.booking",
+        "description": "models.booking",
+        "isExtraImport": true,
+        "detail": "models.booking",
+        "documentation": {}
+    },
+    {
+        "label": "Booking",
+        "importPath": "models.booking",
+        "description": "models.booking",
+        "isExtraImport": true,
+        "detail": "models.booking",
+        "documentation": {}
+    },
+    {
+        "label": "Notification",
+        "importPath": "models.notification",
+        "description": "models.notification",
+        "isExtraImport": true,
+        "detail": "models.notification",
+        "documentation": {}
+    },
+    {
+        "label": "Notification",
+        "importPath": "models.notification",
+        "description": "models.notification",
+        "isExtraImport": true,
+        "detail": "models.notification",
+        "documentation": {}
+    },
+    {
+        "label": "Notification",
+        "importPath": "models.notification",
+        "description": "models.notification",
+        "isExtraImport": true,
+        "detail": "models.notification",
+        "documentation": {}
+    },
+    {
+        "label": "Notification",
+        "importPath": "models.notification",
+        "description": "models.notification",
+        "isExtraImport": true,
+        "detail": "models.notification",
+        "documentation": {}
+    },
+    {
+        "label": "Notification",
+        "importPath": "models.notification",
+        "description": "models.notification",
+        "isExtraImport": true,
+        "detail": "models.notification",
+        "documentation": {}
+    },
+    {
+        "label": "bcrypt",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "socketio",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "bcrypt",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "login_manager",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "socketio",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "migrate",
+        "importPath": "extensions",
+        "description": "extensions",
+        "isExtraImport": true,
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "Customer",
+        "importPath": "models.customer",
+        "description": "models.customer",
+        "isExtraImport": true,
+        "detail": "models.customer",
+        "documentation": {}
+    },
+    {
+        "label": "Customer",
+        "importPath": "models.customer",
+        "description": "models.customer",
+        "isExtraImport": true,
+        "detail": "models.customer",
+        "documentation": {}
+    },
+    {
+        "label": "Customer",
+        "importPath": "models.customer",
+        "description": "models.customer",
+        "isExtraImport": true,
+        "detail": "models.customer",
+        "documentation": {}
+    },
+    {
+        "label": "Customer",
+        "importPath": "models.customer",
+        "description": "models.customer",
+        "isExtraImport": true,
+        "detail": "models.customer",
+        "documentation": {}
+    },
+    {
+        "label": "math",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "math",
+        "description": "math",
+        "detail": "math",
+        "documentation": {}
+    },
+    {
+        "label": "Truck",
+        "importPath": "models.truck",
+        "description": "models.truck",
+        "isExtraImport": true,
+        "detail": "models.truck",
+        "documentation": {}
+    },
+    {
+        "label": "Rating",
+        "importPath": "models.rating",
+        "description": "models.rating",
+        "isExtraImport": true,
+        "detail": "models.rating",
+        "documentation": {}
+    },
+    {
+        "label": "Rating",
+        "importPath": "models.rating",
+        "description": "models.rating",
+        "isExtraImport": true,
+        "detail": "models.rating",
+        "documentation": {}
+    },
+    {
+        "label": "Payment",
+        "importPath": "models.payment",
+        "description": "models.payment",
+        "isExtraImport": true,
+        "detail": "models.payment",
+        "documentation": {}
+    },
+    {
+        "label": "Payment",
+        "importPath": "models.payment",
+        "description": "models.payment",
+        "isExtraImport": true,
+        "detail": "models.payment",
+        "documentation": {}
+    },
+    {
+        "label": "uuid",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uuid",
+        "description": "uuid",
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "join_room",
+        "importPath": "flask_socketio",
+        "description": "flask_socketio",
+        "isExtraImport": true,
+        "detail": "flask_socketio",
+        "documentation": {}
+    },
+    {
+        "label": "emit",
+        "importPath": "flask_socketio",
+        "description": "flask_socketio",
+        "isExtraImport": true,
+        "detail": "flask_socketio",
+        "documentation": {}
+    },
+    {
+        "label": "SocketIO",
+        "importPath": "flask_socketio",
+        "description": "flask_socketio",
+        "isExtraImport": true,
+        "detail": "flask_socketio",
+        "documentation": {}
+    },
+    {
+        "label": "eventlet",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "eventlet",
+        "description": "eventlet",
+        "detail": "eventlet",
+        "documentation": {}
+    },
+    {
+        "label": "Config",
+        "importPath": "config.config",
+        "description": "config.config",
+        "isExtraImport": true,
+        "detail": "config.config",
+        "documentation": {}
+    },
+    {
+        "label": "SQLAlchemy",
+        "importPath": "flask_sqlalchemy",
+        "description": "flask_sqlalchemy",
+        "isExtraImport": true,
+        "detail": "flask_sqlalchemy",
+        "documentation": {}
+    },
+    {
+        "label": "Bcrypt",
+        "importPath": "flask_bcrypt",
+        "description": "flask_bcrypt",
+        "isExtraImport": true,
+        "detail": "flask_bcrypt",
+        "documentation": {}
+    },
+    {
+        "label": "Migrate",
+        "importPath": "flask_migrate",
+        "description": "flask_migrate",
+        "isExtraImport": true,
+        "detail": "flask_migrate",
+        "documentation": {}
+    },
+    {
+        "label": "Config",
+        "kind": 6,
+        "importPath": "config.config",
+        "description": "config.config",
+        "peekOfCode": "class Config:\n    \"\"\"Base configuration loaded from environment variables.\"\"\"\n    SECRET_KEY = os.getenv(\"SECRET_KEY\", \"dev-secret-key-change-in-production\")\n    SQLALCHEMY_DATABASE_URI = os.getenv(\"DATABASE_URL\") or \"sqlite:///cargoconnect.db\"\n    SQLALCHEMY_TRACK_MODIFICATIONS = False\n    MOMO_API_KEY = os.getenv(\"MOMO_API_KEY\", \"\")\n    MOMO_USER_ID = os.getenv(\"MOMO_USER_ID\", \"\")\n    MOMO_BASE_URL = os.getenv(\"MOMO_BASE_URL\", \"https://sandbox.momodeveloper.mtn.com\")\n    MOMO_SUBSCRIPTION_KEY = os.getenv(\"MOMO_SUBSCRIPTION_KEY\", \"\")\n    FLASK_ENV = os.getenv(\"FLASK_ENV\", \"development\")",
+        "detail": "config.config",
+        "documentation": {}
+    },
+    {
+        "label": "Booking",
+        "kind": 6,
+        "importPath": "models.booking",
+        "description": "models.booking",
+        "peekOfCode": "class Booking(db.Model):\n    # Core booking entity that connects customers, drivers, and trucks for cargo transport\n    # Tracks all details from creation through completion of a cargo transportation job\n    __tablename__ = \"bookings\"\n    booking_id = db.Column(db.Integer, primary_key=True)\n    customer_id = db.Column(db.Integer, db.ForeignKey(\"customers.customer_id\"), nullable=False)\n    truck_id = db.Column(db.Integer, db.ForeignKey(\"trucks.truck_id\"), nullable=False)\n    driver_id = db.Column(db.Integer, db.ForeignKey(\"drivers.driver_id\"), nullable=False)\n    pickup_address = db.Column(db.Text, nullable=False)\n    dropoff_address = db.Column(db.Text, nullable=False)",
+        "detail": "models.booking",
+        "documentation": {}
+    },
+    {
+        "label": "Customer",
+        "kind": 6,
+        "importPath": "models.customer",
+        "description": "models.customer",
+        "peekOfCode": "class Customer(db.Model):\n    \"\"\"Customer profile linked to a user account.\"\"\"\n    __tablename__ = \"customers\"\n    customer_id = db.Column(db.Integer, primary_key=True)\n    user_id = db.Column(db.Integer, db.ForeignKey(\"users.user_id\"), nullable=False)\n    default_address = db.Column(db.Text, nullable=True)\n    bookings = db.relationship(\"Booking\", backref=\"customer\", lazy=True)",
+        "detail": "models.customer",
+        "documentation": {}
+    },
+    {
+        "label": "Driver",
+        "kind": 6,
+        "importPath": "models.driver",
+        "description": "models.driver",
+        "peekOfCode": "class Driver(db.Model):\n    # Driver profile linked to user account with location tracking and availability status\n    # Manages driver information, verification, ratings, and relationships to trucks and bookings\n    __tablename__ = \"drivers\"\n    driver_id = db.Column(db.Integer, primary_key=True)\n    user_id = db.Column(db.Integer, db.ForeignKey(\"users.user_id\"), nullable=False)\n    licence_no = db.Column(db.String(100), unique=True)\n    rating = db.Column(db.Float, default=0.0)\n    is_available = db.Column(db.Boolean, default=False)\n    is_verified = db.Column(db.Boolean, default=False)",
+        "detail": "models.driver",
+        "documentation": {}
+    },
+    {
+        "label": "Notification",
+        "kind": 6,
+        "importPath": "models.notification",
+        "description": "models.notification",
+        "peekOfCode": "class Notification(db.Model):\n    # notification message sent to a user\n    # Tracks message content, delivery channel, and read status\n    __tablename__ = \"notifications\"\n    notification_id = db.Column(db.Integer, primary_key=True)\n    user_id = db.Column(db.Integer, db.ForeignKey(\"users.user_id\"), nullable=False)\n    message = db.Column(db.Text, nullable=False)\n    channel = db.Column(db.String(50))\n    is_read = db.Column(db.Boolean, default=False)\n    sent_at = db.Column(db.DateTime, default=datetime.utcnow)",
+        "detail": "models.notification",
+        "documentation": {}
+    },
+    {
+        "label": "Payment",
+        "kind": 6,
+        "importPath": "models.payment",
+        "description": "models.payment",
+        "peekOfCode": "class Payment(db.Model):\n    # Payment transaction record associated with a booking\n    # Tracks payment method, amount, and completion timestamp\n    __tablename__ = \"payments\"\n    payment_id = db.Column(db.Integer, primary_key=True)\n    booking_id = db.Column(db.Integer, db.ForeignKey(\"bookings.booking_id\"), unique=True, nullable=False)\n    amount = db.Column(db.Numeric(10, 2), nullable=False)\n    method = db.Column(db.String(50), default=\"MoMo\")\n    status = db.Column(\n        db.Enum(\"pending\", \"paid\", \"failed\", name=\"payment_status\"),",
+        "detail": "models.payment",
+        "documentation": {}
+    },
+    {
+        "label": "Rating",
+        "kind": 6,
+        "importPath": "models.rating",
+        "description": "models.rating",
+        "peekOfCode": "class Rating(db.Model):\n    # Customer review and rating for a driver after a completed booking\n    # Recording feedback score and optional comment about the delivery service\n    __tablename__ = \"ratings\"\n    rating_id = db.Column(db.Integer, primary_key=True)\n    booking_id = db.Column(db.Integer, db.ForeignKey(\"bookings.booking_id\"), nullable=False)\n    customer_id = db.Column(db.Integer, db.ForeignKey(\"customers.customer_id\"), nullable=False)\n    driver_id = db.Column(db.Integer, db.ForeignKey(\"drivers.driver_id\"), nullable=False)\n    # Rating score from 1.0 to 5.0\n    rating_score = db.Column(db.Float, nullable=False)",
+        "detail": "models.rating",
+        "documentation": {}
+    },
+    {
+        "label": "Truck",
+        "kind": 6,
+        "importPath": "models.truck",
+        "description": "models.truck",
+        "peekOfCode": "class Truck(db.Model):\n    # Truck vehicle registered and owned by a driver\n    # Tracking truck details including identification and cargo capacity\n    __tablename__ = \"trucks\"\n    truck_id = db.Column(db.Integer, primary_key=True)\n    driver_id = db.Column(db.Integer, db.ForeignKey(\"drivers.driver_id\"), nullable=False)\n    plate_no = db.Column(db.String(100), unique=True)\n    # Cargo capacity measured in tons\n    capacity = db.Column(db.Float)",
+        "detail": "models.truck",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "kind": 6,
+        "importPath": "models.user",
+        "description": "models.user",
+        "peekOfCode": "class User(UserMixin, db.Model):\n    # Base user account shared across customers, drivers, and admins\n    # Handling authentication, profile links, and notifications for all user types\n    __tablename__ = \"users\"\n    user_id = db.Column(db.Integer, primary_key=True)\n    user_name = db.Column(db.String(100), nullable=False)\n    email = db.Column(db.String(100), unique=True, nullable=False)\n    user_phone_no = db.Column(db.String(15))\n    password_hash = db.Column(db.String(255), nullable=False)\n    role = db.Column(db.Enum(\"customer\", \"driver\", \"admin\", name=\"user_role\"), nullable=False)",
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "success",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_admin(f):\n    \"\"\"Decorator that restricts access to admin users only.\"\"\"\n    @wraps(f)\n    def decorated(*args, **kwargs):",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "error",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_admin(f):\n    \"\"\"Decorator that restricts access to admin users only.\"\"\"\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        if not current_user.is_authenticated or current_user.role != \"admin\":\n            return error(\"Admin access required.\", 403)\n        return f(*args, **kwargs)",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "require_admin",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def require_admin(f):\n    \"\"\"Decorator that restricts access to admin users only.\"\"\"\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        if not current_user.is_authenticated or current_user.role != \"admin\":\n            return error(\"Admin access required.\", 403)\n        return f(*args, **kwargs)\n    return decorated\n@admin_bp.route(\"/dashboard\")\n@login_required",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "dashboard",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def dashboard():\n    \"\"\"Render the admin dashboard page.\"\"\"\n    return render_template(\"admin-dashboard.html\", user=current_user)\n@admin_bp.route(\"/users-page\")\n@login_required\n@require_admin\ndef users_page():\n    \"\"\"Render the admin users management page.\"\"\"\n    return render_template(\"admin-users.html\", user=current_user)\n@admin_bp.route(\"/drivers-page\")",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "users_page",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def users_page():\n    \"\"\"Render the admin users management page.\"\"\"\n    return render_template(\"admin-users.html\", user=current_user)\n@admin_bp.route(\"/drivers-page\")\n@login_required\n@require_admin\ndef drivers_page():\n    \"\"\"Render the admin drivers management page.\"\"\"\n    return render_template(\"admin-drivers.html\", user=current_user)\n@admin_bp.route(\"/bookings-page\")",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "drivers_page",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def drivers_page():\n    \"\"\"Render the admin drivers management page.\"\"\"\n    return render_template(\"admin-drivers.html\", user=current_user)\n@admin_bp.route(\"/bookings-page\")\n@login_required\n@require_admin\ndef bookings_page():\n    \"\"\"Render the admin bookings management page.\"\"\"\n    return render_template(\"Admin-trips.html\", user=current_user)\n@admin_bp.route(\"/stats\", methods=[\"GET\"])",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "bookings_page",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def bookings_page():\n    \"\"\"Render the admin bookings management page.\"\"\"\n    return render_template(\"Admin-trips.html\", user=current_user)\n@admin_bp.route(\"/stats\", methods=[\"GET\"])\n@login_required\n@require_admin\ndef stats():\n    \"\"\"Return platform-wide statistics.\"\"\"\n    total_users = User.query.count()\n    total_drivers = Driver.query.count()",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "stats",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def stats():\n    \"\"\"Return platform-wide statistics.\"\"\"\n    total_users = User.query.count()\n    total_drivers = Driver.query.count()\n    verified_drivers = Driver.query.filter_by(is_verified=True).count()\n    total_bookings = Booking.query.count()\n    completed_bookings = Booking.query.filter_by(status=\"completed\").count()\n    total_revenue = db.session.query(db.func.sum(Booking.estimated_cost)).filter(\n        Booking.status == \"completed\"\n    ).scalar() or 0",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "unverified_drivers",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def unverified_drivers():\n    \"\"\"Return all drivers pending verification.\"\"\"\n    drivers = Driver.query.filter_by(is_verified=False).all()\n    return success([_serialize_driver(d) for d in drivers])\n@admin_bp.route(\"/drivers/<int:driver_id>/verify\", methods=[\"POST\"])\n@login_required\n@require_admin\ndef verify_driver(driver_id):\n    \"\"\"Verify a driver account.\"\"\"\n    driver = Driver.query.get_or_404(driver_id)",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "verify_driver",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def verify_driver(driver_id):\n    \"\"\"Verify a driver account.\"\"\"\n    driver = Driver.query.get_or_404(driver_id)\n    driver.is_verified = True\n    note = Notification(\n        user_id=driver.user_id,\n        message=\"Your driver account has been verified. You can now go online.\",\n        channel=\"in-app\",\n    )\n    db.session.add(note)",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "reject_driver",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def reject_driver(driver_id):\n    \"\"\"Reject and remove an unverified driver.\"\"\"\n    driver = Driver.query.get_or_404(driver_id)\n    db.session.delete(driver)\n    db.session.commit()\n    return success(None, \"Driver rejected and removed.\")\n@admin_bp.route(\"/users\", methods=[\"GET\"])\n@login_required\n@require_admin\ndef list_users():",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "list_users",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def list_users():\n    \"\"\"Return all users.\"\"\"\n    users = User.query.order_by(User.created_at.desc()).all()\n    return success([_serialize_user(u) for u in users])\n@admin_bp.route(\"/users/<int:user_id>\", methods=[\"DELETE\"])\n@login_required\n@require_admin\ndef delete_user(user_id):\n    \"\"\"Delete a user account.\"\"\"\n    user = User.query.get_or_404(user_id)",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "delete_user",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def delete_user(user_id):\n    \"\"\"Delete a user account.\"\"\"\n    user = User.query.get_or_404(user_id)\n    db.session.delete(user)\n    db.session.commit()\n    return success(None, \"User deleted.\")\n@admin_bp.route(\"/drivers\", methods=[\"GET\"])\n@login_required\n@require_admin\ndef list_drivers():",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "list_drivers",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def list_drivers():\n    \"\"\"Return all driver records.\"\"\"\n    drivers = Driver.query.all()\n    return success([_serialize_driver(d) for d in drivers])\n@admin_bp.route(\"/drivers/<int:driver_id>/toggle-availability\", methods=[\"PATCH\"])\n@login_required\n@require_admin\ndef toggle_driver_availability(driver_id):\n    \"\"\"Toggle a driver's availability.\"\"\"\n    driver = Driver.query.get_or_404(driver_id)",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "toggle_driver_availability",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def toggle_driver_availability(driver_id):\n    \"\"\"Toggle a driver's availability.\"\"\"\n    driver = Driver.query.get_or_404(driver_id)\n    driver.is_available = not driver.is_available\n    db.session.commit()\n    return success({\"is_available\": driver.is_available}, \"Availability toggled.\")\n@admin_bp.route(\"/drivers/<int:driver_id>/remove-verification\", methods=[\"PATCH\"])\n@login_required\n@require_admin\ndef remove_verification(driver_id):",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "remove_verification",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def remove_verification(driver_id):\n    \"\"\"Remove verification from a driver.\"\"\"\n    driver = Driver.query.get_or_404(driver_id)\n    driver.is_verified = False\n    db.session.commit()\n    return success(None, \"Verification removed.\")\n@admin_bp.route(\"/drivers/<int:driver_id>\", methods=[\"DELETE\"])\n@login_required\n@require_admin\ndef delete_driver(driver_id):",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "delete_driver",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def delete_driver(driver_id):\n    \"\"\"Delete a driver record.\"\"\"\n    driver = Driver.query.get_or_404(driver_id)\n    db.session.delete(driver)\n    db.session.commit()\n    return success(None, \"Driver deleted.\")\n@admin_bp.route(\"/bookings\", methods=[\"GET\"])\n@login_required\n@require_admin\ndef list_bookings():",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "list_bookings",
+        "kind": 2,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "def list_bookings():\n    \"\"\"Return all bookings, optionally filtered by status.\"\"\"\n    status_filter = request.args.get(\"status\")\n    query = Booking.query.order_by(Booking.created_at.desc())\n    if status_filter and status_filter != \"all\":\n        query = query.filter_by(status=status_filter)\n    bookings = query.all()\n    return success([_serialize_booking(b) for b in bookings])\ndef _serialize_user(u):\n    \"\"\"Serialize a user record to dict.\"\"\"",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "admin_bp",
+        "kind": 5,
+        "importPath": "routes.admin",
+        "description": "routes.admin",
+        "peekOfCode": "admin_bp = Blueprint(\"admin\", __name__)\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_admin(f):\n    \"\"\"Decorator that restricts access to admin users only.\"\"\"\n    @wraps(f)",
+        "detail": "routes.admin",
+        "documentation": {}
+    },
+    {
+        "label": "create_response",
+        "kind": 2,
+        "importPath": "routes.auth",
+        "description": "routes.auth",
+        "peekOfCode": "def create_response(status, data, message):\n    \"\"\"Return a standard JSON response envelope.\"\"\"\n    return jsonify({\"status\": status, \"data\": data, \"message\": message})\n@auth_bp.route(\"/login\", methods=[\"GET\", \"POST\"])\ndef login():\n    \"\"\"Show login form and authenticate user.\"\"\"\n    if current_user.is_authenticated:\n        return redirect_by_role(current_user.role)\n    if request.method == \"POST\":\n        data = request.get_json(silent=True) or request.form",
+        "detail": "routes.auth",
+        "documentation": {}
+    },
+    {
+        "label": "login",
+        "kind": 2,
+        "importPath": "routes.auth",
+        "description": "routes.auth",
+        "peekOfCode": "def login():\n    \"\"\"Show login form and authenticate user.\"\"\"\n    if current_user.is_authenticated:\n        return redirect_by_role(current_user.role)\n    if request.method == \"POST\":\n        data = request.get_json(silent=True) or request.form\n        email = (data.get(\"email\") or \"\").strip().lower()\n        password = data.get(\"password\") or \"\"\n        user = User.query.filter_by(email=email).first()\n        if user and bcrypt.check_password_hash(user.password_hash, password):",
+        "detail": "routes.auth",
+        "documentation": {}
+    },
+    {
+        "label": "register",
+        "kind": 2,
+        "importPath": "routes.auth",
+        "description": "routes.auth",
+        "peekOfCode": "def register():\n    \"\"\"Show registration form and create a new user account.\"\"\"\n    if current_user.is_authenticated:\n        return redirect_by_role(current_user.role)\n    if request.method == \"POST\":\n        data = request.get_json(silent=True) or request.form\n        full_name = (data.get(\"full_name\") or data.get(\"name\") or \"\").strip()\n        email = (data.get(\"email\") or \"\").strip().lower()\n        phone = (data.get(\"user_phone_no\") or data.get(\"phone\") or \"\").strip()\n        password = data.get(\"password\") or \"\"",
+        "detail": "routes.auth",
+        "documentation": {}
+    },
+    {
+        "label": "logout",
+        "kind": 2,
+        "importPath": "routes.auth",
+        "description": "routes.auth",
+        "peekOfCode": "def logout():\n    \"\"\"Log out the current user.\"\"\"\n    logout_user()\n    return redirect(url_for(\"auth.login\"))\ndef redirect_by_role(role):\n    \"\"\"Redirect to the appropriate dashboard based on role.\"\"\"\n    if role == \"admin\":\n        return redirect(url_for(\"admin.dashboard\"))\n    elif role == \"driver\":\n        return redirect(url_for(\"driver.dashboard\"))",
+        "detail": "routes.auth",
+        "documentation": {}
+    },
+    {
+        "label": "redirect_by_role",
+        "kind": 2,
+        "importPath": "routes.auth",
+        "description": "routes.auth",
+        "peekOfCode": "def redirect_by_role(role):\n    \"\"\"Redirect to the appropriate dashboard based on role.\"\"\"\n    if role == \"admin\":\n        return redirect(url_for(\"admin.dashboard\"))\n    elif role == \"driver\":\n        return redirect(url_for(\"driver.dashboard\"))\n    return redirect(url_for(\"customer.dashboard\"))",
+        "detail": "routes.auth",
+        "documentation": {}
+    },
+    {
+        "label": "auth_bp",
+        "kind": 5,
+        "importPath": "routes.auth",
+        "description": "routes.auth",
+        "peekOfCode": "auth_bp = Blueprint(\"auth\", __name__)\ndef create_response(status, data, message):\n    \"\"\"Return a standard JSON response envelope.\"\"\"\n    return jsonify({\"status\": status, \"data\": data, \"message\": message})\n@auth_bp.route(\"/login\", methods=[\"GET\", \"POST\"])\ndef login():\n    \"\"\"Show login form and authenticate user.\"\"\"\n    if current_user.is_authenticated:\n        return redirect_by_role(current_user.role)\n    if request.method == \"POST\":",
+        "detail": "routes.auth",
+        "documentation": {}
+    },
+    {
+        "label": "success",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef haversine(lat1, lng1, lat2, lng2):\n    \"\"\"Compute great-circle distance in km between two points.\"\"\"\n    R = 6371\n    dlat = math.radians(lat2 - lat1)",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "error",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef haversine(lat1, lng1, lat2, lng2):\n    \"\"\"Compute great-circle distance in km between two points.\"\"\"\n    R = 6371\n    dlat = math.radians(lat2 - lat1)\n    dlng = math.radians(lng2 - lng1)\n    a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlng / 2) ** 2\n    return R * 2 * math.asin(math.sqrt(a))",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "haversine",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def haversine(lat1, lng1, lat2, lng2):\n    \"\"\"Compute great-circle distance in km between two points.\"\"\"\n    R = 6371\n    dlat = math.radians(lat2 - lat1)\n    dlng = math.radians(lng2 - lng1)\n    a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlng / 2) ** 2\n    return R * 2 * math.asin(math.sqrt(a))\ndef estimate_cost(weight_tons, distance_km):\n    \"\"\"Calculate estimated trip cost in RWF.\"\"\"\n    return BASE_FARE + (COST_PER_TON * weight_tons) + (COST_PER_KM * distance_km)",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "estimate_cost",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def estimate_cost(weight_tons, distance_km):\n    \"\"\"Calculate estimated trip cost in RWF.\"\"\"\n    return BASE_FARE + (COST_PER_TON * weight_tons) + (COST_PER_KM * distance_km)\ndef find_available_drivers(pickup_lat, pickup_lng, required_capacity):\n    \"\"\"Find verified, available drivers near a pickup location with enough capacity.\"\"\"\n    confirmed_driver_ids = db.session.query(Booking.driver_id).filter(\n        Booking.status == \"confirmed\"\n    ).subquery()\n    drivers = (\n        Driver.query.filter(",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "find_available_drivers",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def find_available_drivers(pickup_lat, pickup_lng, required_capacity):\n    \"\"\"Find verified, available drivers near a pickup location with enough capacity.\"\"\"\n    confirmed_driver_ids = db.session.query(Booking.driver_id).filter(\n        Booking.status == \"confirmed\"\n    ).subquery()\n    drivers = (\n        Driver.query.filter(\n            Driver.is_verified == True,\n            Driver.is_available == True,\n            Driver.driver_id.notin_(confirmed_driver_ids),",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "serialize_driver_result",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def serialize_driver_result(item):\n    \"\"\"Serialize a driver search result to a dict.\"\"\"\n    driver = item[\"driver\"]\n    truck = item[\"truck\"]\n    return {\n        \"driver_id\": driver.driver_id,\n        \"driver_name\": driver.user.user_name,\n        \"rating\": driver.rating,\n        \"truck_id\": truck.truck_id,\n        \"plate_no\": truck.plate_no,",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "search_trucks",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def search_trucks():\n    \"\"\"Search for available drivers truck matching cargo requirements.\"\"\"\n    data = request.get_json() or request.form\n    try:\n        weight = float(data.get(\"weight\", 0))\n        pickup_lat = float(data.get(\"pickup_lat\", KIGALI_LAT))\n        pickup_lng = float(data.get(\"pickup_lng\", KIGALI_LNG))\n    except (ValueError, TypeError):\n        return error(\"Invalid input values.\")\n    drivers = find_available_drivers(pickup_lat, pickup_lng, weight)",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "create_booking",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def create_booking():\n    \"\"\"Create a new booking for the current customer.\"\"\"\n    if current_user.role != \"customer\":\n        return error(\"Only customers can create bookings.\", 403)\n    customer = Customer.query.filter_by(user_id=current_user.user_id).first()\n    if not customer:\n        return error(\"Customer profile not found.\", 404)\n    data = request.get_json() or request.form\n    try:\n        truck_id = int(data.get(\"truck_id\"))",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "get_booking",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def get_booking(booking_id):\n    \"\"\"Fetch details for a single booking.\"\"\"\n    booking = Booking.query.get_or_404(booking_id)\n    return success(_serialize_booking(booking), \"Booking details.\")\n@booking_bp.route(\"/<int:booking_id>/cancel\", methods=[\"POST\"])\n@login_required\ndef cancel_booking(booking_id):\n    \"\"\"Cancel a pending booking.\"\"\"\n    booking = Booking.query.get_or_404(booking_id)\n    if booking.status not in (\"pending\",):",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "cancel_booking",
+        "kind": 2,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "def cancel_booking(booking_id):\n    \"\"\"Cancel a pending booking.\"\"\"\n    booking = Booking.query.get_or_404(booking_id)\n    if booking.status not in (\"pending\",):\n        return error(\"Only pending bookings can be cancelled.\")\n    booking.status = \"cancelled\"\n    db.session.commit()\n    return success(None, \"Booking cancelled.\")\ndef _serialize_booking(b):\n    \"\"\"Convert a Booking object to a serializable dict.\"\"\"",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "booking_bp",
+        "kind": 5,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "booking_bp = Blueprint(\"booking\", __name__)\nKIGALI_LAT = -1.9441\nKIGALI_LNG = 30.0619\nBASE_FARE = 2000\nCOST_PER_TON = 500\nCOST_PER_KM = 200\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "KIGALI_LAT",
+        "kind": 5,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "KIGALI_LAT = -1.9441\nKIGALI_LNG = 30.0619\nBASE_FARE = 2000\nCOST_PER_TON = 500\nCOST_PER_KM = 200\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "KIGALI_LNG",
+        "kind": 5,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "KIGALI_LNG = 30.0619\nBASE_FARE = 2000\nCOST_PER_TON = 500\nCOST_PER_KM = 200\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "BASE_FARE",
+        "kind": 5,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "BASE_FARE = 2000\nCOST_PER_TON = 500\nCOST_PER_KM = 200\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef haversine(lat1, lng1, lat2, lng2):",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "COST_PER_TON",
+        "kind": 5,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "COST_PER_TON = 500\nCOST_PER_KM = 200\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef haversine(lat1, lng1, lat2, lng2):\n    \"\"\"Compute great-circle distance in km between two points.\"\"\"",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "COST_PER_KM",
+        "kind": 5,
+        "importPath": "routes.booking",
+        "description": "routes.booking",
+        "peekOfCode": "COST_PER_KM = 200\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef haversine(lat1, lng1, lat2, lng2):\n    \"\"\"Compute great-circle distance in km between two points.\"\"\"\n    R = 6371",
+        "detail": "routes.booking",
+        "documentation": {}
+    },
+    {
+        "label": "success",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_customer(f):\n    \"\"\"Decorator that restricts access to customers only.\"\"\"\n    from functools import wraps\n    @wraps(f)",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "error",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_customer(f):\n    \"\"\"Decorator that restricts access to customers only.\"\"\"\n    from functools import wraps\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        if current_user.role != \"customer\":\n            return error(\"Access denied.\", 403)",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "require_customer",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def require_customer(f):\n    \"\"\"Decorator that restricts access to customers only.\"\"\"\n    from functools import wraps\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        if current_user.role != \"customer\":\n            return error(\"Access denied.\", 403)\n        return f(*args, **kwargs)\n    return decorated\n@customer_bp.route(\"/dashboard\")",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "dashboard",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def dashboard():\n    \"\"\"Render the customer dashboard page.\"\"\"\n    customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()\n    # Template names in this repo use a mix of casing/hyphens; keep route stable.\n    return render_template(\"Client-dashboard.html\", customer=customer, user=current_user)\n@customer_bp.route(\"/stats\", methods=[\"GET\"])\n@login_required\n@require_customer\ndef stats():\n    \"\"\"Return dashboard stats for the current customer.\"\"\"",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "stats",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def stats():\n    \"\"\"Return dashboard stats for the current customer.\"\"\"\n    customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()\n    total = Booking.query.filter_by(customer_id=customer.customer_id).count()\n    completed = Booking.query.filter_by(customer_id=customer.customer_id, status=\"completed\").count()\n    pending = Booking.query.filter_by(customer_id=customer.customer_id, status=\"pending\").count()\n    spent = db.session.query(db.func.sum(Booking.estimated_cost)).filter(\n        Booking.customer_id == customer.customer_id,\n        Booking.status == \"completed\",\n    ).scalar() or 0",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "active_booking",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def active_booking():\n    \"\"\"Return the customer's current confirmed booking if any.\"\"\"\n    customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()\n    booking = Booking.query.filter_by(customer_id=customer.customer_id, status=\"confirmed\").first()\n    if not booking:\n        return success(None, \"No active booking.\")\n    return success(_serialize_booking(booking))\n@customer_bp.route(\"/recent-bookings\", methods=[\"GET\"])\n@login_required\n@require_customer",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "recent_bookings",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def recent_bookings():\n    \"\"\"Return the customer's five most recent bookings.\"\"\"\n    customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()\n    bookings = (\n        Booking.query.filter_by(customer_id=customer.customer_id)\n        .order_by(Booking.created_at.desc())\n        .limit(5)\n        .all()\n    )\n    return success([_serialize_booking(b) for b in bookings])",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "notifications",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def notifications():\n    \"\"\"Return unread notification count and list.\"\"\"\n    notes = Notification.query.filter_by(user_id=current_user.user_id, is_read=False).all()\n    return success({\n        \"count\": len(notes),\n        \"items\": [{\"id\": n.notification_id, \"message\": n.message, \"sent_at\": n.sent_at.isoformat()} for n in notes],\n    })\n@customer_bp.route(\"/notifications/mark-read\", methods=[\"POST\"])\n@login_required\ndef mark_notifications_read():",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "mark_notifications_read",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def mark_notifications_read():\n    \"\"\"Mark all notifications as read for the current user.\"\"\"\n    Notification.query.filter_by(user_id=current_user.user_id, is_read=False).update({\"is_read\": True})\n    db.session.commit()\n    return success(None, \"Marked as read.\")\n@customer_bp.route(\"/rate/<int:booking_id>\", methods=[\"POST\"])\n@login_required\n@require_customer\ndef rate_driver(booking_id):\n    \"\"\"Submit a rating for a completed booking.\"\"\"",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "rate_driver",
+        "kind": 2,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "def rate_driver(booking_id):\n    \"\"\"Submit a rating for a completed booking.\"\"\"\n    customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()\n    booking = Booking.query.filter_by(booking_id=booking_id, customer_id=customer.customer_id, status=\"completed\").first_or_404()\n    data = request.get_json() or request.form\n    score = float(data.get(\"rating_score\", 0))\n    comment = data.get(\"comment\", \"\").strip()\n    if not (1.0 <= score <= 5.0):\n        return error(\"Rating must be between 1.0 and 5.0.\")\n    existing = Rating.query.filter_by(booking_id=booking_id).first()",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "customer_bp",
+        "kind": 5,
+        "importPath": "routes.customer",
+        "description": "routes.customer",
+        "peekOfCode": "customer_bp = Blueprint(\"customer\", __name__)\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_customer(f):\n    \"\"\"Decorator that restricts access to customers only.\"\"\"\n    from functools import wraps",
+        "detail": "routes.customer",
+        "documentation": {}
+    },
+    {
+        "label": "success",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_driver(f):\n    \"\"\"Decorator that restricts access to drivers only.\"\"\"\n    from functools import wraps\n    @wraps(f)",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "error",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_driver(f):\n    \"\"\"Decorator that restricts access to drivers only.\"\"\"\n    from functools import wraps\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        if current_user.role != \"driver\":\n            return error(\"Access denied.\", 403)",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "require_driver",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def require_driver(f):\n    \"\"\"Decorator that restricts access to drivers only.\"\"\"\n    from functools import wraps\n    @wraps(f)\n    def decorated(*args, **kwargs):\n        if current_user.role != \"driver\":\n            return error(\"Access denied.\", 403)\n        return f(*args, **kwargs)\n    return decorated\n@driver_bp.route(\"/dashboard\")",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "dashboard",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def dashboard():\n    \"\"\"Render the driver dashboard page.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    return render_template(\"driver-home.html\", driver=driver, user=current_user)\n@driver_bp.route(\"/stats\", methods=[\"GET\"])\n@login_required\n@require_driver\ndef stats():\n    \"\"\"Return driver statistics for the dashboard.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "stats",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def stats():\n    \"\"\"Return driver statistics for the dashboard.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    total_jobs = Booking.query.filter_by(driver_id=driver.driver_id, status=\"completed\").count()\n    one_week_ago = datetime.utcnow() - timedelta(days=7)\n    week_bookings = Booking.query.filter(\n        Booking.driver_id == driver.driver_id,\n        Booking.status == \"completed\",\n        Booking.created_at >= one_week_ago,\n    ).all()",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "toggle_availability",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def toggle_availability():\n    \"\"\"Toggle the driver's online/offline availability status.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    if not driver.is_verified:\n        return error(\"Account pending verification.\", 403)\n    data = request.get_json() or {}\n    driver.is_available = bool(data.get(\"is_available\", not driver.is_available))\n    db.session.commit()\n    return success({\"is_available\": driver.is_available}, \"Availability updated.\")\n@driver_bp.route(\"/pending-jobs\", methods=[\"GET\"])",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "pending_jobs",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def pending_jobs():\n    \"\"\"Return pending bookings assigned to this driver.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    bookings = Booking.query.filter_by(driver_id=driver.driver_id, status=\"pending\").all()\n    return success([_serialize_booking(b) for b in bookings])\n@driver_bp.route(\"/active-job\", methods=[\"GET\"])\n@login_required\n@require_driver\ndef active_job():\n    \"\"\"Return the driver's currently confirmed booking if any.\"\"\"",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "active_job",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def active_job():\n    \"\"\"Return the driver's currently confirmed booking if any.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    booking = Booking.query.filter_by(driver_id=driver.driver_id, status=\"confirmed\").first()\n    if not booking:\n        return success(None, \"No active job.\")\n    return success(_serialize_booking(booking))\n@driver_bp.route(\"/job/<int:booking_id>/accept\", methods=[\"POST\"])\n@login_required\n@require_driver",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "accept_job",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def accept_job(booking_id):\n    \"\"\"Accept a pending booking and set it to confirmed.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    booking = Booking.query.filter_by(booking_id=booking_id, driver_id=driver.driver_id).first_or_404()\n    if booking.status != \"pending\":\n        return error(\"Booking is not pending.\")\n    booking.status = \"confirmed\"\n    note = Notification(\n        user_id=booking.customer.user_id,\n        message=f\"Your booking #{booking_id} has been confirmed by {current_user.user_name}.\",",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "decline_job",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def decline_job(booking_id):\n    \"\"\"Decline a pending booking.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    booking = Booking.query.filter_by(booking_id=booking_id, driver_id=driver.driver_id).first_or_404()\n    if booking.status != \"pending\":\n        return error(\"Booking is not pending.\")\n    booking.status = \"cancelled\"\n    db.session.commit()\n    return success(None, \"Job declined.\")\n@driver_bp.route(\"/job/<int:booking_id>/complete\", methods=[\"POST\"])",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "complete_job",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def complete_job(booking_id):\n    \"\"\"Mark a confirmed booking as completed and create payment record.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    booking = Booking.query.filter_by(booking_id=booking_id, driver_id=driver.driver_id).first_or_404()\n    if booking.status != \"confirmed\":\n        return error(\"Only confirmed jobs can be completed.\")\n    booking.status = \"completed\"\n    if not booking.payment:\n        payment = Payment(\n            booking_id=booking_id,",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "job_history",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def job_history():\n    \"\"\"Return the driver's ten most recent completed jobs.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    bookings = (\n        Booking.query.filter_by(driver_id=driver.driver_id, status=\"completed\")\n        .order_by(Booking.created_at.desc())\n        .limit(10)\n        .all()\n    )\n    return success([_serialize_booking_history(b) for b in bookings])",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "driver_job_page",
+        "kind": 2,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "def driver_job_page(booking_id):\n    \"\"\"Render the active job detail page.\"\"\"\n    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()\n    booking = Booking.query.get_or_404(booking_id)\n    return render_template(\"driver_job.html\", booking=booking, driver=driver, user=current_user)\ndef _serialize_booking(b):\n    \"\"\"Serialize a booking for driver views.\"\"\"\n    customer_phone = b.customer.user.user_phone_no if b.customer else \"\"\n    return {\n        \"booking_id\": b.booking_id,",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "driver_bp",
+        "kind": 5,
+        "importPath": "routes.driver",
+        "description": "routes.driver",
+        "peekOfCode": "driver_bp = Blueprint(\"driver\", __name__)\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef require_driver(f):\n    \"\"\"Decorator that restricts access to drivers only.\"\"\"\n    from functools import wraps",
+        "detail": "routes.driver",
+        "documentation": {}
+    },
+    {
+        "label": "success",
+        "kind": 2,
+        "importPath": "routes.payment",
+        "description": "routes.payment",
+        "peekOfCode": "def success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef get_momo_token():\n    \"\"\"Obtain an access token from the MoMo collections API.\"\"\"\n    base_url = os.getenv(\"MOMO_BASE_URL\", \"https://sandbox.momodeveloper.mtn.com\")\n    user_id = os.getenv(\"MOMO_USER_ID\", \"\")",
+        "detail": "routes.payment",
+        "documentation": {}
+    },
+    {
+        "label": "error",
+        "kind": 2,
+        "importPath": "routes.payment",
+        "description": "routes.payment",
+        "peekOfCode": "def error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef get_momo_token():\n    \"\"\"Obtain an access token from the MoMo collections API.\"\"\"\n    base_url = os.getenv(\"MOMO_BASE_URL\", \"https://sandbox.momodeveloper.mtn.com\")\n    user_id = os.getenv(\"MOMO_USER_ID\", \"\")\n    api_key = os.getenv(\"MOMO_API_KEY\", \"\")\n    subscription_key = os.getenv(\"MOMO_SUBSCRIPTION_KEY\", \"\")\n    response = requests.post(",
+        "detail": "routes.payment",
+        "documentation": {}
+    },
+    {
+        "label": "get_momo_token",
+        "kind": 2,
+        "importPath": "routes.payment",
+        "description": "routes.payment",
+        "peekOfCode": "def get_momo_token():\n    \"\"\"Obtain an access token from the MoMo collections API.\"\"\"\n    base_url = os.getenv(\"MOMO_BASE_URL\", \"https://sandbox.momodeveloper.mtn.com\")\n    user_id = os.getenv(\"MOMO_USER_ID\", \"\")\n    api_key = os.getenv(\"MOMO_API_KEY\", \"\")\n    subscription_key = os.getenv(\"MOMO_SUBSCRIPTION_KEY\", \"\")\n    response = requests.post(\n        f\"{base_url}/collection/token/\",\n        auth=(user_id, api_key),\n        headers={\"Ocp-Apim-Subscription-Key\": subscription_key},",
+        "detail": "routes.payment",
+        "documentation": {}
+    },
+    {
+        "label": "initiate_payment",
+        "kind": 2,
+        "importPath": "routes.payment",
+        "description": "routes.payment",
+        "peekOfCode": "def initiate_payment(booking_id):\n    \"\"\"Initiate an MTN MoMo payment for a booking.\"\"\"\n    booking = Booking.query.get_or_404(booking_id)\n    customer_phone = booking.customer.user.user_phone_no\n    payment = Payment.query.filter_by(booking_id=booking_id).first()\n    if not payment:\n        payment = Payment(\n            booking_id=booking_id,\n            amount=booking.estimated_cost or 0,\n            status=\"pending\",",
+        "detail": "routes.payment",
+        "documentation": {}
+    },
+    {
+        "label": "payment_callback",
+        "kind": 2,
+        "importPath": "routes.payment",
+        "description": "routes.payment",
+        "peekOfCode": "def payment_callback():\n    \"\"\"Handle MTN MoMo payment status callback.\"\"\"\n    data = request.get_json() or {}\n    reference_id = data.get(\"externalId\") or data.get(\"financialTransactionId\")\n    status = data.get(\"status\", \"\").upper()\n    if not reference_id:\n        return error(\"Missing reference ID.\", 400)\n    try:\n        booking_id = int(reference_id)\n    except ValueError:",
+        "detail": "routes.payment",
+        "documentation": {}
+    },
+    {
+        "label": "payment_bp",
+        "kind": 5,
+        "importPath": "routes.payment",
+        "description": "routes.payment",
+        "peekOfCode": "payment_bp = Blueprint(\"payment\", __name__)\n# ── Helper: standardised JSON response wrappers ──\ndef success(data, message=\"OK\"):\n    \"\"\"Return a standard success JSON response.\"\"\"\n    return jsonify({\"status\": \"success\", \"data\": data, \"message\": message})\ndef error(message, code=400):\n    \"\"\"Return a standard error JSON response.\"\"\"\n    return jsonify({\"status\": \"error\", \"data\": None, \"message\": message}), code\ndef get_momo_token():\n    \"\"\"Obtain an access token from the MoMo collections API.\"\"\"",
+        "detail": "routes.payment",
+        "documentation": {}
+    },
+    {
+        "label": "track_booking",
+        "kind": 2,
+        "importPath": "routes.tracking",
+        "description": "routes.tracking",
+        "peekOfCode": "def track_booking(booking_id):\n    \"\"\"Render the live tracking map for a booking.\"\"\"\n    booking = Booking.query.get_or_404(booking_id)\n    return render_template(\"track_booking.html\", booking=booking, user=current_user)\n@socketio.on(\"join_tracking_room\")\ndef handle_join_room(data):\n    \"\"\"Customer joins the SocketIO room for their booking.\"\"\"\n    booking_id = data.get(\"booking_id\")\n    if booking_id:\n        join_room(str(booking_id))",
+        "detail": "routes.tracking",
+        "documentation": {}
+    },
+    {
+        "label": "handle_join_room",
+        "kind": 2,
+        "importPath": "routes.tracking",
+        "description": "routes.tracking",
+        "peekOfCode": "def handle_join_room(data):\n    \"\"\"Customer joins the SocketIO room for their booking.\"\"\"\n    booking_id = data.get(\"booking_id\")\n    if booking_id:\n        join_room(str(booking_id))\n        emit(\"joined\", {\"room\": str(booking_id)})\n@socketio.on(\"driver_location_update\")\ndef handle_driver_location(data):\n    \"\"\"Receive GPS update from driver and broadcast to booking room.\"\"\"\n    driver_id = data.get(\"driver_id\")",
+        "detail": "routes.tracking",
+        "documentation": {}
+    },
+    {
+        "label": "handle_driver_location",
+        "kind": 2,
+        "importPath": "routes.tracking",
+        "description": "routes.tracking",
+        "peekOfCode": "def handle_driver_location(data):\n    \"\"\"Receive GPS update from driver and broadcast to booking room.\"\"\"\n    driver_id = data.get(\"driver_id\")\n    booking_id = data.get(\"booking_id\")\n    latitude = data.get(\"latitude\")\n    longitude = data.get(\"longitude\")\n    if not all([driver_id, booking_id, latitude, longitude]):\n        return\n    driver = Driver.query.get(driver_id)\n    if driver:",
+        "detail": "routes.tracking",
+        "documentation": {}
+    },
+    {
+        "label": "tracking_bp",
+        "kind": 5,
+        "importPath": "routes.tracking",
+        "description": "routes.tracking",
+        "peekOfCode": "tracking_bp = Blueprint(\"tracking\", __name__)\n# ── Route: render the live tracking page for a given booking ──\n@tracking_bp.route(\"/track/<int:booking_id>\")\n@login_required\ndef track_booking(booking_id):\n    \"\"\"Render the live tracking map for a booking.\"\"\"\n    booking = Booking.query.get_or_404(booking_id)\n    return render_template(\"track_booking.html\", booking=booking, user=current_user)\n@socketio.on(\"join_tracking_room\")\ndef handle_join_room(data):",
+        "detail": "routes.tracking",
+        "documentation": {}
+    },
+    {
+        "label": "create_app",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def create_app():\n    \"\"\"Create and configure the Flask application.\"\"\"\n    app = Flask(__name__)\n    app.config.from_object(Config)\n    db.init_app(app)\n    bcrypt.init_app(app)\n    migrate.init_app(app, db)\n    socketio.init_app(app, cors_allowed_origins=\"*\", async_mode=\"eventlet\")\n    login_manager.init_app(app)\n    login_manager.login_view = \"auth.login\"",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = create_app()\nif __name__ == \"__main__\":\n    socketio.run(app, host=\"0.0.0.0\", port=5000, debug=True)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "kind": 5,
+        "importPath": "extensions",
+        "description": "extensions",
+        "peekOfCode": "db = SQLAlchemy()\nbcrypt = Bcrypt()\nlogin_manager = LoginManager()\nsocketio = SocketIO()\nmigrate = Migrate()",
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "bcrypt",
+        "kind": 5,
+        "importPath": "extensions",
+        "description": "extensions",
+        "peekOfCode": "bcrypt = Bcrypt()\nlogin_manager = LoginManager()\nsocketio = SocketIO()\nmigrate = Migrate()",
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "login_manager",
+        "kind": 5,
+        "importPath": "extensions",
+        "description": "extensions",
+        "peekOfCode": "login_manager = LoginManager()\nsocketio = SocketIO()\nmigrate = Migrate()",
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "socketio",
+        "kind": 5,
+        "importPath": "extensions",
+        "description": "extensions",
+        "peekOfCode": "socketio = SocketIO()\nmigrate = Migrate()",
+        "detail": "extensions",
+        "documentation": {}
+    },
+    {
+        "label": "migrate",
+        "kind": 5,
+        "importPath": "extensions",
+        "description": "extensions",
+        "peekOfCode": "migrate = Migrate()",
+        "detail": "extensions",
+        "documentation": {}
+    }
+]

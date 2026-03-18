@@ -7,7 +7,6 @@ from models.booking import Booking
 from models.payment import Payment
 from models.rating import Rating
 from models.notification import Notification
-from models.customer import Customer
 
 driver_bp = Blueprint("driver", __name__)
 
@@ -39,7 +38,7 @@ def require_driver(f):
 def dashboard():
     """Render the driver dashboard page."""
     driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()
-    return render_template("driver_dashboard.html", driver=driver, user=current_user)
+    return render_template("driver-home.html", driver=driver, user=current_user)
 
 
 @driver_bp.route("/stats", methods=["GET"])
@@ -59,13 +58,13 @@ def stats():
     ).all()
     weekly_earnings = sum(float(b.estimated_cost or 0) for b in week_bookings)
 
-    pending_jobs = Booking.query.filter_by(driver_id=driver.driver_id, status="pending").count()
+    pending_jobs_count = Booking.query.filter_by(driver_id=driver.driver_id, status="pending").count()
 
     return success({
         "total_jobs": total_jobs,
         "average_rating": round(driver.rating, 1),
         "weekly_earnings": round(weekly_earnings, 2),
-        "pending_jobs": pending_jobs,
+        "pending_jobs": pending_jobs_count,
     })
 
 

@@ -4,9 +4,7 @@ from flask_login import login_required, current_user
 from models import db
 from models.user import User
 from models.driver import Driver
-from models.customer import Customer
 from models.booking import Booking
-from models.payment import Payment
 from models.notification import Notification
 
 admin_bp = Blueprint("admin", __name__)
@@ -37,7 +35,7 @@ def require_admin(f):
 @require_admin
 def dashboard():
     """Render the admin dashboard page."""
-    return render_template("admin_dashboard.html", user=current_user)
+    return render_template("admin-dashboard.html", user=current_user)
 
 
 @admin_bp.route("/users-page")
@@ -45,7 +43,7 @@ def dashboard():
 @require_admin
 def users_page():
     """Render the admin users management page."""
-    return render_template("admin_users.html", user=current_user)
+    return render_template("admin-users.html", user=current_user)
 
 
 @admin_bp.route("/drivers-page")
@@ -53,7 +51,7 @@ def users_page():
 @require_admin
 def drivers_page():
     """Render the admin drivers management page."""
-    return render_template("admin_drivers.html", user=current_user)
+    return render_template("admin-drivers.html", user=current_user)
 
 
 @admin_bp.route("/bookings-page")
@@ -61,7 +59,7 @@ def drivers_page():
 @require_admin
 def bookings_page():
     """Render the admin bookings management page."""
-    return render_template("admin_bookings.html", user=current_user)
+    return render_template("Admin-trips.html", user=current_user)
 
 
 @admin_bp.route("/stats", methods=["GET"])

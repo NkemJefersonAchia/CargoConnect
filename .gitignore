@@ -1,0 +1,12 @@
+# ignore vscode files
+.vscode/
+
+# ignore pycache
+__pycache__/
+
+# ignore env files
+.env
+.env.example
+
+# ignore logs
+logs/

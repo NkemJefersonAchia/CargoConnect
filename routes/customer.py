@@ -37,7 +37,8 @@ def require_customer(f):
 def dashboard():
     """Render the customer dashboard page."""
     customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()
-    return render_template("customer_dashboard.html", customer=customer, user=current_user)
+    # Template names in this repo use a mix of casing/hyphens; keep route stable.
+    return render_template("Client-dashboard.html", customer=customer, user=current_user)
 
 
 @customer_bp.route("/stats", methods=["GET"])

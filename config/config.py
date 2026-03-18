@@ -8,9 +8,7 @@ class Config:
     """Base configuration loaded from environment variables."""
 
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL", "postgresql://postgres:password@localhost:5432/cargoconnect"
-    )
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL") or "sqlite:///cargoconnect.db"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     MOMO_API_KEY = os.getenv("MOMO_API_KEY", "")

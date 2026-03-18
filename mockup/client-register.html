@@ -124,7 +124,7 @@
         <h1>Create Client Account</h1>
         <p class="subtitle">Sign up to start shipping with CargoConnect</p>
 
-        <form onsubmit="handleRegister(event)">
+        <form action="{{ url_for('auth.register') }}" method="post">
             <div class="form-group">
                 <label for="name">Full Name *</label>
                 <input type="text" id="name" name="name" required>
@@ -164,9 +164,29 @@
     <script>
         function handleRegister(event) {
             event.preventDefault();
-            const name = document.getElementById('name').value;
+            /*const name = document.getElementById('name').value;
             localStorage.setItem('username', name);
-            window.location.href = 'client-home.html?name=' + encodeURIComponent(name);
+            window.location.href = 'client-home.html?name=' + encodeURIComponent(name);*/
+
+            const user_name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            const user = {
+                user_name: user_name,
+                email: email,
+                phone: phone,
+                password: password,
+            };
+            localStorage.setItem('user', JSON.stringify(user));
+            
         }
     </script>
 </body>

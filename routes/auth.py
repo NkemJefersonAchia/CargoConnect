@@ -21,8 +21,9 @@ def login():
         return redirect_by_role(current_user.role)
 
     if request.method == "POST":
-        email = request.form.get("email", "").strip()
-        password = request.form.get("password", "")
+        data = request.get_json(silent=True) or request.form
+        email = (data.get("email") or "").strip().lower()
+        password = data.get("password") or ""
 
         user = User.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password_hash, password):
@@ -30,7 +31,7 @@ def login():
             return redirect_by_role(user.role)
         flash("Invalid email or password.", "danger")
 
-    return render_template("login.html")
+    return render_template("client-login.html")
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -40,27 +41,49 @@ def register():
         return redirect_by_role(current_user.role)
 
     if request.method == "POST":
-        user_name = request.form.get("user_name", "").strip()
-        email = request.form.get("email", "").strip()
-        phone = request.form.get("user_phone_no", "").strip()
-        password = request.form.get("password", "")
-        role = request.form.get("role", "customer")
+        data = request.get_json(silent=True) or request.form
+        full_name = (data.get("full_name") or data.get("name") or "").strip()
+        email = (data.get("email") or "").strip().lower()
+        phone = (data.get("user_phone_no") or data.get("phone") or "").strip()
+        password = data.get("password") or ""
+        confirm_password = (
+            data.get("confirm_password")
+            or data.get("confirm-password")
+            or data.get("confirmPassword")
+            or ""
+        )
+        role = (data.get("role") or "customer").strip()
+
+        if not full_name:
+            flash("Full name is required.", "danger")
+            return render_template("client-register.html")
+        if not email:
+            flash("Email is required.", "danger")
+            return render_template("client-register.html")
+        if not password:
+            flash("Password is required.", "danger")
+            return render_template("client-register.html")
+        if confirm_password and password != confirm_password:
+            flash("Passwords do not match.", "danger")
+            return render_template("client-register.html")
 
         if role not in ("customer", "driver"):
             flash("Invalid role selected.", "danger")
-            return render_template("register.html")
+            return render_template("client-register.html")
 
         if User.query.filter_by(email=email).first():
             flash("Email already registered.", "danger")
-            return render_template("register.html")
+            return render_template("client-register.html")
 
         password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
+        user_name = (data.get("user_name") or "").strip() or full_name.split()[0]
         user = User(
             user_name=user_name,
             email=email,
             user_phone_no=phone,
             password_hash=password_hash,
             role=role,
+            full_name=full_name,
         )
         db.session.add(user)
         db.session.flush()
@@ -69,7 +92,7 @@ def register():
             profile = Customer(user_id=user.user_id)
             db.session.add(profile)
         elif role == "driver":
-            licence_no = request.form.get("licence_no", "").strip()
+            licence_no = (data.get("licence_no") or "").strip()
             profile = Driver(user_id=user.user_id, licence_no=licence_no)
             db.session.add(profile)
 
@@ -77,7 +100,7 @@ def register():
         flash("Account created! Please log in.", "success")
         return redirect(url_for("auth.login"))
 
-    return render_template("register.html")
+    return render_template("client-register.html")
 
 
 @auth_bp.route("/logout")

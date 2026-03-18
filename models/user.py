@@ -16,6 +16,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum("customer", "driver", "admin", name="user_role"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    full_name = db.Column(db.String(100), nullable=False)
 
     # Relationships to role-specific profiles and notifications
     customer_profile = db.relationship("Customer", backref="user", uselist=False, lazy=True)
