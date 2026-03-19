@@ -64,6 +64,22 @@ def bookings_page():
     return render_template("admin_bookings.html", user=current_user)
 
 
+@admin_bp.route("/payments-page")
+@login_required
+@require_admin
+def payments_page():
+    """Render the admin payments management page."""
+    return render_template("admin_payments.html", user=current_user)
+
+
+@admin_bp.route("/notifications-page")
+@login_required
+@require_admin
+def notifications_page():
+    """Render the admin notifications page."""
+    return render_template("admin_notifications.html", user=current_user)
+
+
 @admin_bp.route("/stats", methods=["GET"])
 @login_required
 @require_admin
@@ -200,6 +216,28 @@ def list_bookings():
     return success([_serialize_booking(b) for b in bookings])
 
 
+@admin_bp.route("/payments", methods=["GET"])
+@login_required
+@require_admin
+def list_payments():
+    """Return all payment records, optionally filtered by status."""
+    status_filter = request.args.get("status")
+    query = Payment.query.order_by(Payment.payment_id.desc())
+    if status_filter and status_filter != "all":
+        query = query.filter_by(status=status_filter)
+    payments = query.all()
+    return success([_serialize_payment(p) for p in payments])
+
+
+@admin_bp.route("/all-notifications", methods=["GET"])
+@login_required
+@require_admin
+def list_all_notifications():
+    """Return the 100 most recent platform notifications."""
+    notes = Notification.query.order_by(Notification.sent_at.desc()).limit(100).all()
+    return success([_serialize_notification(n) for n in notes])
+
+
 def _serialize_user(u):
     """Serialize a user record to dict."""
     return {
@@ -245,4 +283,32 @@ def _serialize_booking(b):
         "created_at": b.created_at.strftime("%Y-%m-%d") if b.created_at else "",
         "plate_no": b.truck.plate_no if b.truck else "",
         "payment_status": payment.status if payment else None,
+    }
+
+
+def _serialize_payment(p):
+    """Serialize a payment record for admin views."""
+    booking = p.booking
+    return {
+        "payment_id": p.payment_id,
+        "booking_id": p.booking_id,
+        "amount": float(p.amount or 0),
+        "method": p.method or "MoMo",
+        "status": p.status,
+        "paid_at": p.paid_at.strftime("%Y-%m-%d %H:%M") if p.paid_at else None,
+        "customer_name": booking.customer.user.user_name if booking and booking.customer else "—",
+        "driver_name": booking.driver.user.user_name if booking and booking.driver else "—",
+    }
+
+
+def _serialize_notification(n):
+    """Serialize a notification record for admin views."""
+    return {
+        "notification_id": n.notification_id,
+        "user_name": n.user.user_name if n.user else "—",
+        "user_role": n.user.role if n.user else "—",
+        "message": n.message,
+        "channel": n.channel or "in-app",
+        "is_read": n.is_read,
+        "sent_at": n.sent_at.strftime("%Y-%m-%d %H:%M") if n.sent_at else "",
     }
