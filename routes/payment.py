@@ -98,6 +98,63 @@ def initiate_payment(booking_id):
         return error("MoMo service unavailable. You will be notified to retry.", 503)
 
 
+@payment_bp.route("/simulate/<int:booking_id>", methods=["POST"])
+@login_required
+def simulate_payment(booking_id):
+    """Simulate an MTN MoMo payment (demo mode — no real API call)."""
+    booking = Booking.query.get_or_404(booking_id)
+
+    if booking.customer.user_id != current_user.user_id:
+        return error("Not authorised.", 403)
+
+    if not booking.driver:
+        return error("No driver has been assigned to this booking yet.")
+
+    if booking.status not in ("confirmed", "completed", "pending"):
+        return error("Booking cannot be paid at this stage.")
+
+    payment = Payment.query.filter_by(booking_id=booking_id).first()
+    if not payment:
+        payment = Payment(
+            booking_id=booking_id,
+            amount=booking.estimated_cost or 0,
+            status="pending",
+        )
+        db.session.add(payment)
+        db.session.flush()
+
+    if payment.status == "paid":
+        return error("This booking has already been paid.")
+
+    payment.status = "paid"
+    payment.paid_at = datetime.utcnow()
+
+    note_customer = Notification(
+        user_id=booking.customer.user_id,
+        message=(
+            f"Payment of {int(booking.estimated_cost or 0):,} RWF for booking "
+            f"#{booking_id} received via MTN MoMo. Thank you!"
+        ),
+        channel="in-app",
+    )
+    note_driver = Notification(
+        user_id=booking.driver.user_id,
+        message=(
+            f"MTN MoMo payment for booking #{booking_id} has been confirmed. "
+            f"Amount: {int(booking.estimated_cost or 0):,} RWF."
+        ),
+        channel="in-app",
+    )
+    db.session.add(note_customer)
+    db.session.add(note_driver)
+    db.session.commit()
+
+    return success(
+        {"payment_id": payment.payment_id, "status": "paid"},
+        "Payment successful.",
+    )
+
+
 @payment_bp.route("/callback", methods=["POST"])
 def payment_callback():
     """Handle MTN MoMo payment status callback."""
