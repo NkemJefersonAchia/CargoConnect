@@ -456,3 +456,202 @@ ul { list-style: none; }
 @media (max-width: 480px) {
   .stats-row { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Notification Items ─────────────────────────────────────── */
+.notification-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.notification-item:last-child { border-bottom: none; }
+.notification-item__msg { font-size: 0.9rem; color: var(--color-text-primary); margin-bottom: 4px; }
+.notification-item__time { font-size: 0.78rem; color: var(--color-text-secondary); }
+
+/* ── MTN MoMo Payment Modal ─────────────────────────────────── */
+.momo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.momo-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 31, 68, 0.55);
+  backdrop-filter: blur(3px);
+}
+.momo-card {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  border-radius: 16px;
+  width: 340px;
+  max-width: calc(100vw - 32px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+/* Header */
+.momo-header {
+  background: #FFCC00;
+  padding: 20px 24px 16px;
+  text-align: center;
+}
+.momo-header__logo {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+.momo-header__mtn {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #000;
+  letter-spacing: 1px;
+}
+.momo-header__momo {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #000;
+}
+.momo-header__sub {
+  font-size: 0.78rem;
+  color: #333;
+  margin-top: 2px;
+  letter-spacing: 0.5px;
+}
+
+/* Step content */
+.momo-step { padding: 24px; }
+
+/* Amount / phone */
+.momo-amount {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--color-primary-navy);
+  margin-bottom: 2px;
+}
+.momo-phone {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
+
+/* PIN dots */
+.momo-label {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+.momo-dots {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.momo-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+.momo-dot--filled {
+  background: #FFCC00;
+  border-color: #FFCC00;
+}
+
+/* Keypad */
+.momo-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.momo-key {
+  background: #f5f5f5;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  height: 48px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  color: var(--color-primary-navy);
+}
+.momo-key:active { transform: scale(0.94); background: #e8e8e8; }
+.momo-key--clear { font-size: 0.75rem; color: var(--color-danger); }
+.momo-key--back { font-size: 1rem; color: var(--color-text-secondary); }
+
+/* Action row */
+.momo-actions { display: flex; gap: 10px; }
+.momo-actions .btn { flex: 1; justify-content: center; text-align: center; }
+
+/* MoMo Pay button */
+.btn--momo {
+  background: #FFCC00;
+  color: #000;
+  border: none;
+  border-radius: var(--radius-btn);
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s, opacity 0.2s;
+}
+.btn--momo:hover { background: #f0bf00; }
+.btn--momo:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Processing step */
+.momo-step#momoStepProcessing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 24px;
+}
+.momo-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #FFCC00;
+  border-radius: 50%;
+  animation: momo-spin 0.8s linear infinite;
+  margin-bottom: 20px;
+}
+@keyframes momo-spin { to { transform: rotate(360deg); } }
+.momo-processing-text {
+  font-weight: 600;
+  color: var(--color-primary-navy);
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+.momo-processing-sub { font-size: 0.82rem; color: var(--color-text-secondary); }
+
+/* Success step */
+.momo-step#momoStepSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 36px 24px;
+  gap: 8px;
+}
+.momo-success-icon { font-size: 3rem; color: var(--color-success); margin-bottom: 6px; }
+.momo-success-title { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700; color: var(--color-primary-navy); }
+.momo-success-amount { font-size: 1.5rem; font-weight: 800; color: #000; }
+.momo-success-sub { font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 12px; }
+
+/* Paid / failed badges */
+.badge--paid { background: #dcfce7; color: #15803d; }
+.badge--failed { background: #fee2e2; color: #b91c1c; }
