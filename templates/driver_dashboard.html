@@ -3,11 +3,11 @@
 {% block title %}Driver Dashboard — CargoConnect{% endblock %}
 
 {% block sidebar_links %}
-  <li><a href="{{ url_for('driver.dashboard') }}" class="sidebar__link sidebar__link--active">&#127968; Dashboard</a></li>
-  <li><a href="#jobs" class="sidebar__link">&#128203; My Jobs</a></li>
-  <li><a href="#" class="sidebar__link">&#128666; My Truck</a></li>
-  <li><a href="#history" class="sidebar__link">&#128176; Earnings</a></li>
-  <li><a href="#" class="sidebar__link">&#128100; My Profile</a></li>
+  <li><a href="{{ url_for('driver.dashboard') }}" class="sidebar__link sidebar__link--active"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+  <li><a href="#jobs" class="sidebar__link"><i class="fa-solid fa-clipboard-list"></i> My Jobs</a></li>
+  <li><a href="#truck" class="sidebar__link"><i class="fa-solid fa-truck"></i> My Truck</a></li>
+  <li><a href="#history" class="sidebar__link"><i class="fa-solid fa-money-bill-wave"></i> Earnings</a></li>
+  <li><a href="#profile" class="sidebar__link"><i class="fa-solid fa-user"></i> My Profile</a></li>
 {% endblock %}
 
 {% block topbar_right %}
@@ -21,7 +21,7 @@
 <section class="card availability-card" id="availabilityCard">
   {% if not driver.is_verified %}
     <div class="verification-pending">
-      <p class="verification-pending__icon">&#9200;</p>
+      <p class="verification-pending__icon"><i class="fa-solid fa-clock"></i></p>
       <p class="verification-pending__text">Your account is pending admin verification. You will be notified when approved.</p>
     </div>
   {% else %}
@@ -92,11 +92,39 @@
     </table>
   </div>
 </section>
+
+<!-- My Truck -->
+<section class="card" id="truck">
+  <h2 class="card__title">My Truck</h2>
+  {% if driver.trucks %}
+    {% set truck = driver.trucks[0] %}
+    <dl class="detail-list">
+      <dt>Plate Number</dt><dd>{{ truck.plate_no or '—' }}</dd>
+      <dt>Capacity</dt><dd>{{ truck.capacity }} tons</dd>
+    </dl>
+  {% else %}
+    <div class="empty-state">
+      <p>No truck registered. Contact admin to add your truck to the system.</p>
+    </div>
+  {% endif %}
+</section>
+
+<!-- My Profile -->
+<section class="card" id="profile">
+  <h2 class="card__title">My Profile</h2>
+  <dl class="detail-list">
+    <dt>Full Name</dt><dd>{{ user.user_name }}</dd>
+    <dt>Email</dt><dd>{{ user.email }}</dd>
+    <dt>Phone</dt><dd>{{ user.user_phone_no or '—' }}</dd>
+    <dt>Licence No.</dt><dd>{{ driver.licence_no or '—' }}</dd>
+    <dt>Rating</dt><dd>{{ '%.1f' | format(driver.rating) }} / 5.0</dd>
+    <dt>Verification</dt><dd>{{ 'Verified' if driver.is_verified else 'Pending Verification' }}</dd>
+  </dl>
+</section>
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 <script>
   const DRIVER_ID = {{ driver.driver_id }};
 </script>
@@ -151,8 +179,8 @@
           <article class="job-card">
             <div class="job-card__info">
               <p class="job-card__name">${j.customer_name}</p>
-              <p class="job-card__route">&#128205; ${j.pickup_address} &rarr; ${j.dropoff_address}</p>
-              <p class="job-card__meta">&#128176; ${formatRWF(j.estimated_cost)} RWF &nbsp;&bull;&nbsp; &#128197; ${formatDate(j.scheduled_time)}</p>
+              <p class="job-card__route"><i class="fa-solid fa-location-dot"></i> ${j.pickup_address} &rarr; ${j.dropoff_address}</p>
+              <p class="job-card__meta"><i class="fa-solid fa-money-bill-wave"></i> ${formatRWF(j.estimated_cost)} RWF &nbsp;&bull;&nbsp; <i class="fa-solid fa-calendar-days"></i> ${formatDate(j.scheduled_time)}</p>
             </div>
             <div class="job-card__actions">
               <button class="btn btn--action" onclick="acceptJob(${j.booking_id})">Accept</button>
@@ -178,7 +206,7 @@
             <td>${j.customer_name}</td>
             <td>${j.date}</td>
             <td>${formatRWF(j.earnings)}</td>
-            <td>${j.rating ? '⭐ ' + j.rating : '—'}</td>
+            <td>${j.rating ? '<i class="fa-solid fa-star"></i> ' + j.rating : '—'}</td>
           </tr>
         `).join('');
       } else {
