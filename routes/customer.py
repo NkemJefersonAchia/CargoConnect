@@ -160,4 +160,5 @@ def _serialize_booking(b):
         "created_at": b.created_at.strftime("%Y-%m-%d") if b.created_at else "",
         "driver_name": b.driver.user.user_name if b.driver else "",
         "plate_no": b.truck.plate_no if b.truck else "",
+        "payment_status": b.payment.status if b.payment else None,
     }
