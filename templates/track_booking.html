@@ -10,8 +10,8 @@
   <li><a href="{{ url_for('customer.dashboard') }}" class="sidebar__link">&#127968; Dashboard</a></li>
   <li><a href="{{ url_for('customer.dashboard') }}#recent" class="sidebar__link sidebar__link--active">&#128203; My Bookings</a></li>
   <li><a href="{{ url_for('customer.dashboard') }}#quickbook" class="sidebar__link">&#128666; Book a Truck</a></li>
-  <li><a href="#" class="sidebar__link">&#128276; Notifications</a></li>
-  <li><a href="#" class="sidebar__link">&#128100; My Profile</a></li>
+  <li><a href="{{ url_for('customer.dashboard') }}#notifications" class="sidebar__link">&#128276; Notifications</a></li>
+  <li><a href="{{ url_for('customer.dashboard') }}#profile" class="sidebar__link">&#128100; My Profile</a></li>
 {% endblock %}
 
 {% block topbar_right %}
