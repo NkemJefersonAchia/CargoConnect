@@ -3,17 +3,17 @@
 {% block title %}Customer Dashboard — CargoConnect{% endblock %}
 
 {% block sidebar_links %}
-  <li><a href="{{ url_for('customer.dashboard') }}" class="sidebar__link sidebar__link--active">&#127968; Dashboard</a></li>
-  <li><a href="#recent" class="sidebar__link">&#128203; My Bookings</a></li>
-  <li><a href="#quickbook" class="sidebar__link">&#128666; Book a Truck</a></li>
-  <li><a href="#" class="sidebar__link" id="notifLink">&#128276; Notifications <span class="badge" id="notifBadge">0</span></a></li>
-  <li><a href="#" class="sidebar__link">&#128100; My Profile</a></li>
+  <li><a href="{{ url_for('customer.dashboard') }}" class="sidebar__link sidebar__link--active"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+  <li><a href="#recent" class="sidebar__link"><i class="fa-solid fa-clipboard-list"></i> My Bookings</a></li>
+  <li><a href="#quickbook" class="sidebar__link"><i class="fa-solid fa-truck"></i> Book a Truck</a></li>
+  <li><a href="#notifications" class="sidebar__link" id="notifLink"><i class="fa-regular fa-bell"></i> Notifications <span class="badge" id="notifBadge">0</span></a></li>
+  <li><a href="#profile" class="sidebar__link"><i class="fa-solid fa-user"></i> My Profile</a></li>
 {% endblock %}
 
 {% block topbar_right %}
   <span class="topbar__username">{{ user.user_name }}</span>
   <button class="topbar__notif-btn" id="notifBtn" aria-label="Notifications">
-    &#128276; <span class="badge" id="notifBadgeTop">0</span>
+    <i class="fa-regular fa-bell"></i> <span class="badge" id="notifBadgeTop">0</span>
   </button>
 {% endblock %}
 
@@ -111,6 +111,72 @@
   </div>
 </section>
 
+<!-- MTN MoMo Payment Modal -->
+<div class="momo-modal" id="momoModal" role="dialog" aria-modal="true" style="display:none;">
+  <div class="momo-modal__backdrop" id="momoBackdrop"></div>
+  <div class="momo-card">
+    <!-- Header -->
+    <div class="momo-header">
+      <div class="momo-header__logo">
+        <span class="momo-header__mtn">MTN</span>
+        <span class="momo-header__momo">MoMo</span>
+      </div>
+      <p class="momo-header__sub">Mobile Money Payment</p>
+    </div>
+
+    <!-- Step 1: PIN entry -->
+    <div class="momo-step" id="momoStepPin">
+      <p class="momo-amount" id="momoAmountLabel">0 RWF</p>
+      <p class="momo-phone" id="momoPhoneLabel">{{ user.user_phone_no or '—' }}</p>
+      <p class="momo-label">Enter your MoMo PIN</p>
+      <div class="momo-dots" id="momoDots">
+        <span class="momo-dot" id="momoDot0"></span>
+        <span class="momo-dot" id="momoDot1"></span>
+        <span class="momo-dot" id="momoDot2"></span>
+        <span class="momo-dot" id="momoDot3"></span>
+      </div>
+      <div class="momo-keypad">
+        <button class="momo-key" data-digit="1">1</button>
+        <button class="momo-key" data-digit="2">2</button>
+        <button class="momo-key" data-digit="3">3</button>
+        <button class="momo-key" data-digit="4">4</button>
+        <button class="momo-key" data-digit="5">5</button>
+        <button class="momo-key" data-digit="6">6</button>
+        <button class="momo-key" data-digit="7">7</button>
+        <button class="momo-key" data-digit="8">8</button>
+        <button class="momo-key" data-digit="9">9</button>
+        <button class="momo-key momo-key--clear" id="momoClear">CLR</button>
+        <button class="momo-key" data-digit="0">0</button>
+        <button class="momo-key momo-key--back" id="momoBack">
+          <i class="fa-solid fa-delete-left"></i>
+        </button>
+      </div>
+      <div class="momo-actions">
+        <button class="btn btn--ghost" id="momoCancelBtn">Cancel</button>
+        <button class="btn btn--momo" id="momoPayBtn" disabled>Pay Now</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Processing -->
+    <div class="momo-step" id="momoStepProcessing" style="display:none;">
+      <div class="momo-spinner"></div>
+      <p class="momo-processing-text">Processing your payment...</p>
+      <p class="momo-processing-sub">Please do not close this window.</p>
+    </div>
+
+    <!-- Step 3: Success -->
+    <div class="momo-step" id="momoStepSuccess" style="display:none;">
+      <div class="momo-success-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <p class="momo-success-title">Payment Successful!</p>
+      <p class="momo-success-amount" id="momoSuccessAmount">0 RWF</p>
+      <p class="momo-success-sub">Your booking has been paid via MTN MoMo.</p>
+      <button class="btn btn--momo" id="momoDoneBtn">Done</button>
+    </div>
+  </div>
+</div>
+
 <!-- Booking Confirmation Modal -->
 <div class="modal" id="confirmModal" role="dialog" aria-modal="true">
   <div class="modal__backdrop" id="modalBackdrop"></div>
@@ -123,8 +189,33 @@
     </div>
   </div>
 </div>
+
+<!-- Notifications -->
+<section class="card" id="notifications">
+  <h2 class="card__title">Notifications</h2>
+  <div id="notificationsList">
+    <p class="empty-state__text">Loading notifications...</p>
+  </div>
+  <div class="btn-row" style="margin-top:1rem;">
+    <button class="btn btn--ghost btn--sm" id="markReadBtn"><i class="fa-solid fa-check-double"></i> Mark All as Read</button>
+  </div>
+</section>
+
+<!-- My Profile -->
+<section class="card" id="profile">
+  <h2 class="card__title">My Profile</h2>
+  <dl class="detail-list">
+    <dt>Full Name</dt><dd>{{ user.user_name }}</dd>
+    <dt>Email</dt><dd>{{ user.email }}</dd>
+    <dt>Phone</dt><dd>{{ user.user_phone_no or '—' }}</dd>
+    <dt>Account Type</dt><dd>Customer</dd>
+  </dl>
+</section>
 {% endblock %}
 
 {% block scripts %}
+<script>
+  const CUSTOMER_PHONE = "{{ user.user_phone_no or '' }}";
+</script>
 <script src="{{ url_for('static', filename='js/booking.js') }}"></script>
 {% endblock %}
