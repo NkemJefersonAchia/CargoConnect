@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications — Admin CargoConnect{% endblock %}
+
+{% block sidebar_links %}
+  <li><a href="{{ url_for('admin.dashboard') }}" class="sidebar__link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+  <li><a href="{{ url_for('admin.users_page') }}" class="sidebar__link"><i class="fa-solid fa-users"></i> Users</a></li>
+  <li><a href="{{ url_for('admin.drivers_page') }}" class="sidebar__link"><i class="fa-solid fa-truck"></i> Drivers</a></li>
+  <li><a href="{{ url_for('admin.bookings_page') }}" class="sidebar__link"><i class="fa-solid fa-clipboard-list"></i> Bookings</a></li>
+  <li><a href="{{ url_for('admin.payments_page') }}" class="sidebar__link"><i class="fa-solid fa-credit-card"></i> Payments</a></li>
+  <li><a href="{{ url_for('admin.notifications_page') }}" class="sidebar__link sidebar__link--active"><i class="fa-regular fa-bell"></i> Notifications</a></li>
+{% endblock %}
+
+{% block topbar_right %}
+  <span class="topbar__username">{{ user.user_name }} <span class="badge badge--admin">Admin</span></span>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Notifications</h1>
+
+<section class="card">
+  <div class="table-toolbar">
+    <select class="form-input table-filter" id="readFilter">
+      <option value="all">All</option>
+      <option value="unread">Unread</option>
+      <option value="read">Read</option>
+    </select>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Role</th>
+          <th>Message</th>
+          <th>Channel</th>
+          <th>Read</th>
+          <th>Sent At</th>
+        </tr>
+      </thead>
+      <tbody id="notificationsTableBody">
+        <tr><td colspan="7" class="table-empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  let allNotifications = [];
+
+  async function loadNotifications() {
+    try {
+      const res = await fetch('/admin/all-notifications');
+      const json = await res.json();
+      allNotifications = json.data || [];
+      renderNotifications(allNotifications);
+    } catch (e) { console.error(e); }
+  }
+
+  function renderNotifications(notes) {
+    const tbody = document.getElementById('notificationsTableBody');
+    if (notes.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No notifications found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = notes.map(n => `
+      <tr>
+        <td>#${n.notification_id}</td>
+        <td>${n.user_name}</td>
+        <td><span class="badge badge--role-${n.user_role}">${n.user_role}</span></td>
+        <td>${n.message}</td>
+        <td>${n.channel}</td>
+        <td>${n.is_read ? '<i class="fa-solid fa-check" style="color:var(--color-success);"></i>' : '<i class="fa-solid fa-clock" style="color:var(--color-warning);"></i>'}</td>
+        <td>${n.sent_at}</td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('readFilter').addEventListener('change', function () {
+    const val = this.value;
+    if (val === 'all') {
+      renderNotifications(allNotifications);
+    } else if (val === 'unread') {
+      renderNotifications(allNotifications.filter(n => !n.is_read));
+    } else {
+      renderNotifications(allNotifications.filter(n => n.is_read));
+    }
+  });
+
+  loadNotifications();
+</script>
+{% endblock %}

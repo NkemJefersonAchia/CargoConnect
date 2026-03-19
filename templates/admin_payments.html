@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Payments — Admin CargoConnect{% endblock %}
+
+{% block sidebar_links %}
+  <li><a href="{{ url_for('admin.dashboard') }}" class="sidebar__link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+  <li><a href="{{ url_for('admin.users_page') }}" class="sidebar__link"><i class="fa-solid fa-users"></i> Users</a></li>
+  <li><a href="{{ url_for('admin.drivers_page') }}" class="sidebar__link"><i class="fa-solid fa-truck"></i> Drivers</a></li>
+  <li><a href="{{ url_for('admin.bookings_page') }}" class="sidebar__link"><i class="fa-solid fa-clipboard-list"></i> Bookings</a></li>
+  <li><a href="{{ url_for('admin.payments_page') }}" class="sidebar__link sidebar__link--active"><i class="fa-solid fa-credit-card"></i> Payments</a></li>
+  <li><a href="{{ url_for('admin.notifications_page') }}" class="sidebar__link"><i class="fa-regular fa-bell"></i> Notifications</a></li>
+{% endblock %}
+
+{% block topbar_right %}
+  <span class="topbar__username">{{ user.user_name }} <span class="badge badge--admin">Admin</span></span>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Payments</h1>
+
+<section class="card">
+  <div class="table-toolbar">
+    <select class="form-input table-filter" id="statusFilter">
+      <option value="all">All Statuses</option>
+      <option value="pending">Pending</option>
+      <option value="paid">Paid</option>
+      <option value="failed">Failed</option>
+    </select>
+  </div>
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Booking</th>
+          <th>Customer</th>
+          <th>Driver</th>
+          <th>Amount (RWF)</th>
+          <th>Method</th>
+          <th>Status</th>
+          <th>Paid At</th>
+        </tr>
+      </thead>
+      <tbody id="paymentsTableBody">
+        <tr><td colspan="8" class="table-empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+<script>
+  let allPayments = [];
+
+  async function loadPayments(status = 'all') {
+    try {
+      const url = status === 'all' ? '/admin/payments' : `/admin/payments?status=${status}`;
+      const res = await fetch(url);
+      const json = await res.json();
+      allPayments = json.data || [];
+      renderPayments(allPayments);
+    } catch (e) { console.error(e); }
+  }
+
+  function renderPayments(payments) {
+    const tbody = document.getElementById('paymentsTableBody');
+    if (payments.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" class="table-empty">No payment records found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = payments.map(p => `
+      <tr>
+        <td>#${p.payment_id}</td>
+        <td>#${p.booking_id}</td>
+        <td>${p.customer_name}</td>
+        <td>${p.driver_name}</td>
+        <td>${Number(p.amount).toLocaleString()}</td>
+        <td>${p.method}</td>
+        <td><span class="badge badge--${p.status}">${p.status}</span></td>
+        <td>${p.paid_at || '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  document.getElementById('statusFilter').addEventListener('change', function () {
+    loadPayments(this.value);
+  });
+
+  loadPayments();
+</script>
+{% endblock %}
