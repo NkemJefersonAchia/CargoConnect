@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   {% block head %}{% endblock %}
 </head>
@@ -26,14 +27,14 @@
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
       <div class="sidebar__logo">
-        <span class="sidebar__logo-icon">&#128666;</span>
+        <span class="sidebar__logo-icon"><i class="fa-solid fa-truck"></i></span>
         <span class="sidebar__logo-text">CargoConnect</span>
       </div>
       <ul class="sidebar__nav">
         {% block sidebar_links %}{% endblock %}
       </ul>
       <div class="sidebar__footer">
-        <a href="{{ url_for('auth.logout') }}" class="sidebar__logout">&#x2192; Logout</a>
+        <a href="{{ url_for('auth.logout') }}" class="sidebar__logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
       </div>
     </nav>
 
