@@ -1,4 +1,4 @@
-/* ── Booking Form & Truck Search ─────────────────────────── */
+/* ── Booking Form, Truck Search & MoMo Payment ────────────── */
 
 document.addEventListener('DOMContentLoaded', function () {
   loadCustomerStats();
@@ -7,7 +7,14 @@ document.addEventListener('DOMContentLoaded', function () {
   loadNotifications();
   setupSearchForm();
   setupModal();
+  setupMarkRead();
+  setupPaymentModal();
 });
+
+function setupMarkRead() {
+  const btn = document.getElementById('markReadBtn');
+  if (btn) btn.addEventListener('click', markAllNotificationsRead);
+}
 
 async function loadCustomerStats() {
   try {
@@ -32,6 +39,13 @@ async function loadActiveBooking() {
 
     if (json.status === 'success' && json.data) {
       const b = json.data;
+      const isPaid = b.payment_status === 'paid';
+      const payBtn = !isPaid
+        ? `<button class="btn btn--momo" onclick="openPaymentModal(${b.booking_id}, ${b.estimated_cost})">
+             <i class="fa-solid fa-mobile-screen-button"></i> Pay via MTN MoMo
+           </button>`
+        : `<span class="badge badge--paid">Paid</span>`;
+
       container.innerHTML = `
         <dl class="detail-list">
           <dt>Driver</dt><dd>${b.driver_name}</dd>
@@ -40,8 +54,11 @@ async function loadActiveBooking() {
           <dt>Dropoff</dt><dd>${b.dropoff_address}</dd>
           <dt>Cost</dt><dd>${Number(b.estimated_cost).toLocaleString()} RWF</dd>
         </dl>
-        <div class="btn-row">
-          <a href="/track/${b.booking_id}" class="btn btn--action">&#128205; Track Truck</a>
+        <div class="btn-row" style="margin-top:1rem; gap:0.75rem; display:flex; flex-wrap:wrap; align-items:center;">
+          <a href="/track/${b.booking_id}" class="btn btn--action">
+            <i class="fa-solid fa-location-dot"></i> Track Truck
+          </a>
+          ${payBtn}
         </div>
       `;
     } else {
@@ -63,17 +80,29 @@ async function loadRecentBookings() {
     if (!tbody) return;
 
     if (json.status === 'success' && json.data.length > 0) {
-      tbody.innerHTML = json.data.map(b => `
-        <tr>
-          <td>#${b.booking_id}</td>
-          <td>${b.pickup_address}</td>
-          <td>${b.dropoff_address}</td>
-          <td>${b.created_at}</td>
-          <td><span class="badge badge--${b.status}">${b.status}</span></td>
-          <td>${Number(b.estimated_cost).toLocaleString()}</td>
-          <td><a href="/track/${b.booking_id}" class="btn btn--sm btn--ghost">View</a></td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = json.data.map(b => {
+        const isPaid = b.payment_status === 'paid';
+        const canPay = !isPaid && (b.status === 'confirmed' || b.status === 'completed' || b.status === 'pending');
+        const actionCell = canPay
+          ? `<button class="btn btn--sm btn--momo" onclick="openPaymentModal(${b.booking_id}, ${b.estimated_cost})">
+               <i class="fa-solid fa-mobile-screen-button"></i> Pay
+             </button>`
+          : isPaid
+            ? `<span class="badge badge--paid">Paid</span>`
+            : `<a href="/track/${b.booking_id}" class="btn btn--sm btn--ghost">View</a>`;
+
+        return `
+          <tr>
+            <td>#${b.booking_id}</td>
+            <td>${b.pickup_address}</td>
+            <td>${b.dropoff_address}</td>
+            <td>${b.created_at}</td>
+            <td><span class="badge badge--${b.status}">${b.status}</span></td>
+            <td>${Number(b.estimated_cost).toLocaleString()}</td>
+            <td>${actionCell}</td>
+          </tr>
+        `;
+      }).join('');
     } else {
       tbody.innerHTML = '<tr><td colspan="7" class="table-empty">No bookings yet.</td></tr>';
     }
@@ -90,11 +119,33 @@ async function loadNotifications() {
         const el = document.getElementById(id);
         if (el) el.textContent = count;
       });
+
+      const listEl = document.getElementById('notificationsList');
+      if (listEl) {
+        const items = json.data.items || [];
+        if (items.length === 0) {
+          listEl.innerHTML = '<p class="empty-state__text">No unread notifications.</p>';
+        } else {
+          listEl.innerHTML = items.map(n => `
+            <div class="notification-item">
+              <p class="notification-item__msg">${n.message}</p>
+              <p class="notification-item__time">${new Date(n.sent_at).toLocaleString('en-RW', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+            </div>
+          `).join('');
+        }
+      }
     }
   } catch (e) { console.error(e); }
 }
 
-// ── Truck Search ────────────────────────────────────────────
+async function markAllNotificationsRead() {
+  try {
+    await fetch('/customer/notifications/mark-read', { method: 'POST' });
+    loadNotifications();
+  } catch (e) { console.error(e); }
+}
+
+// ── Truck Search ─────────────────────────────────────────────
 
 let selectedDriver = null;
 
@@ -143,7 +194,7 @@ function displayTruckResults(drivers) {
         <div class="truck-card__info">
           <p class="truck-card__name">${d.driver_name}</p>
           <div class="truck-card__meta">
-            <span class="truck-card__rating">&#9733; ${d.rating.toFixed(1)}</span>
+            <span class="truck-card__rating"><i class="fa-solid fa-star" style="color:#E85D04;font-size:0.85rem;"></i> ${d.rating.toFixed(1)}</span>
             <span>Plate: ${d.plate_no}</span>
             <span>Capacity: ${d.capacity} tons</span>
             ${d.distance_km ? `<span>~${d.distance_km} km away</span>` : ''}
@@ -161,7 +212,7 @@ function displayTruckResults(drivers) {
   container.style.display = '';
 }
 
-// ── Modal ───────────────────────────────────────────────────
+// ── Booking Confirmation Modal ────────────────────────────────
 
 function setupModal() {
   const backdrop = document.getElementById('modalBackdrop');
@@ -230,7 +281,116 @@ async function confirmBooking() {
   } catch (e) { console.error(e); }
 }
 
-// ── Utilities ───────────────────────────────────────────────
+// ── MTN MoMo Payment Modal ───────────────────────────────────
+
+let momoBookingId = null;
+let momoPin = '';
+
+function setupPaymentModal() {
+  const backdrop = document.getElementById('momoBackdrop');
+  if (backdrop) backdrop.addEventListener('click', closePaymentModal);
+
+  const cancelBtn = document.getElementById('momoCancelBtn');
+  if (cancelBtn) cancelBtn.addEventListener('click', closePaymentModal);
+
+  const doneBtn = document.getElementById('momoDoneBtn');
+  if (doneBtn) doneBtn.addEventListener('click', closePaymentModal);
+
+  const clearBtn = document.getElementById('momoClear');
+  if (clearBtn) clearBtn.addEventListener('click', () => { momoPin = ''; updatePinDots(); });
+
+  const backBtn = document.getElementById('momoBack');
+  if (backBtn) backBtn.addEventListener('click', () => { momoPin = momoPin.slice(0, -1); updatePinDots(); });
+
+  // Digit keys
+  document.querySelectorAll('.momo-key[data-digit]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      if (momoPin.length < 4) {
+        momoPin += this.dataset.digit;
+        updatePinDots();
+      }
+    });
+  });
+
+  const payBtn = document.getElementById('momoPayBtn');
+  if (payBtn) payBtn.addEventListener('click', submitPayment);
+}
+
+function openPaymentModal(bookingId, amount) {
+  momoBookingId = bookingId;
+  momoPin = '';
+  updatePinDots();
+
+  // Show amount and phone
+  setEl('momoAmountLabel', Number(amount).toLocaleString() + ' RWF');
+  setEl('momoSuccessAmount', Number(amount).toLocaleString() + ' RWF');
+
+  // Reset to PIN step
+  document.getElementById('momoStepPin').style.display = '';
+  document.getElementById('momoStepProcessing').style.display = 'none';
+  document.getElementById('momoStepSuccess').style.display = 'none';
+
+  document.getElementById('momoModal').style.display = 'flex';
+}
+
+function closePaymentModal() {
+  document.getElementById('momoModal').style.display = 'none';
+  momoBookingId = null;
+  momoPin = '';
+  // Refresh data in case payment completed
+  loadActiveBooking();
+  loadRecentBookings();
+  loadNotifications();
+  loadCustomerStats();
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('momoDot' + i);
+    if (dot) {
+      if (i < momoPin.length) {
+        dot.classList.add('momo-dot--filled');
+      } else {
+        dot.classList.remove('momo-dot--filled');
+      }
+    }
+  }
+  const payBtn = document.getElementById('momoPayBtn');
+  if (payBtn) payBtn.disabled = momoPin.length < 4;
+}
+
+async function submitPayment() {
+  if (!momoBookingId || momoPin.length < 4) return;
+
+  // Show processing step
+  document.getElementById('momoStepPin').style.display = 'none';
+  document.getElementById('momoStepProcessing').style.display = '';
+  document.getElementById('momoStepSuccess').style.display = 'none';
+
+  try {
+    // Simulate processing delay (1.5s) for realism
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    const res = await fetch(`/payment/simulate/${momoBookingId}`, { method: 'POST' });
+    const json = await res.json();
+
+    if (json.status === 'success') {
+      document.getElementById('momoStepProcessing').style.display = 'none';
+      document.getElementById('momoStepSuccess').style.display = '';
+    } else {
+      document.getElementById('momoStepProcessing').style.display = 'none';
+      document.getElementById('momoStepPin').style.display = '';
+      alert(json.message || 'Payment failed. Please try again.');
+    }
+  } catch (e) {
+    console.error(e);
+    document.getElementById('momoStepProcessing').style.display = 'none';
+    document.getElementById('momoStepPin').style.display = '';
+    alert('Network error. Please try again.');
+  }
+}
+
+// ── Utilities ────────────────────────────────────────────────
 
 function setEl(id, value) {
   const el = document.getElementById(id);
