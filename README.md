@@ -1,27 +1,28 @@
 # CargoConnect
 
 > A full-stack logistics and relocation web platform built for **Kigali, Rwanda**.
-> CargoConnect connects customers who need to move cargo or relocate with verified truck drivers,  in real time.
+> CargoConnect connects customers who need to move cargo or relocate with verified truck drivers, in real time.
 
 ---
 
-##  Table of Contents
+## Table of Contents
 
 - [What is CargoConnect?](#what-is-cargoconnect)
 - [How it Works](#how-it-works)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
-- [Team Members](#team-members)
-- [Task Sheet](#task-sheet)
 - [Requirements](#requirements)
 - [Setup on macOS](#setup-on-macos)
 - [Setup on Windows](#setup-on-windows)
 - [Environment Variables](#environment-variables)
 - [Running the App](#running-the-app)
 - [Creating an Admin Account](#creating-an-admin-account)
+- [All Routes](#all-routes)
 - [API Overview](#api-overview)
+- [Socket.IO Events](#socketio-events)
 - [Common Issues](#common-issues)
+- [Team Members](#team-members)
 
 ---
 
@@ -60,11 +61,12 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 - Dashboard with live stats: total bookings, completed trips, pending bookings, total spent in RWF
 - Book a truck — search by cargo weight, pickup/dropoff address, and preferred date/time
 - Smart driver matching sorted by rating, with estimated cost shown upfront
-  - Cost formula: 2,000 RWF base fare + 500 RWF per ton + 200 RWF per km
+  - Cost formula: `2,000 RWF base fare + 500 RWF per ton + 200 RWF per km`
 - Live GPS tracking of the driver on an interactive map — no page refresh needed
 - View full booking history with colour-coded status badges
-- Receive in-app notifications (booking confirmed, trip completed, payment updates)
+- Receive in-app notifications (booking confirmed, trip completed, payment updates) with mark-as-read
 - Rate the driver 1–5 stars after a completed trip with an optional written comment
+- Profile section showing account name, email, and phone
 
 ### Driver
 - Register with a licence number (account waits for admin verification before going live)
@@ -74,6 +76,8 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 - Share live GPS location to the customer using the browser's geolocation API
 - Mark trip as completed to trigger the payment flow
 - View job history with past earnings and ratings received
+- My Truck section showing registered truck plate and capacity
+- Profile section showing licence, rating, and verification status
 
 ### Admin
 - Full control dashboard with 6 platform-wide statistics cards
@@ -148,19 +152,19 @@ CargoConnect/
 │   ├── booking.py          # /booking — search for drivers, create/cancel bookings
 │   ├── driver.py           # /driver — availability toggle, accept/decline/complete jobs
 │   ├── customer.py         # /customer — dashboard stats, bookings, notifications, ratings
-│   ├── tracking.py         # (root) — Socket.IO GPS events for live tracking
+│   ├── tracking.py         # (root) — live tracking page + Socket.IO GPS events
 │   ├── payment.py          # /payment — MTN MoMo initiation and callback
 │   └── admin.py            # /admin — all admin management endpoints
 │
 ├── templates/              # HTML pages rendered by Flask using Jinja2 templating
-│   ├── base.html                 # Shared page layout with sidebar and topbar
+│   ├── base.html                 # Shared layout — sidebar, topbar, flash messages
 │   ├── login.html                # Login form
 │   ├── register.html             # Registration form with customer/driver role toggle
-│   ├── customer_dashboard.html   # Customer home — stats, active trip, booking form
-│   ├── book_truck.html           # Dedicated truck search page
+│   ├── customer_dashboard.html   # Customer home — stats, bookings, notifications, profile
+│   ├── book_truck.html           # Standalone truck search page
 │   ├── track_booking.html        # Live Leaflet map for tracking a trip
-│   ├── driver_dashboard.html     # Driver home — availability toggle, job queue
-│   ├── driver_job.html           # Active job detail with GPS share button
+│   ├── driver_dashboard.html     # Driver home — jobs, truck info, profile
+│   ├── driver_job.html           # Active job detail with GPS share and complete buttons
 │   ├── admin_dashboard.html      # Admin overview with verification queue
 │   ├── admin_users.html          # User management table with live search
 │   ├── admin_drivers.html        # Driver management table
@@ -170,166 +174,12 @@ CargoConnect/
     ├── css/
     │   └── style.css       # All styles — every colour and size is a CSS variable
     └── js/
-        ├── auth.js         # Handles the role toggle on the register form
-        ├── booking.js      # Truck search form, results display, booking modal
+        ├── auth.js         # Role toggle on register form; auto-dismiss flash messages
+        ├── booking.js      # Customer dashboard: stats, bookings, truck search, notifications
         ├── tracking.js     # Leaflet map setup and Socket.IO live location listener
-        ├── dashboard.js    # Sidebar hamburger for mobile and shared helper functions
+        ├── dashboard.js    # Sidebar hamburger for mobile; shared formatRWF/formatDate helpers
         └── admin.js        # Admin table utilities and confirmation modals
 ```
-
----
-
-## Team Members
-
-There are 7 members on this team. Each person owns a clear slice of the project so work never overlaps and everyone always knows what they are responsible for.
-
----
-
-###  Member 1 — Project Lead & App Architecture
-
-**Name:** Nkem Jeferon Achia 
-**Responsible for:** The backbone of the whole application — setting up the project, making sure every piece connects, and writing the documentation.
-
-| File / Area | Task |
-|-------------|------|
-| `app.py` | Create the Flask app, register all blueprints, configure SocketIO |
-| `extensions.py` | Define shared extensions (db, bcrypt, socketio, migrate, login_manager) |
-| `config/config.py` | Load environment variables, configure the app |
-| `.env.example` | Document all required environment variables |
-| `requirements.txt` | List all Python dependencies |
-| `.gitignore` | Exclude secrets and cache from version control |
-| `README.md` | Write the full project documentation |
-| Overall integration | Make sure all blueprints, models, and templates connect without errors |
-| Final testing | Run the full app end-to-end and confirm all 44 routes work |
-
----
-
-###  Member 2 — Database Engineer
-
-**Name:** *(Add name)*
-**Responsible for:** Designing and building every database table. Every other team member depends on this work, so it should be done first.
-
-| File / Area | Task |
-|-------------|------|
-| `models/__init__.py` | Import and expose the SQLAlchemy db instance |
-| `models/user.py` | Users table — user_id, name, email, phone, password_hash, role |
-| `models/customer.py` | Customers table — customer_id, user_id (FK), default_address, bookings relationship |
-| `models/driver.py` | Drivers table — driver_id, user_id (FK), licence_no, rating, availability, GPS coords |
-| `models/truck.py` | Trucks table — truck_id, driver_id (FK), plate_no, capacity |
-| `models/booking.py` | Bookings table — all fields, status enum, relationships to customer/driver/truck |
-| `models/payment.py` | Payments table — payment_id, booking_id (FK), amount, method, status, paid_at |
-| `models/rating.py` | Ratings table — rating_id, booking_id, customer_id, driver_id, score, comment |
-| `models/notification.py` | Notifications table — notification_id, user_id (FK), message, is_read, sent_at |
-| Database setup | Create the `cargoconnect` PostgreSQL database and verify all tables generate correctly |
-
----
-
-###  Member 3 — Authentication & Admin Backend
-
-**Name:** *(Add name)*
-**Responsible for:** Everything related to user accounts and the admin control panel routes.
-
-| File / Area | Task |
-|-------------|------|
-| `routes/auth.py` | Register endpoint (creates User + Customer or Driver profile), Login endpoint (bcrypt check + Flask-Login), Logout endpoint |
-| `templates/login.html` | Login page — form, error display, link to register |
-| `templates/register.html` | Register page — role toggle (customer/driver), licence field for drivers |
-| `routes/admin.py` | All admin endpoints: stats, list users/drivers/bookings, verify/reject drivers, delete users, toggle availability |
-| `templates/admin_dashboard.html` | Admin overview — 6 stat cards, driver verification queue with Verify/Reject buttons |
-| `templates/admin_users.html` | Users table — live search filter, delete with confirmation modal |
-| `templates/admin_drivers.html` | Drivers table — toggle availability, remove verification, delete with modal |
-| `templates/admin_bookings.html` | Bookings table — status dropdown filter, detail modal per row |
-| Role protection | Add `require_admin` decorator, ensure customer/driver routes block wrong roles |
-
----
-
-###  Member 4 — Customer Features Backend
-
-**Name:** *(Add name)*
-**Responsible for:** All the features a customer uses — stats, bookings, notifications, and ratings.
-
-| File / Area | Task |
-|-------------|------|
-| `routes/customer.py` | Stats endpoint, active booking endpoint, recent bookings endpoint, notifications endpoints, rate driver endpoint |
-| `routes/booking.py` | Driver search using Haversine formula, cost estimation (2000 + 500/ton + 200/km), create booking endpoint, cancel booking endpoint |
-| Haversine formula | Implement great-circle distance calculation to rank drivers by proximity |
-| Cost calculation | `estimate_cost(weight_tons, distance_km)` helper function |
-| `find_available_drivers()` | Query verified + available drivers, exclude busy drivers, sort by rating, return top 10 |
-| Booking serialisation | `_serialize_booking()` helper that converts a Booking object to a JSON-safe dict |
-| Notification creation | Create Notification records when a booking is made or cancelled |
-
----
-
-###  Member 5 — Customer Dashboard Frontend
-
-**Name:** *(Add name)*
-**Responsible for:** Everything the customer sees and interacts with in the browser.
-
-| File / Area | Task |
-|-------------|------|
-| `templates/base.html` | Shared layout — sidebar with nav links, topbar with hamburger, flash messages, content block, script block |
-| `templates/customer_dashboard.html` | Stats row (4 cards), active booking card, recent bookings table, quick-book form, truck results list, confirmation modal |
-| `templates/book_truck.html` | Standalone book-a-truck page with search form and results |
-| `static/js/booking.js` | Load stats on page load, load active booking, load recent bookings, load notifications, handle truck search form (fetch POST), display truck result cards, open/close booking modal, submit confirmed booking |
-| `static/js/auth.js` | Show/hide licence field based on role selection on register page, auto-dismiss flash messages |
-| `static/js/dashboard.js` | Hamburger sidebar toggle, close sidebar on outside click for mobile, shared `formatRWF()` and `formatDate()` helpers |
-| Truck results cards | Each card shows driver name, star rating, plate, capacity, distance, estimated cost, Book button |
-| Booking modal | Confirm modal shows full trip summary before submitting |
-
----
-
-###  Member 6 — Driver Dashboard Frontend & Backend
-
-**Name:** *(Add name)*
-**Responsible for:** Everything the driver sees and does — from going online to completing a trip.
-
-| File / Area | Task |
-|-------------|------|
-| `routes/driver.py` | Dashboard page route, stats endpoint, availability toggle (PATCH), pending jobs endpoint, active job endpoint, accept job, decline job, complete job, job history endpoint |
-| `templates/driver_dashboard.html` | Availability card with toggle switch, 4 stat cards, active job card, incoming jobs list, job history table — all data loaded via fetch |
-| `templates/driver_job.html` | Active job detail view — customer info, trip details, Update Location button, Complete Trip button |
-| Driver inline JS | All the JavaScript inside `driver_dashboard.html` — loadDriverStats, loadActiveJob, loadPendingJobs, loadJobHistory, acceptJob, declineJob, completeTrip, updateLocation via socket.emit |
-| Availability toggle UI | Card turns orange when driver is online, grey when offline |
-| Verification pending state | Show "Account pending verification" instead of toggle if driver is not verified |
-| Job cards | Each incoming job card shows customer name, route, cost, time, Accept and Decline buttons |
-
----
-
-###  Member 7 — Real-Time Tracking, Payments & Styling
-
-**Name:** *(Add name)*
-**Responsible for:** The live GPS tracking feature, the MTN MoMo payment integration, and the entire visual design system.
-
-| File / Area | Task |
-|-------------|------|
-| `routes/tracking.py` | `join_tracking_room` SocketIO event (customer joins booking room), `driver_location_update` SocketIO event (update DB + broadcast to room) |
-| `templates/track_booking.html` | Trip details panel, Leaflet map container, pass booking ID and dropoff coords to JS |
-| `static/js/tracking.js` | Initialise Leaflet map centred on Kigali (-1.9441, 30.0619), connect Socket.IO, join tracking room, listen for `location_update`, move orange driver marker, pan map to new location |
-| `routes/payment.py` | `get_momo_token()` helper, `/initiate/<id>` endpoint (calls MoMo Collections API), `/callback` endpoint (updates payment status, sends notifications to both parties) |
-| `static/css/style.css` | Complete design system — all CSS variables in `:root`, sidebar, topbar, cards, stat cards, buttons (primary/action/ghost/danger), forms, inputs, badges, tables, modals, tracking layout, availability toggle, job cards, truck cards, auth pages, responsive mobile layout |
-| `static/js/admin.js` | Shared admin utilities — hamburger setup, truncate helper, formatDate helper, apiRequest wrapper |
-| CSS variables | Define all 13 colour tokens, both fonts, all spacing/radius/shadow values as variables — no hex value written more than once |
-| Mobile responsive | Sidebar collapses on screens below 768px, hamburger button appears in topbar |
-
----
-
-### Summary Table
-
-| # | Member | Main Area | Key Files |
-|---|--------|-----------|-----------|
-| 1 | *(name)* | Project Lead & Architecture | `app.py`, `extensions.py`, `config/`, `README.md` |
-| 2 | *(name)* | Database | All `models/*.py` files |
-| 3 | *(name)* | Auth & Admin | `routes/auth.py`, `routes/admin.py`, login/register/admin templates |
-| 4 | *(name)* | Customer Backend | `routes/customer.py`, `routes/booking.py`, driver search algorithm |
-| 5 | *(name)* | Customer Frontend | `templates/customer_dashboard.html`, `book_truck.html`, `booking.js`, `dashboard.js`, `auth.js` |
-| 6 | *(name)* | Driver Dashboard | `routes/driver.py`, `driver_dashboard.html`, `driver_job.html` |
-| 7 | *(name)* | Tracking, Payments & CSS | `routes/tracking.py`, `routes/payment.py`, `track_booking.html`, `tracking.js`, `style.css` |
-
----
-
-## Task Sheet
-
-📋 **Team Task Sheet:** *(Paste your Google Sheets / Notion / Trello link here)*
 
 ---
 
@@ -343,23 +193,18 @@ Make sure the following are installed on your computer **before** you start.
 | PostgreSQL | 14 | [postgresql.org/download](https://www.postgresql.org/download/) |
 | Git | Any recent | [git-scm.com](https://git-scm.com) |
 
-> **Never used these before?**
-> - **Python** is the programming language the backend is written in.
-> - **PostgreSQL** is the database — it stores all users, bookings, payments, etc.
-> - **Git** downloads the project code from GitHub to your computer.
-
 ---
 
 ## Setup on macOS
 
-Follow every step in order. Do not skip any step.
+Follow every step in order.
 
 ### Step 1 — Download the project code
 
-Open **Terminal** (press `Cmd + Space`, type "Terminal", press Enter) and run:
+Open **Terminal** and run:
 
 ```bash
-git clone https://github.com/your-username/CargoConnect.git
+git clone https://github.com/NkemJefersonAchia/CargoConnect.git
 cd CargoConnect
 ```
 
@@ -370,28 +215,22 @@ The easiest option on Mac is the free app **Postgres.app**:
 1. Go to [postgresapp.com](https://postgresapp.com) and download the latest version
 2. Drag **Postgres.app** to your **Applications** folder and open it
 3. Click **Initialize**, then click **Start**
-4. In the app window, click the button labeled **"Configure your $PATH"** — this lets Terminal use the `psql` command
+4. Click **"Configure your $PATH"** — this lets Terminal use the `psql` command
 
 ### Step 3 — Create the database
-
-In Terminal, run:
 
 ```bash
 createdb cargoconnect
 ```
 
-If nothing is printed and no error appears, the database was created successfully.
-
 ### Step 4 — Create a virtual environment
-
-A virtual environment keeps this project's packages isolated from the rest of your computer. Think of it as a private box for this project.
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-Your terminal prompt should now start with `(venv)` — that means it is active.
+Your terminal prompt should now start with `(venv)`.
 
 ### Step 5 — Install all Python packages
 
@@ -399,32 +238,28 @@ Your terminal prompt should now start with `(venv)` — that means it is active.
 pip install -r requirements.txt
 ```
 
-This installs Flask, SQLAlchemy, Socket.IO, bcrypt, and everything else the app needs. It may take 1–2 minutes.
-
 ### Step 6 — Create your environment file
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` in VS Code, TextEdit, or nano, and update these two lines:
+Open `.env` and update:
 
 ```env
 SECRET_KEY=any-random-string-you-make-up
 DATABASE_URL=postgresql://YOUR_MAC_USERNAME@localhost:5432/cargoconnect
 ```
 
-To find your Mac username, run this in Terminal:
+To find your Mac username:
 ```bash
 whoami
 ```
 
-For example, if `whoami` prints `john`, your DATABASE_URL should be:
+For example, if `whoami` returns `john`:
 ```
 DATABASE_URL=postgresql://john@localhost:5432/cargoconnect
 ```
-
-> Note: no password is needed — Postgres.app uses your Mac account to authenticate automatically.
 
 ### Step 7 — Start the app
 
@@ -437,20 +272,18 @@ When you see this line, the app is ready:
 wsgi starting up on http://0.0.0.0:5000
 ```
 
-Open your browser and visit: **http://localhost:5000** 🎉
+Open your browser and go to: **http://localhost:5000**
 
-To stop the app later: press `Ctrl + C` in the Terminal window.
+To stop the app: press `Ctrl + C`.
 
 ---
 
 ## Setup on Windows
 
-Follow every step in order. Use **Command Prompt** or **PowerShell** (search for either in the Start menu).
-
 ### Step 1 — Download the project code
 
 ```cmd
-git clone https://github.com/your-username/CargoConnect.git
+git clone https://github.com/NkemJefersonAchia/CargoConnect.git
 cd CargoConnect
 ```
 
@@ -458,24 +291,19 @@ cd CargoConnect
 
 1. Go to [postgresql.org/download/windows](https://www.postgresql.org/download/windows/) and click **Download the installer**
 2. Run the installer — leave all settings as default
-3. When asked to set a password for the `postgres` user, write something simple like `postgres` — **write it down, you will need it later**
-4. Keep port **5432** (the default)
-5. Complete the installation and click Finish
+3. When asked, set a password for the `postgres` user — **write it down**
+4. Keep port **5432**
 
 ### Step 3 — Create the database
 
-Open **SQL Shell (psql)** from the Windows Start menu (it was installed with PostgreSQL).
+Open **SQL Shell (psql)** from the Windows Start menu.
 
-- Press **Enter** four times to accept the defaults for Server, Database, Port, and Username
-- When asked for **Password**, type the password you set during installation
-
-Then type this command and press Enter:
+Press **Enter** four times, then type your password when prompted.
 
 ```sql
 CREATE DATABASE cargoconnect;
+\q
 ```
-
-Then type `\q` and press Enter to exit.
 
 ### Step 4 — Create a virtual environment
 
@@ -483,8 +311,6 @@ Then type `\q` and press Enter to exit.
 python -m venv venv
 venv\Scripts\activate
 ```
-
-Your prompt should now start with `(venv)`.
 
 ### Step 5 — Install all Python packages
 
@@ -498,14 +324,12 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Open `.env` in Notepad or VS Code and update these two lines:
+Open `.env` and update:
 
 ```env
 SECRET_KEY=any-random-string-you-make-up
 DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/cargoconnect
 ```
-
-Replace `YOUR_PASSWORD` with the PostgreSQL password you created during installation.
 
 ### Step 7 — Start the app
 
@@ -513,52 +337,43 @@ Replace `YOUR_PASSWORD` with the PostgreSQL password you created during installa
 python app.py
 ```
 
-When you see this line, the app is ready:
-```
-wsgi starting up on http://0.0.0.0:5000
-```
-
-Open your browser and visit: **http://localhost:5000** 🎉
-
-To stop the app later: press `Ctrl + C`.
+Open your browser and go to: **http://localhost:5000**
 
 ---
 
 ## Environment Variables
 
-All secrets and settings go in a file called `.env` in the project root. This file is in `.gitignore` so it is **never uploaded to GitHub**.
+All secrets and settings go in `.env` in the project root. This file is never committed to GitHub.
 
 | Variable | What it is | Example |
 |----------|-----------|---------|
-| `SECRET_KEY` | A random string Flask uses to protect sessions and cookies. Make up anything. | `my-secret-key-abc123` |
-| `DATABASE_URL` | How to connect to PostgreSQL | `postgresql://john@localhost:5432/cargoconnect` |
-| `MOMO_API_KEY` | Your API key from the MTN MoMo developer portal | *(from sandbox.momodeveloper.mtn.com)* |
-| `MOMO_USER_ID` | Your user ID from the MTN MoMo developer portal | *(from sandbox.momodeveloper.mtn.com)* |
-| `MOMO_BASE_URL` | The MoMo API server address | `https://sandbox.momodeveloper.mtn.com` |
+| `SECRET_KEY` | Random string Flask uses to protect sessions | `my-secret-key-abc123` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://john@localhost:5432/cargoconnect` |
+| `MOMO_API_KEY` | MTN MoMo sandbox API key | *(from sandbox.momodeveloper.mtn.com)* |
+| `MOMO_USER_ID` | MTN MoMo sandbox user ID | *(from sandbox.momodeveloper.mtn.com)* |
+| `MOMO_BASE_URL` | MoMo API server address | `https://sandbox.momodeveloper.mtn.com` |
 | `MOMO_SUBSCRIPTION_KEY` | MoMo subscription key | *(from sandbox.momodeveloper.mtn.com)* |
-| `FLASK_ENV` | Set to `development` while building. Change to `production` before deploying. | `development` |
-| `FLASK_DEBUG` | `1` shows detailed error pages in the browser. Set to `0` before going live. | `1` |
+| `FLASK_ENV` | `development` while building | `development` |
+| `FLASK_DEBUG` | `1` shows detailed error pages in browser | `1` |
 
 ---
 
 ## Running the App
 
-Every time you want to work on the project, do this:
+Every time you want to work on the project:
 
 ```bash
-# macOS — activate the virtual environment
+# macOS
 source venv/bin/activate
 
-# Windows — activate the virtual environment
+# Windows
 venv\Scripts\activate
 
 # Start the server
 python app.py
 ```
 
-Then open **http://localhost:5000** in your browser.
-
-Make sure **Postgres.app is open and running** (macOS) before starting, or the database will not connect.
+Then open **http://localhost:5000**.
 
 ---
 
@@ -566,28 +381,66 @@ Make sure **Postgres.app is open and running** (macOS) before starting, or the d
 
 The public registration page only allows `customer` and `driver` roles. To promote an account to admin:
 
-**Step 1:** Register a normal account at http://localhost:5000/auth/register
+**Step 1:** Register a normal account at `http://localhost:5000/auth/register`
 
-**Step 2:** Open your terminal and connect to the database:
+**Step 2:** Connect to the database:
 
-macOS:
 ```bash
+# macOS
 psql -U YOUR_MAC_USERNAME cargoconnect
-```
 
-Windows:
-```cmd
+# Windows
 psql -U postgres cargoconnect
 ```
 
-**Step 3:** Run this SQL command, replacing the email with your registered email:
+**Step 3:** Run this SQL (replace the email):
 
 ```sql
 UPDATE users SET role = 'admin' WHERE email = 'your@email.com';
 \q
 ```
 
-**Step 4:** Log out and log back in — you will now see the **Admin Dashboard**.
+**Step 4:** Log out and log back in — you will see the **Admin Dashboard**.
+
+---
+
+## All Routes
+
+### Page Routes (render HTML)
+
+| Method | URL | Template | Who can access |
+|--------|-----|----------|----------------|
+| GET/POST | `/auth/login` | `login.html` | Anyone |
+| GET/POST | `/auth/register` | `register.html` | Anyone |
+| GET | `/auth/logout` | — (redirect) | Logged-in users |
+| GET | `/customer/dashboard` | `customer_dashboard.html` | Customers only |
+| GET | `/driver/dashboard` | `driver_dashboard.html` | Drivers only |
+| GET | `/driver/job/<id>` | `driver_job.html` | Drivers only |
+| GET | `/track/<booking_id>` | `track_booking.html` | Logged-in users |
+| GET | `/admin/dashboard` | `admin_dashboard.html` | Admins only |
+| GET | `/admin/users-page` | `admin_users.html` | Admins only |
+| GET | `/admin/drivers-page` | `admin_drivers.html` | Admins only |
+| GET | `/admin/bookings-page` | `admin_bookings.html` | Admins only |
+
+### Customer Sidebar Navigation
+
+| Link | Destination | What it shows |
+|------|------------|---------------|
+| Dashboard | `/customer/dashboard` | Full dashboard page |
+| My Bookings | `#recent` | Recent bookings table (on dashboard) |
+| Book a Truck | `#quickbook` | Booking search form (on dashboard) |
+| Notifications | `#notifications` | Unread notifications list (on dashboard) |
+| My Profile | `#profile` | Account info section (on dashboard) |
+
+### Driver Sidebar Navigation
+
+| Link | Destination | What it shows |
+|------|------------|---------------|
+| Dashboard | `/driver/dashboard` | Full dashboard page |
+| My Jobs | `#jobs` | Incoming job requests (on dashboard) |
+| My Truck | `#truck` | Truck plate and capacity (on dashboard) |
+| Earnings | `#history` | Job history table (on dashboard) |
+| My Profile | `#profile` | Driver account info (on dashboard) |
 
 ---
 
@@ -612,13 +465,6 @@ On error:
 }
 ```
 
-### Authentication (`/auth`)
-| Method | URL | What it does |
-|--------|-----|-------------|
-| GET/POST | `/auth/login` | Show login page / submit login |
-| GET/POST | `/auth/register` | Show registration page / create account |
-| GET | `/auth/logout` | Log out and redirect to login |
-
 ### Bookings (`/booking`)
 | Method | URL | What it does |
 |--------|-----|-------------|
@@ -630,9 +476,8 @@ On error:
 ### Customer (`/customer`)
 | Method | URL | What it does |
 |--------|-----|-------------|
-| GET | `/customer/dashboard` | Render the customer dashboard page |
 | GET | `/customer/stats` | Numbers for the 4 stat cards |
-| GET | `/customer/active-booking` | The current confirmed booking (if any) |
+| GET | `/customer/active-booking` | Current confirmed booking (if any) |
 | GET | `/customer/recent-bookings` | Last 5 bookings |
 | GET | `/customer/notifications` | Unread notifications count and list |
 | POST | `/customer/notifications/mark-read` | Mark all notifications as read |
@@ -641,11 +486,10 @@ On error:
 ### Driver (`/driver`)
 | Method | URL | What it does |
 |--------|-----|-------------|
-| GET | `/driver/dashboard` | Render the driver dashboard page |
 | GET | `/driver/stats` | Numbers for the 4 stat cards |
 | PATCH | `/driver/availability` | Toggle online / offline status |
 | GET | `/driver/pending-jobs` | All pending job requests for this driver |
-| GET | `/driver/active-job` | The current confirmed job (if any) |
+| GET | `/driver/active-job` | Current confirmed job (if any) |
 | POST | `/driver/job/<id>/accept` | Accept a pending booking |
 | POST | `/driver/job/<id>/decline` | Decline a pending booking |
 | POST | `/driver/job/<id>/complete` | Mark a confirmed trip as completed |
@@ -660,7 +504,6 @@ On error:
 ### Admin (`/admin`)
 | Method | URL | What it does |
 |--------|-----|-------------|
-| GET | `/admin/dashboard` | Render admin overview page |
 | GET | `/admin/stats` | 6 platform-wide statistics |
 | GET | `/admin/unverified-drivers` | Drivers waiting for verification |
 | POST | `/admin/drivers/<id>/verify` | Verify a driver |
@@ -673,38 +516,59 @@ On error:
 | DELETE | `/admin/drivers/<id>` | Delete a driver record |
 | GET | `/admin/bookings` | All bookings (add `?status=pending` to filter) |
 
-### Real-Time Socket.IO Events
-| Event name | Who sends it | What it does |
-|-----------|-------------|-------------|
-| `join_tracking_room` | Customer browser | Joins the live tracking room for their booking |
-| `driver_location_update` | Driver browser | Sends GPS coordinates to the server |
-| `location_update` | Server | Broadcasts new driver coordinates to the customer's map |
+---
+
+## Socket.IO Events
+
+| Event name | Direction | What it does |
+|-----------|-----------|-------------|
+| `join_tracking_room` | Customer → Server | Customer joins the live tracking room for their booking |
+| `driver_location_update` | Driver → Server | Driver sends GPS coordinates to the server |
+| `location_update` | Server → Customer | Server broadcasts new driver coordinates to the customer's map |
+| `joined` | Server → Customer | Confirmation that the customer joined the room |
 
 ---
 
 ## Common Issues
 
 **`role "username" does not exist`**
-Your `.env` file still has the placeholder text. Open `.env` and replace `username` in `DATABASE_URL` with your actual system username (run `whoami` to find it).
+Your `.env` file still has placeholder text. Open `.env` and replace `username` in `DATABASE_URL` with your actual system username (run `whoami` to find it).
 
 **`Connection refused` on port 5432**
 PostgreSQL is not running. On macOS, open Postgres.app. On Windows, open Services in Task Manager and start the PostgreSQL service.
 
 **`ModuleNotFoundError: No module named 'flask'`**
-Your virtual environment is not active. Run `source venv/bin/activate` (macOS) or `venv\Scripts\activate` (Windows) and try again.
+Your virtual environment is not active. Run `source venv/bin/activate` (macOS) or `venv\Scripts\activate` (Windows).
 
 **`Address already in use` — port 5000**
-Something else is already using port 5000. Stop that process, or change the port in `app.py`:
+Something else is already using port 5000. On macOS, AirPlay Receiver uses port 5000 — go to **System Settings → General → AirDrop & Handoff** and turn it off. Or change the port in `app.py`:
 ```python
 socketio.run(app, host="0.0.0.0", port=5001, debug=True)
 ```
 Then visit http://localhost:5001.
 
 **Page loads but shows a database error after submitting a form**
-Make sure the `cargoconnect` database was created (Step 3 in setup) and that `DATABASE_URL` in `.env` points to it correctly.
+Make sure the `cargoconnect` database was created and that `DATABASE_URL` in `.env` is correct.
+
+**Driver dashboard shows "pending verification" instead of the toggle**
+New driver accounts must be approved by an admin. Log in as admin, go to the Admin Dashboard, and click **Verify** next to the driver's name.
 
 **Eventlet deprecation warning in the terminal**
 This is a warning, not an error — the app runs fine. You can safely ignore it during development.
+
+---
+
+## Team Members
+
+| # | Member | Main Area | Key Files |
+|---|--------|-----------|-----------|
+| 1 | Nkem Jeferon Achia | Project Lead & Architecture | `app.py`, `extensions.py`, `config/`, `README.md` |
+| 2 | *(Add name)* | Database | All `models/*.py` files |
+| 3 | *(Add name)* | Auth & Admin | `routes/auth.py`, `routes/admin.py`, login/register/admin templates |
+| 4 | *(Add name)* | Customer Backend | `routes/customer.py`, `routes/booking.py` |
+| 5 | *(Add name)* | Customer Frontend | `templates/customer_dashboard.html`, `booking.js`, `dashboard.js`, `auth.js` |
+| 6 | *(Add name)* | Driver Dashboard | `routes/driver.py`, `driver_dashboard.html`, `driver_job.html` |
+| 7 | *(Add name)* | Tracking, Payments & CSS | `routes/tracking.py`, `routes/payment.py`, `track_booking.html`, `tracking.js`, `style.css` |
 
 ---
 
