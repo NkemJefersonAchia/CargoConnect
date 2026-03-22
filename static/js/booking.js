@@ -159,6 +159,13 @@ function setupSearchForm() {
     const dropoff = document.getElementById('dropoffAddress').value.trim();
     const weight = parseFloat(document.getElementById('cargoWeight').value) || 1;
 
+    const container = document.getElementById('truckResults');
+    const list = document.getElementById('truckList');
+    if (container && list) {
+      container.style.display = 'block';
+      list.innerHTML = '<p class="empty-state__text"><i class="fa-solid fa-spinner fa-spin"></i> Searching for available trucks...</p>';
+    }
+
     try {
       const res = await fetch('/booking/search', {
         method: 'POST',

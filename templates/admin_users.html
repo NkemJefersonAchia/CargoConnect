@@ -59,6 +59,7 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
 <script>
+  const CURRENT_ADMIN_ID = {{ user.user_id }};
   let allUsers = [];
   let deleteTargetId = null;
 
@@ -88,7 +89,7 @@
         <td><span class="badge badge--role-${u.role}">${u.role}</span></td>
         <td>${u.created_at}</td>
         <td>
-          <button class="btn btn--sm btn--danger" onclick="openDeleteModal(${u.user_id})">Delete</button>
+          ${u.user_id === CURRENT_ADMIN_ID ? '<span class="badge badge--role-admin">You</span>' : `<button class="btn btn--sm btn--danger" onclick="openDeleteModal(${u.user_id})">Delete</button>`}
         </td>
       </tr>
     `).join('');
