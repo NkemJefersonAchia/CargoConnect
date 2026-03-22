@@ -12,6 +12,12 @@ class Config:
         "DATABASE_URL", "postgresql://postgres:password@localhost:5432/cargoconnect"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,   # discard stale connections before use
+        "pool_recycle": 280,     # recycle connections every 280s (Aiven closes idle at ~300s)
+        "pool_timeout": 10,      # fail fast if no connection available within 10s
+        "connect_args": {"connect_timeout": 10},  # DNS/TCP timeout per attempt
+    }
 
     MOMO_API_KEY = os.getenv("MOMO_API_KEY", "")
     MOMO_USER_ID = os.getenv("MOMO_USER_ID", "")

@@ -28,7 +28,12 @@ def create_app():
     @login_manager.user_loader
     def load_user(user_id):
         """Load user by ID for Flask-Login session management."""
-        return User.query.get(int(user_id))
+        try:
+            return User.query.get(int(user_id))
+        except Exception:
+            # DB temporarily unreachable — treat session as unauthenticated
+            # rather than crashing the entire request with a 500.
+            return None
 
     from routes.auth import auth_bp
     from routes.booking import booking_bp

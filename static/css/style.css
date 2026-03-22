@@ -75,17 +75,20 @@ ul { list-style: none; }
   padding: 24px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-.sidebar__logo-icon { font-size: 1.8rem; }
+.sidebar__logo-icon { font-size: 1.4rem; }
 .sidebar__logo-text {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 1.25rem;
+  font-size: 1rem;
   color: var(--color-surface);
   letter-spacing: -0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar__nav { flex: 1; padding: 16px 0; overflow-y: auto; }
-.sidebar__nav li { margin: 2px 12px; }
+.sidebar__nav li { margin: 2px 12px 2px 4px; }
 .sidebar__link {
   display: flex;
   align-items: center;

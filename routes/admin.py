@@ -155,6 +155,8 @@ def list_users():
 @require_admin
 def delete_user(user_id):
     """Delete a user account."""
+    if user_id == current_user.user_id:
+        return error("You cannot delete your own admin account.", 403)
     user = User.query.get_or_404(user_id)
     db.session.delete(user)
     db.session.commit()
