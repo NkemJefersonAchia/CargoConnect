@@ -71,20 +71,22 @@ ul { list-style: none; }
 .sidebar__logo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 24px 20px;
+  gap: 8px;
+  padding: 20px 12px;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
-.sidebar__logo-icon { font-size: 1.4rem; }
+.sidebar__logo-icon {
+  font-size: 1.2rem;
+  color: var(--color-primary-orange);
+  flex-shrink: 0;
+}
 .sidebar__logo-text {
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-surface);
   letter-spacing: -0.5px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .sidebar__nav { flex: 1; padding: 16px 0; overflow-y: auto; }
