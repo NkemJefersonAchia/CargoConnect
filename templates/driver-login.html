@@ -259,7 +259,15 @@
             <h1>Driver Login</h1>
             <p class="subtitle">Sign in to your CargoConnect driver account</p>
 
-            <form id="loginForm">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-msg flash-{{ category }}" style="padding:10px 14px;margin-bottom:14px;border-radius:6px;font-size:13px;border:1px solid;{% if category == 'success' %}background:#d4edda;color:#155724;border-color:#c3e6cb;{% elif category == 'danger' %}background:#f8d7da;color:#721c24;border-color:#f5c6cb;{% else %}background:#fff3cd;color:#856404;border-color:#ffeeba;{% endif %}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form id="loginForm" action="/auth/login" method="POST">
                 <div class="form-group">
                     <label for="email">Email Address *</label>
                     <input type="email" id="email" name="email" required>
@@ -276,12 +284,12 @@
 
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">Sign In</button>
-                    <a href="driver-auth.html" class="btn btn-secondary">Cancel</a>
+                    <a href="/driver-auth" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
 
             <div class="register-link">
-                Not yet registered? <a href="driver-register.html">Register now</a>
+                Not yet registered? <a href="/auth/register?role=driver">Register now</a>
             </div>
         </div>
     </div>
@@ -305,19 +313,8 @@
             }
         }
 
-        // Login form handling (preserved from original)
-        const form = document.getElementById('loginForm');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            
-            // For demo purposes, extract name from email or use a generic name
-            const driverName = localStorage.getItem('driverName') || email.split('@')[0];
-            
-            // Redirect to driver home with name parameter
-            window.location.href = 'driver-home.html?name=' + encodeURIComponent(driverName);
-        });
+        // Login form — submits normally to /auth/login via POST
+        // No JS override needed; the form action handles it.
     </script>
 </body>
 </html>

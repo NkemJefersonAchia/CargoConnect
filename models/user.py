@@ -11,9 +11,9 @@ class User(UserMixin, db.Model):
 
     user_id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    user_phone_no = db.Column(db.String(15))
-    password_hash = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(200), unique=True, nullable=False)
+    user_phone_no = db.Column(db.String(20), nullable=False)
+    password_hash = db.Column(db.String(250), nullable=False)
     role = db.Column(db.Enum("customer", "driver", "admin", name="user_role"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

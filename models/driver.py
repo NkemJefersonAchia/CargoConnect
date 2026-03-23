@@ -10,9 +10,9 @@ class Driver(db.Model):
 
     driver_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
-    licence_no = db.Column(db.String(100), unique=True)
-    rating = db.Column(db.Float, default=0.0)
-    is_available = db.Column(db.Boolean, default=False)
+    licence_no = db.Column(db.String(50), unique=True, nullable=False)
+    rating = db.Column(db.Float, default=5.0, nullable=False)
+    is_available = db.Column(db.Boolean, default=False, nullable=False)
     is_verified = db.Column(db.Boolean, default=False)
     latitude = db.Column(db.Float, nullable=True)
     longitude = db.Column(db.Float, nullable=True)

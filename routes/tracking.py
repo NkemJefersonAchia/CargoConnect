@@ -17,7 +17,7 @@ tracking_bp = Blueprint("tracking", __name__)
 def track_booking(booking_id):
     """Render the live tracking map for a booking."""
     booking = Booking.query.get_or_404(booking_id)
-    return render_template("track_booking.html", booking=booking, user=current_user)
+    return render_template("track.html", booking=booking, user=current_user)
 
 
 @socketio.on("join_tracking_room")

@@ -241,45 +241,54 @@
             <h1>Driver Registration</h1>
             <p class="subtitle">Sign up to start delivering with CargoConnect</p>
 
-            <form id="registerForm">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash-msg flash-{{ category }}" style="padding:10px 14px;margin-bottom:14px;border-radius:6px;font-size:13px;border:1px solid;{% if category == 'success' %}background:#d4edda;color:#155724;border-color:#c3e6cb;{% elif category == 'danger' %}background:#f8d7da;color:#721c24;border-color:#f5c6cb;{% else %}background:#fff3cd;color:#856404;border-color:#ffeeba;{% endif %}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form id="registerForm" action="/auth/register" method="POST">
+                <input type="hidden" name="role" value="driver">
                 <div class="form-group">
                     <label for="name">Full Name</label>
-                    <input type="text" id="name" required>
+                    <input type="text" id="name" name="user_name" required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" required>
+                    <input type="tel" id="phone" name="phone" required>
                 </div>
 
                 <div class="form-group">
                     <label for="license">Driver License Number</label>
-                    <input type="text" id="license" required>
+                    <input type="text" id="license" name="licence_no" required>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" required>
+                    <input type="password" id="password" name="password" required>
                 </div>
 
                 <div class="form-group">
                     <label for="confirm">Confirm Password</label>
-                    <input type="password" id="confirm" required>
+                    <input type="password" id="confirm" name="confirm_password" required>
                 </div>
 
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">Register</button>
-                    <a href="index.html" class="btn btn-secondary">Cancel</a>
+                    <a href="/auth/login?role=driver" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
 
             <div class="login-link">
-                Already registered? <a href="driver-login.html">Sign In</a>
+                Already registered? <a href="/auth/login?role=driver">Sign In</a>
             </div>
         </div>
     </div>
@@ -303,24 +312,13 @@
         }
 
         document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const license = document.getElementById('license').value;
             const password = document.getElementById('password').value;
             const confirm = document.getElementById('confirm').value;
-
             if (password !== confirm) {
+                e.preventDefault();
                 alert('Passwords do not match!');
-                return;
             }
-
-            localStorage.setItem('driverName', name);
-            localStorage.setItem('driverEmail', email);
-            localStorage.setItem('driverPhone', phone);
-            localStorage.setItem('driverLicense', license);
-            window.location.href = 'driver-verification.html';
+            // If passwords match the form submits normally to /auth/register
         });
     </script>
 </body>

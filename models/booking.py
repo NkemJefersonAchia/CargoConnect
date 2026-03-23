@@ -10,13 +10,14 @@ class Booking(db.Model):
     __tablename__ = "bookings"
 
     booking_id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, db.ForeignKey("customers.customer_id"), nullable=False)
-    truck_id = db.Column(db.Integer, db.ForeignKey("trucks.truck_id"), nullable=False)
-    driver_id = db.Column(db.Integer, db.ForeignKey("drivers.driver_id"), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey("customers.customer_id", ondelete="RESTRICT"), nullable=False)
+    driver_id = db.Column(db.Integer, db.ForeignKey("drivers.driver_id", ondelete="SET NULL"), nullable=True)
+    truck_id = db.Column(db.Integer, db.ForeignKey("trucks.truck_id", ondelete="SET NULL"), nullable=True)
     pickup_address = db.Column(db.Text, nullable=False)
     dropoff_address = db.Column(db.Text, nullable=False)
+    cargo_weight = db.Column(db.Float, nullable=False)
+    estimated_cost = db.Column(db.Numeric(10, 2), nullable=False)
     scheduled_time = db.Column(db.DateTime, nullable=False)
-    estimated_cost = db.Column(db.Numeric(10, 2))
     status = db.Column(
         db.Enum("pending", "confirmed", "completed", "cancelled", name="booking_status"),
         default="pending",

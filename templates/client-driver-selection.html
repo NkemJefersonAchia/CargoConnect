@@ -566,24 +566,18 @@
 
     <div class="nav">
         <div class="nav-section">Main</div>
-        <a class="nav-item" href="client-home.html">
-            Home
+        <a class="nav-item" href="/customer/dashboard">
+            Dashboard
         </a>
-        <a class="nav-item active" href="client-booking.html">
+        <a class="nav-item active" href="/booking/new">
             Book a Cargo
         </a>
-        <a class="nav-item" href="client-bookings.html">
+        <a class="nav-item" href="/customer/recent-bookings">
             My Bookings
-        </a>
-        <a class="nav-item" href="client-trips.html">
-            My Trips
         </a>
 
         <div class="nav-section">Account</div>
-        <a class="nav-item" href="client-profile.html">
-            Profile
-        </a>
-        <a class="nav-item" href="index.html" onclick="logout()">
+        <a class="nav-item" href="/auth/logout">
             Logout
         </a>
     </div>
@@ -591,7 +585,7 @@
     <div class="sidebar-footer">
         <div class="data-badge">
             <div class="data-badge-label">Welcome</div>
-            <div class="data-badge-value" id="username">John Doe</div>
+            <div class="data-badge-value" id="username">{{ user.user_name }}</div>
         </div>
     </div>
 </nav>
@@ -610,7 +604,7 @@
                 <span class="theme-option active" id="theme-light">Light</span>
                 <span class="theme-option" id="theme-dark">Dark</span>
             </div>
-            <a href="client-booking.html" class="btn btn-secondary">Back to Booking</a>
+            <a href="/booking/new" class="btn btn-secondary">Back to Booking</a>
         </div>
     </div>
 
@@ -631,10 +625,6 @@
 </main>
 
 <script>
-    // Get username from localStorage
-    const username = localStorage.getItem('username') || 'John Doe';
-    document.getElementById('username').innerText = username;
-
     // Theme toggle
     function toggleTheme() {
         const body = document.body;
@@ -653,129 +643,89 @@
         }
     }
 
-    // Logout
-    function logout() {
-        localStorage.removeItem('username');
-        window.location.href = 'index.html';
-        return false;
-    }
-
-    // ========== Original driver selection functionality ==========
-    // Sample driver data (from original)
-    const drivers = [
-        {
-            id: 1,
-            name: "Ahmed Hassan",
-            vehicle: "Van",
-            rating: 4.8,
-            reviews: 245,
-            previousWork: true,
-            trips: 45
-        },
-        {
-            id: 2,
-            name: "Maria Rodriguez",
-            vehicle: "Truck",
-            rating: 4.6,
-            reviews: 189,
-            previousWork: false,
-            trips: 0
-        },
-        {
-            id: 3,
-            name: "John Smith",
-            vehicle: "Van",
-            rating: 4.9,
-            reviews: 312,
-            previousWork: true,
-            trips: 23
-        },
-        {
-            id: 4,
-            name: "Fatima Ali",
-            vehicle: "Motorcycle",
-            rating: 4.7,
-            reviews: 156,
-            previousWork: false,
-            trips: 0
-        },
-        {
-            id: 5,
-            name: "James Wilson",
-            vehicle: "Truck",
-            rating: 4.5,
-            reviews: 128,
-            previousWork: true,
-            trips: 12
-        },
-        {
-            id: 6,
-            name: "Sarah Johnson",
-            vehicle: "Van",
-            rating: 4.8,
-            reviews: 267,
-            previousWork: false,
-            trips: 0
-        }
-    ];
-
+    // Load drivers from sessionStorage (saved by booking form) or fetch fresh
     const driverList = document.getElementById('driverList');
+    const searchResult = JSON.parse(sessionStorage.getItem('availableDrivers') || '{}');
+    const drivers = (searchResult.data && Array.isArray(searchResult.data)) ? searchResult.data : [];
+    const bookingDetails = JSON.parse(sessionStorage.getItem('bookingDetails') || '{}');
 
     if (drivers.length === 0) {
         driverList.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">🚚</div>
                 <div class="empty-state-title">No Drivers Available</div>
-                <div class="empty-state-text">Unfortunately, no drivers are available for your route at this time.</div>
-                <a href="client-booking.html" class="back-btn">← Back to Booking</a>
+                <div class="empty-state-text">No drivers match your cargo requirements right now. Try adjusting weight or check back later.</div>
+                <a href="/booking/new" class="back-btn">← Back to Booking</a>
             </div>
         `;
     } else {
         drivers.forEach(driver => {
-            // Create star string without emoji (★ for full, ☆ for empty)
             const fullStars = '★'.repeat(Math.floor(driver.rating));
             const halfStar = (driver.rating % 1 >= 0.5) ? '½' : '';
             const emptyStars = '☆'.repeat(5 - Math.ceil(driver.rating));
             const stars = fullStars + halfStar + emptyStars;
 
-            const previousWorkBadge = driver.previousWork 
-                ? `<div class="previous-work"><span class="badge-previous">Worked before (${driver.trips} trips)</span></div>`
-                : `<div class="previous-work no">New Driver</div>`;
-
             const driverCard = document.createElement('div');
             driverCard.className = 'driver-card';
             driverCard.innerHTML = `
                 <div class="driver-header">
-                    <div class="driver-avatar">${driver.name.charAt(0)}</div>
-                    <div class="driver-name">${driver.name}</div>
-                    <div class="driver-vehicle">${driver.vehicle}</div>
+                    <div class="driver-avatar">${driver.driver_name.charAt(0)}</div>
+                    <div class="driver-name">${driver.driver_name}</div>
+                    <div class="driver-vehicle">${driver.plate_no} &middot; ${driver.capacity}T capacity</div>
                 </div>
                 <div class="driver-body">
                     <div class="driver-info-item">
                         <div class="info-label">Rating</div>
                         <div class="rating">
                             <div class="stars">${stars}</div>
-                            <div class="rating-value">${driver.rating} (${driver.reviews})</div>
+                            <div class="rating-value">${driver.rating}</div>
                         </div>
                     </div>
                     <div class="driver-info-item">
-                        <div class="info-label">Experience</div>
-                        <div>${previousWorkBadge}</div>
+                        <div class="info-label">Estimated Cost</div>
+                        <div>${driver.estimated_cost.toLocaleString()} RWF</div>
                     </div>
-                    <button class="select-btn" onclick="selectDriver(${driver.id}, '${driver.name}')">Select Driver</button>
+                    ${driver.distance_km ? `<div class="driver-info-item"><div class="info-label">Distance</div><div>${driver.distance_km} km away</div></div>` : ''}
+                    <button class="select-btn" onclick="selectDriver(${driver.driver_id}, ${driver.truck_id}, ${driver.estimated_cost}, '${driver.driver_name}')">Select Driver</button>
                 </div>
             `;
             driverList.appendChild(driverCard);
         });
     }
 
-    function selectDriver(driverId, driverName) {
-        // Store selected driver info
-        localStorage.setItem('selectedDriverId', driverId);
-        localStorage.setItem('selectedDriverName', driverName);
-        
-        // Redirect to confirmation page
-        window.location.href = 'client-request-sent.html';
+    function selectDriver(driverId, truckId, cost, driverName) {
+        if (!bookingDetails.pickupAddress || !bookingDetails.dropoffAddress) {
+            alert('Booking details missing. Please start a new booking.');
+            window.location.href = '/booking/new';
+            return;
+        }
+        fetch('/booking/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                driver_id: driverId,
+                truck_id: truckId,
+                pickup_address: bookingDetails.pickupAddress,
+                dropoff_address: bookingDetails.dropoffAddress,
+                scheduled_time: bookingDetails.shippingTime,
+                estimated_cost: cost,
+                cargo_weight: bookingDetails.maxWeight || bookingDetails.minWeight || 0
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                sessionStorage.setItem('lastBookingId', data.data.booking_id);
+                sessionStorage.setItem('selectedDriverName', driverName);
+                window.location.href = '/booking/confirmation';
+            } else {
+                alert(data.message || 'Could not create booking.');
+            }
+        })
+        .catch(err => {
+            console.error('Booking failed:', err);
+            alert('Something went wrong. Please try again.');
+        });
     }
 </script>
 </body>

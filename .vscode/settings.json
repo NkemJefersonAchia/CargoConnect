@@ -1,0 +1,21 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true,
+                    "ca": "ca.pem"
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "pg-2b4808d0-alustudent-792a.i.aivencloud.com",
+            "port": 22910,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "cargo",
+            "database": "defaultdb",
+            "username": "avnadmin"
+        }
+    ]
+}

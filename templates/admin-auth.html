@@ -273,7 +273,7 @@
                 Password: admin123
             </div>
 
-            <form id="loginForm">
+            <form id="loginForm" action="/auth/login" method="POST">
                 <div class="form-group">
                     <label for="email">Email Address *</label>
                     <input type="email" id="email" name="email" value="admin@cargoconnect.com" required>
@@ -290,7 +290,7 @@
 
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">Sign In</button>
-                    <a href="index.html" class="btn btn-secondary">Cancel</a>
+                    <a href="/" class="btn btn-secondary">Cancel</a>
                 </div>
             </form>
         </div>
@@ -315,23 +315,8 @@
             }
         }
 
-        // Login form handling (preserved from original)
-        const form = document.getElementById('loginForm');
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Simple validation for demo
-            if (email === 'admin@cargoconnect.com' && password === 'admin123') {
-                // Store admin session
-                localStorage.setItem('adminEmail', email);
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                alert('Invalid credentials. Please use the demo credentials provided.');
-            }
-        });
+        // Admin login — form submits to /auth/login via POST
+        // No JS override needed.
     </script>
 </body>
 </html>

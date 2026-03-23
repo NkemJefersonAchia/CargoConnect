@@ -39,7 +39,7 @@ def require_driver(f):
 def dashboard():
     """Render the driver dashboard page."""
     driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()
-    return render_template("driver_dashboard.html", driver=driver, user=current_user)
+    return render_template("driver-home.html", driver=driver, user=current_user)
 
 
 @driver_bp.route("/stats", methods=["GET"])
@@ -203,7 +203,7 @@ def driver_job_page(booking_id):
     """Render the active job detail page."""
     driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()
     booking = Booking.query.get_or_404(booking_id)
-    return render_template("driver_job.html", booking=booking, driver=driver, user=current_user)
+    return render_template("driver-job-history.html", booking=booking, driver=driver, user=current_user)
 
 
 def _serialize_booking(b):

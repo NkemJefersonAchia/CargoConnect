@@ -1,7 +1,7 @@
 import eventlet
 eventlet.monkey_patch()
 
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, render_template
 from flask_login import current_user
 
 from config.config import Config
@@ -56,7 +56,19 @@ def create_app():
                 return redirect(url_for("driver.dashboard"))
             else:
                 return redirect(url_for("customer.dashboard"))
-        return redirect(url_for("auth.login"))
+        return render_template("index.html")
+
+    @app.route("/client-auth")
+    def client_auth():
+        return render_template("client-auth.html")
+
+    @app.route("/driver-auth")
+    def driver_auth():
+        return render_template("driver-auth.html")
+
+    @app.route("/admin-auth")
+    def admin_auth():
+        return render_template("admin-auth.html")
 
     with app.app_context():
         try:

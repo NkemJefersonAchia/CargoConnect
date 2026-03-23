@@ -97,6 +97,13 @@ def serialize_driver_result(item):
     }
 
 
+@booking_bp.route("/select-driver", methods=["GET"])
+@login_required
+def select_driver():
+    """Render the driver selection page."""
+    return render_template("client-driver-selection.html", user=current_user)
+
+
 @booking_bp.route("/search", methods=["POST"])
 @login_required
 def search_trucks():
@@ -111,6 +118,13 @@ def search_trucks():
 
     drivers = find_available_drivers(pickup_lat, pickup_lng, weight)
     return success([serialize_driver_result(d) for d in drivers], f"Found {len(drivers)} driver(s)")
+
+
+@booking_bp.route("/new", methods=["GET"])
+@login_required
+def new_booking():
+    """Render the booking form page."""
+    return render_template("client-booking.html", user=current_user)
 
 
 @booking_bp.route("/create", methods=["POST"])
@@ -132,6 +146,7 @@ def create_booking():
         dropoff_address = data.get("dropoff_address", "").strip()
         scheduled_time = datetime.fromisoformat(data.get("scheduled_time"))
         estimated_cost = float(data.get("estimated_cost", 0))
+        cargo_weight = float(data.get("cargo_weight", 0))
     except (ValueError, TypeError, KeyError) as e:
         return error(f"Invalid booking data: {e}")
 
@@ -144,6 +159,7 @@ def create_booking():
         driver_id=driver_id,
         pickup_address=pickup_address,
         dropoff_address=dropoff_address,
+        cargo_weight=cargo_weight,
         scheduled_time=scheduled_time,
         estimated_cost=estimated_cost,
         status="pending",
@@ -161,6 +177,13 @@ def create_booking():
 
     db.session.commit()
     return success({"booking_id": booking.booking_id}, "Booking created successfully.")
+
+
+@booking_bp.route("/confirmation", methods=["GET"])
+@login_required
+def booking_confirmation():
+    """Render the booking confirmation page."""
+    return render_template("client-request-sent.html", user=current_user)
 
 
 @booking_bp.route("/<int:booking_id>", methods=["GET"])

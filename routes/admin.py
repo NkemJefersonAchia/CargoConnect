@@ -37,7 +37,7 @@ def require_admin(f):
 @require_admin
 def dashboard():
     """Render the admin dashboard page."""
-    return render_template("admin_dashboard.html", user=current_user)
+    return render_template("admin-dashboard.html", user=current_user)
 
 
 @admin_bp.route("/users-page")
@@ -45,7 +45,7 @@ def dashboard():
 @require_admin
 def users_page():
     """Render the admin users management page."""
-    return render_template("admin_users.html", user=current_user)
+    return render_template("admin-users.html", user=current_user)
 
 
 @admin_bp.route("/drivers-page")
@@ -53,7 +53,7 @@ def users_page():
 @require_admin
 def drivers_page():
     """Render the admin drivers management page."""
-    return render_template("admin_drivers.html", user=current_user)
+    return render_template("admin-drivers.html", user=current_user)
 
 
 @admin_bp.route("/bookings-page")
@@ -61,7 +61,7 @@ def drivers_page():
 @require_admin
 def bookings_page():
     """Render the admin bookings management page."""
-    return render_template("admin_bookings.html", user=current_user)
+    return render_template("Admin-trips.html", user=current_user)
 
 
 @admin_bp.route("/stats", methods=["GET"])

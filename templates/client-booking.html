@@ -597,24 +597,18 @@
 
     <div class="nav">
         <div class="nav-section">Main</div>
-        <a class="nav-item" href="client-home.html">
-            Home
+        <a class="nav-item" href="/customer/dashboard">
+            Dashboard
         </a>
-        <a class="nav-item active" href="client-booking.html">
+        <a class="nav-item active" href="/booking/new">
             Book a Cargo
         </a>
-        <a class="nav-item" href="client-bookings.html">
+        <a class="nav-item" href="/customer/recent-bookings">
             My Bookings
-        </a>
-        <a class="nav-item" href="client-trips.html">
-            My Trips
         </a>
 
         <div class="nav-section">Account</div>
-        <a class="nav-item" href="client-profile.html">
-            Profile
-        </a>
-        <a class="nav-item" href="index.html" onclick="logout()">
+        <a class="nav-item" href="/auth/logout">
             Logout
         </a>
     </div>
@@ -622,7 +616,7 @@
     <div class="sidebar-footer">
         <div class="data-badge">
             <div class="data-badge-label">Welcome</div>
-            <div class="data-badge-value" id="username">John Doe</div>
+            <div class="data-badge-value" id="username">{{ user.user_name }}</div>
         </div>
     </div>
 </nav>
@@ -641,7 +635,7 @@
                 <span class="theme-option active" id="theme-light">Light</span>
                 <span class="theme-option" id="theme-dark">Dark</span>
             </div>
-            <a href="client-home.html" class="btn btn-secondary">Back to Home</a>
+            <a href="/customer/dashboard" class="btn btn-secondary">Back to Dashboard</a>
         </div>
     </div>
 
@@ -740,7 +734,7 @@
 
                 <!-- BUTTONS -->
                 <div class="button-group">
-                    <a href="client-home.html" class="btn btn-secondary">Cancel</a>
+                    <a href="/customer/dashboard" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary">Book Cargo</button>
                 </div>
             </form>
@@ -749,9 +743,12 @@
 </main>
 
 <script>
-    // Get username from localStorage
-    const username = localStorage.getItem('username') || 'John Doe';
-    document.getElementById('username').innerText = username;
+    // Pre-fill fields from query parameters (quick-book from dashboard)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pickup')) document.getElementById('pickupAddress').value = params.get('pickup');
+    if (params.get('dropoff')) document.getElementById('dropoffAddress').value = params.get('dropoff');
+    if (params.get('weight')) document.getElementById('minWeight').value = params.get('weight');
+    if (params.get('time')) document.getElementById('shippingTime').value = params.get('time');
 
     // Theme toggle
     function toggleTheme() {
@@ -868,18 +865,32 @@
             return;
         }
 
-        // Store booking details
+        // Store booking details for the driver selection page
         const formData = {
             pickupAddress: document.getElementById('pickupAddress').value,
             dropoffAddress: document.getElementById('dropoffAddress').value,
             shippingTime: document.getElementById('shippingTime').value,
-            minWeight: document.getElementById('minWeight').value,
-            maxWeight: document.getElementById('maxWeight').value,
-            material: document.querySelector('input[name="material"]:checked').value
+            minWeight: minWeight,
+            maxWeight: maxWeight,
+            material: document.querySelector('input[name="material"]:checked') ? document.querySelector('input[name="material"]:checked').value : 'other'
         };
-        localStorage.setItem('bookingDetails', JSON.stringify(formData));
-        // Redirect to driver selection page
-        window.location.href = 'client-driver-selection.html';
+        sessionStorage.setItem('bookingDetails', JSON.stringify(formData));
+
+        // Search for available drivers via Flask API
+        fetch('/booking/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ weight: maxWeight })
+        })
+        .then(res => res.json())
+        .then(data => {
+            sessionStorage.setItem('availableDrivers', JSON.stringify(data));
+            window.location.href = '/booking/select-driver';
+        })
+        .catch(err => {
+            console.error('Search failed:', err);
+            alert('Could not search for drivers. Please try again.');
+        });
     });
 
     // Validate weight on max change

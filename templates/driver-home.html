@@ -617,27 +617,18 @@
 
     <div class="nav">
         <div class="nav-section">Main</div>
-        <a class="nav-item active" href="driver-home.html">
+        <a class="nav-item active" href="/driver/dashboard">
             Home
         </a>
-        <a class="nav-item" href="driver-trips.html">
+        <a class="nav-item" href="/driver/pending-jobs">
             My Trips
         </a>
-        <a class="nav-item" href="driver-job-history.html">
+        <a class="nav-item" href="/driver/job-history">
             Job History
-        </a>
-        <a class="nav-item" href="driver-payments.html">
-            Payments
-        </a>
-        <a class="nav-item" href="driver-reviews.html">
-            Reviews
         </a>
 
         <div class="nav-section">Account</div>
-        <a class="nav-item" href="driver-profile.html">
-            Profile
-        </a>
-        <a class="nav-item" href="index.html" onclick="logout()">
+        <a class="nav-item" href="/auth/logout">
             Logout
         </a>
     </div>
@@ -744,9 +735,8 @@
 </main>
 
 <script>
-    // Get driver name from URL parameters or localStorage
-    const urlParams = new URLSearchParams(window.location.search);
-    const driverName = urlParams.get('name') || localStorage.getItem('driverName') || 'Driver';
+    // Driver name from Flask context
+    const driverName = '{{ user.user_name }}' || 'Driver';
     
     // Update driver name in welcome section
     document.getElementById('driverName').textContent = driverName;
@@ -754,7 +744,7 @@
     
     // Store driver name for other pages
     if (driverName !== 'Driver') {
-        localStorage.setItem('driverName', driverName);
+        // Name loaded from server context
     }
 
     // Sample stats (in production, these would come from the backend)
@@ -816,7 +806,7 @@
     }
 
     function logout() {
-        localStorage.removeItem('driverName');
+        window.location.href = '/auth/logout';
         window.location.href = 'driver-auth.html';
     }
 </script>

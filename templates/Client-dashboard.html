@@ -653,24 +653,18 @@
 
     <div class="nav">
         <div class="nav-section">Main</div>
-        <a class="nav-item active" href="client-dashboard.html">
+        <a class="nav-item active" href="/customer/dashboard">
             Dashboard
         </a>
-        <a class="nav-item" href="client-booking.html">
+        <a class="nav-item" href="/booking/new">
             Book a Cargo
         </a>
-        <a class="nav-item" href="client-bookings.html">
+        <a class="nav-item" href="/customer/recent-bookings">
             My Bookings
-        </a>
-        <a class="nav-item" href="client-trips.html">
-            My Trips
         </a>
 
         <div class="nav-section">Account</div>
-        <a class="nav-item" href="client-profile.html">
-            Profile
-        </a>
-        <a class="nav-item" href="index.html" onclick="logout()">
+        <a class="nav-item" href="/auth/logout">
             Logout
         </a>
     </div>
@@ -678,7 +672,7 @@
     <div class="sidebar-footer">
         <div class="data-badge">
             <div class="data-badge-label">Welcome</div>
-            <div class="data-badge-value" id="username">John Doe</div>
+            <div class="data-badge-value" id="username">{{ user.user_name }}</div>
         </div>
     </div>
 </nav>
@@ -697,7 +691,7 @@
                 <span class="theme-option active" id="theme-light">Light</span>
                 <span class="theme-option" id="theme-dark">Dark</span>
             </div>
-            <span class="filter-pill" onclick="window.location='client-notifications.html'">Notifications (3)</span>
+            <span class="filter-pill" id="notifPill" onclick="window.location='/customer/notifications'">Notifications (0)</span>
         </div>
     </div>
 
@@ -707,22 +701,22 @@
         <div class="kpi-grid">
             <div class="kpi-card">
                 <div class="kpi-label">Total Trips</div>
-                <div class="kpi-value" id="totalTrips">24</div>
+                <div class="kpi-value" id="totalTrips">0</div>
                 <div class="kpi-sub">All time</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Pending</div>
-                <div class="kpi-value" id="pendingTrips">2</div>
+                <div class="kpi-value" id="pendingTrips">0</div>
                 <div class="kpi-sub">Awaiting response</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Completed</div>
-                <div class="kpi-value" id="completedTrips">22</div>
+                <div class="kpi-value" id="completedTrips">0</div>
                 <div class="kpi-sub">Successfully delivered</div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Total Spent</div>
-                <div class="kpi-value" id="totalSpent">$1,240</div>
+                <div class="kpi-value" id="totalSpent">0 RWF</div>
                 <div class="kpi-sub">Lifetime</div>
             </div>
         </div>
@@ -755,7 +749,7 @@
         <div class="table-container">
             <div class="table-header">
                 <div class="table-title">Recent Bookings</div>
-                <a href="client-bookings.html" class="btn btn-secondary">View All</a>
+                <a href="/customer/recent-bookings" class="btn btn-secondary">View All</a>
             </div>
             <table id="recentBookings">
                 <thead>
@@ -786,47 +780,50 @@
 </div>
 
 <script>
-    // Get username from localStorage (set during login)
-    const username = localStorage.getItem('username') || 'John Doe';
-    document.getElementById('username').innerText = username;
+    // ── Load real stats from Flask API ──
+    fetch('/customer/stats')
+        .then(r => r.json())
+        .then(res => {
+            if (res.status === 'success' && res.data) {
+                document.getElementById('totalTrips').innerText = res.data.total_bookings;
+                document.getElementById('pendingTrips').innerText = res.data.pending_bookings;
+                document.getElementById('completedTrips').innerText = res.data.completed_trips;
+                document.getElementById('totalSpent').innerText = Number(res.data.total_spent).toLocaleString() + ' RWF';
+            }
+        })
+        .catch(err => console.warn('Could not load stats:', err));
 
-    // Sample recent bookings data
-    const recentBookings = [
-        { id: 'BK001', pickup: '123 Main St, Downtown', dropoff: '456 Business Ave, Giza', date: '2026-03-04 10:00', status: 'pending' },
-        { id: 'BK002', pickup: '789 Market Rd, Helwan', dropoff: '321 Industrial Zone', date: '2026-03-03 14:30', status: 'accepted' },
-        { id: 'BK003', pickup: '555 Commercial St, Nasr City', dropoff: '999 Logistics Hub', date: '2026-03-02 09:00', status: 'completed' },
-        { id: 'BK004', pickup: '333 Fashion St, Downtown', dropoff: '666 Retail Hub', date: '2026-03-01 16:00', status: 'completed' },
-        { id: 'BK005', pickup: '444 Commercial Ave, Giza', dropoff: '777 Business Park', date: '2026-02-28 11:30', status: 'cancelled' }
-    ];
-
+    // ── Load real recent bookings from Flask API ──
     function renderRecent() {
-        const tbody = document.getElementById('recentBody');
-        const rows = recentBookings.map(b => {
-            let statusClass = '';
-            if (b.status === 'pending') statusClass = 'badge-warning';
-            else if (b.status === 'accepted') statusClass = 'badge-info';
-            else if (b.status === 'completed') statusClass = 'badge-success';
-            else if (b.status === 'cancelled') statusClass = 'badge-danger';
-            else statusClass = 'badge-secondary';
-
-            return `<tr>
-                <td class="highlight">${b.id}</td>
-                <td>${b.pickup}</td>
-                <td>${b.dropoff}</td>
-                <td>${b.date}</td>
-                <td><span class="badge ${statusClass}">${b.status}</span></td>
-                <td><button class="btn-icon" onclick="viewBooking('${b.id}')">View</button></td>
-            </tr>`;
-        }).join('');
-        tbody.innerHTML = rows;
-    }
-
-    // Update KPI numbers (demo)
-    function updateKPIs() {
-        document.getElementById('totalTrips').innerText = '24';
-        document.getElementById('pendingTrips').innerText = '2';
-        document.getElementById('completedTrips').innerText = '22';
-        document.getElementById('totalSpent').innerText = '$1,240';
+        fetch('/customer/recent-bookings')
+            .then(r => r.json())
+            .then(res => {
+                const tbody = document.getElementById('recentBody');
+                if (res.status === 'success' && res.data && res.data.length > 0) {
+                    tbody.innerHTML = res.data.map(b => {
+                        let sc = '';
+                        if (b.status === 'pending') sc = 'badge-warning';
+                        else if (b.status === 'confirmed') sc = 'badge-info';
+                        else if (b.status === 'completed') sc = 'badge-success';
+                        else if (b.status === 'cancelled') sc = 'badge-danger';
+                        else sc = 'badge-secondary';
+                        return `<tr>
+                            <td class="highlight">#${b.booking_id}</td>
+                            <td>${b.pickup_address}</td>
+                            <td>${b.dropoff_address}</td>
+                            <td>${b.created_at || ''}</td>
+                            <td><span class="badge ${sc}">${b.status}</span></td>
+                            <td><button class="btn-icon" onclick="viewBooking(${b.booking_id})">View</button></td>
+                        </tr>`;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-tertiary)">No bookings yet. Book your first cargo!</td></tr>';
+                }
+            })
+            .catch(err => {
+                console.warn('Could not load bookings:', err);
+                document.getElementById('recentBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-tertiary)">No bookings yet.</td></tr>';
+            });
     }
 
     // Quick booking
@@ -839,14 +836,11 @@
             alert('Please fill all fields');
             return;
         }
-        // Store in session (demo)
-        localStorage.setItem('quickBooking', JSON.stringify({ pickup, dropoff, weight, time }));
-        window.location.href = 'client-driver-selection.html';
+        window.location.href = `/booking/new?pickup=${encodeURIComponent(pickup)}&dropoff=${encodeURIComponent(dropoff)}&weight=${weight}&time=${encodeURIComponent(time)}`;
     }
 
     function viewBooking(id) {
-        alert('Viewing booking ' + id);
-        // In real app, open modal or navigate
+        alert('Viewing booking #' + id);
     }
 
     // Theme toggle
@@ -868,9 +862,7 @@
     }
 
     function logout() {
-        localStorage.removeItem('username');
-        // In a real app, also clear session
-        window.location.href = 'index.html';
+        window.location.href = '/auth/logout';
         return false;
     }
 
@@ -884,8 +876,17 @@
     }
 
     // Initialise
-    updateKPIs();
     renderRecent();
+
+    // Load notification count
+    fetch('/customer/notifications')
+        .then(r => r.json())
+        .then(res => {
+            if (res.status === 'success' && res.data) {
+                document.getElementById('notifPill').innerText = 'Notifications (' + res.data.count + ')';
+            }
+        })
+        .catch(() => {});
 </script>
 </body>
 </html>
