@@ -71,12 +71,13 @@ def active_booking():
     """Return the customer's current confirmed booking if any."""
     try:
         customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()
-        booking = Booking.query.filter_by(
-            customer_id=customer.customer_id, status="confirmed"
-        ).first()
-        if not booking:
-            return success(None, "No active booking.")
-        return success(_serialize_booking(booking))
+        with db.session.no_autoflush:
+            booking = Booking.query.filter_by(
+                customer_id=customer.customer_id, status="confirmed"
+            ).first()
+            if not booking:
+                return success(None, "No active booking.")
+            return success(_serialize_booking(booking))
     except Exception as e:
         return error(f"Could not load active booking: {e}", 500)
 
@@ -88,14 +89,15 @@ def recent_bookings():
     """Return the customer's five most recent bookings."""
     try:
         customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()
-        bookings = (
-            Booking.query
-            .filter_by(customer_id=customer.customer_id)
-            .order_by(Booking.created_at.desc())
-            .limit(5)
-            .all()
-        )
-        return success([_serialize_booking(b) for b in bookings])
+        with db.session.no_autoflush:
+            bookings = (
+                Booking.query
+                .filter_by(customer_id=customer.customer_id)
+                .order_by(Booking.created_at.desc())
+                .limit(5)
+                .all()
+            )
+            return success([_serialize_booking(b) for b in bookings])
     except Exception as e:
         return error(f"Could not load bookings: {e}", 500)
 
@@ -160,6 +162,18 @@ def rate_driver(booking_id):
 
 def _serialize_booking(b):
     """Serialize a booking for customer views."""
+    try:
+        driver_name = b.driver.user.user_name if b.driver and b.driver.user else ""
+    except Exception:
+        driver_name = ""
+    try:
+        plate_no = b.truck.plate_no if b.truck else ""
+    except Exception:
+        plate_no = ""
+    try:
+        payment_status = b.payment.status if b.payment else None
+    except Exception:
+        payment_status = None
     return {
         "booking_id": b.booking_id,
         "pickup_address": b.pickup_address,
@@ -168,7 +182,7 @@ def _serialize_booking(b):
         "estimated_cost": float(b.estimated_cost or 0),
         "status": b.status,
         "created_at": b.created_at.strftime("%Y-%m-%d") if b.created_at else "",
-        "driver_name": b.driver.user.user_name if b.driver and b.driver.user else "",
-        "plate_no": b.truck.plate_no if b.truck else "",
-        "payment_status": b.payment.status if b.payment else None,
+        "driver_name": driver_name,
+        "plate_no": plate_no,
+        "payment_status": payment_status,
     }

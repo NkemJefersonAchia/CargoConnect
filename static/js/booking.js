@@ -105,7 +105,11 @@ async function loadRecentBookings() {
     const tbody = document.getElementById('recentTableBody');
     if (!tbody) return;
 
-    if (json.status === 'success' && json.data.length > 0) {
+    if (json.status !== 'success') {
+      tbody.innerHTML = `<tr><td colspan="7" class="table-empty">Could not load bookings: ${json.message || 'unknown error'}</td></tr>`;
+      return;
+    }
+    if (json.data.length > 0) {
       
       const justPaidId = sessionStorage.getItem('justPaidBookingId');
 
