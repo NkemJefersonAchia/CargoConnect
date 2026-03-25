@@ -211,27 +211,29 @@ def delete_driver(driver_id):
 @require_admin
 def assign_truck(driver_id):
     """Assign a new truck to a driver."""
-    driver = Driver.query.get_or_404(driver_id)
-    data = request.get_json() or request.form
-    plate_no = (data.get("plate_no") or "").strip().upper()
     try:
-        capacity = float(data.get("capacity", 0))
-    except (ValueError, TypeError):
-        return error("Invalid capacity value.")
-    if not plate_no:
-        return error("Plate number is required.")
-    if capacity <= 0:
-        return error("Capacity must be greater than 0.")
-    if Truck.query.filter_by(plate_no=plate_no).first():
-        return error(f"Plate number {plate_no} is already registered.")
-    try:
+        driver = Driver.query.get(driver_id)
+        if not driver:
+            return error("Driver not found.", 404)
+        data = request.get_json() or request.form
+        plate_no = (data.get("plate_no") or "").strip().upper()
+        try:
+            capacity = float(data.get("capacity", 0))
+        except (ValueError, TypeError):
+            return error("Invalid capacity value.")
+        if not plate_no:
+            return error("Plate number is required.")
+        if capacity <= 0:
+            return error("Capacity must be greater than 0.")
+        if Truck.query.filter_by(plate_no=plate_no).first():
+            return error(f"Plate number {plate_no} is already registered.")
         truck = Truck(driver_id=driver_id, plate_no=plate_no, capacity=capacity)
         db.session.add(truck)
         db.session.commit()
+        return success({"truck_id": truck.truck_id, "plate_no": truck.plate_no}, "Truck assigned.")
     except Exception as e:
         db.session.rollback()
         return error(f"Failed to assign truck: {e}", 500)
-    return success({"truck_id": truck.truck_id, "plate_no": truck.plate_no}, "Truck assigned.")
 
 
 @admin_bp.route("/bookings", methods=["GET"])
