@@ -120,10 +120,7 @@ def create_booking():
     if current_user.role != "customer":
         return error("Only customers can create bookings.", 403)
 
-    customer = Customer.query.filter_by(user_id=current_user.user_id).first()
-    if not customer:
-        return error("Customer profile not found.", 404)
-
+    # Parse and validate request body first (no DB needed)
     data = request.get_json() or request.form
     try:
         truck_id = int(data.get("truck_id"))
@@ -138,32 +135,38 @@ def create_booking():
     if not pickup_address or not dropoff_address:
         return error("Pickup and dropoff addresses are required.")
 
-    booking = Booking(
-        customer_id=customer.customer_id,
-        truck_id=truck_id,
-        driver_id=driver_id,
-        pickup_address=pickup_address,
-        dropoff_address=dropoff_address,
-        scheduled_time=scheduled_time,
-        estimated_cost=estimated_cost,
-        status="pending",
-    )
-    db.session.add(booking)
-
-    driver = Driver.query.get(driver_id)
-    if driver:
-        note = Notification(
-            user_id=driver.user_id,
-            message=f"New booking request from {current_user.user_name}. Pickup: {pickup_address}",
-            channel="in-app",
-        )
-        db.session.add(note)
-
+    # All DB work in one try/except so any connection hiccup returns JSON
     try:
+        customer = Customer.query.filter_by(user_id=current_user.user_id).first()
+        if not customer:
+            return error("Customer profile not found.", 404)
+
+        booking = Booking(
+            customer_id=customer.customer_id,
+            truck_id=truck_id,
+            driver_id=driver_id,
+            pickup_address=pickup_address,
+            dropoff_address=dropoff_address,
+            scheduled_time=scheduled_time,
+            estimated_cost=estimated_cost,
+            status="pending",
+        )
+        db.session.add(booking)
+
+        driver = Driver.query.get(driver_id)
+        if driver:
+            note = Notification(
+                user_id=driver.user_id,
+                message=f"New booking request from {current_user.user_name}. Pickup: {pickup_address}",
+                channel="in-app",
+            )
+            db.session.add(note)
+
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        return error("Failed to save booking. Please try again.", 500)
+        return error(f"Failed to save booking: {e}", 500)
+
     return success({"booking_id": booking.booking_id}, "Booking created successfully.")
 
 
