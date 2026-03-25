@@ -1,3 +1,10 @@
+import models.customer  # noqa: F401
+import models.driver  # noqa: F401
+import models.notification  # noqa: F401
+import models.truck  # noqa: F401
+import models.booking  # noqa: F401
+import models.payment  # noqa: F401
+import models.rating  # noqa: F401
 from models.user import User
 
 
