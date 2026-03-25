@@ -15,6 +15,7 @@ class Booking(db.Model):
     pickup_address = db.Column(db.Text, nullable=False)
     dropoff_address = db.Column(db.Text, nullable=False)
     scheduled_time = db.Column(db.DateTime, nullable=False)
+    cargo_weight = db.Column(db.Float, nullable=False, default=1.0)
     estimated_cost = db.Column(db.Numeric(10, 2))
     status = db.Column(
         db.Enum("pending", "confirmed", "completed", "cancelled", name="booking_status"),

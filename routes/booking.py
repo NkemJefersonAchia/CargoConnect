@@ -128,6 +128,7 @@ def create_booking():
         pickup_address = data.get("pickup_address", "").strip()
         dropoff_address = data.get("dropoff_address", "").strip()
         scheduled_time = datetime.fromisoformat(data.get("scheduled_time"))
+        cargo_weight = float(data.get("cargo_weight") or 1.0)
         estimated_cost = float(data.get("estimated_cost", 0))
     except (ValueError, TypeError, KeyError) as e:
         return error(f"Invalid booking data: {e}")
@@ -148,6 +149,7 @@ def create_booking():
             pickup_address=pickup_address,
             dropoff_address=dropoff_address,
             scheduled_time=scheduled_time,
+            cargo_weight=cargo_weight,
             estimated_cost=estimated_cost,
             status="pending",
         )
