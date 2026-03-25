@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
+from sqlalchemy.orm import joinedload
 from models import db
 from models.customer import Customer
 from models.booking import Booking
@@ -88,16 +89,22 @@ def active_booking():
 def recent_bookings():
     """Return the customer's five most recent bookings."""
     try:
-        customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()
-        with db.session.no_autoflush:
-            bookings = (
-                Booking.query
-                .filter_by(customer_id=customer.customer_id)
-                .order_by(Booking.created_at.desc())
-                .limit(5)
-                .all()
+        customer = Customer.query.filter_by(user_id=current_user.user_id).first()
+        if not customer:
+            return success([])
+        bookings = (
+            Booking.query
+            .options(
+                joinedload(Booking.driver).joinedload(Driver.user),
+                joinedload(Booking.truck),
+                joinedload(Booking.payment),
             )
-            return success([_serialize_booking(b) for b in bookings])
+            .filter_by(customer_id=customer.customer_id)
+            .order_by(Booking.created_at.desc())
+            .limit(5)
+            .all()
+        )
+        return success([_serialize_booking(b) for b in bookings])
     except Exception as e:
         return error(f"Could not load bookings: {e}", 500)
 
