@@ -386,21 +386,36 @@ async function submitPayment() {
   document.getElementById('momoStepPin').style.display = 'none';
   document.getElementById('momoStepProcessing').style.display = '';
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20000); // 20s hard timeout
+
+  function showPinWithError(msg) {
+    document.getElementById('momoStepProcessing').style.display = 'none';
+    document.getElementById('momoStepPin').style.display = '';
+    if (msg) alert(msg);
+  }
+
   try {
     await new Promise(resolve => setTimeout(resolve, 1500));
-    const res = await fetch(`/payment/simulate/${momoBookingId}`, { method: 'POST' });
-    const json = await res.json();
+    const res = await fetch(`/payment/simulate/${momoBookingId}`, {
+      method: 'POST',
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    let json;
+    try { json = await res.json(); } catch (_) { throw new Error('Server returned an invalid response.'); }
     if (json.status === 'success') {
       document.getElementById('momoStepProcessing').style.display = 'none';
       document.getElementById('momoStepSuccess').style.display = '';
     } else {
-      document.getElementById('momoStepProcessing').style.display = 'none';
-      document.getElementById('momoStepPin').style.display = '';
-      alert(json.message);
+      showPinWithError(json.message || 'Payment failed. Please try again.');
     }
   } catch (e) {
-    document.getElementById('momoStepProcessing').style.display = 'none';
-    document.getElementById('momoStepPin').style.display = '';
+    clearTimeout(timeout);
+    const msg = e.name === 'AbortError'
+      ? 'Payment timed out. Please try again.'
+      : (e.message || 'Payment failed. Please try again.');
+    showPinWithError(msg);
   }
 }
 
