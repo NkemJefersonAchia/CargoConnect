@@ -42,6 +42,26 @@
   </div>
 </section>
 
+<div class="modal" id="assignTruckModal" role="dialog" aria-modal="true">
+  <div class="modal__backdrop" id="assignTruckBackdrop"></div>
+  <div class="modal__box">
+    <h3 class="modal__title">Assign Truck</h3>
+    <p class="modal__body" id="assignTruckSubtitle" style="margin-bottom:1rem;color:#506189;font-size:0.9rem;"></p>
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label class="form-label">Plate Number</label>
+      <input class="form-input" type="text" id="truckPlateInput" placeholder="e.g. RAD 004 D" />
+    </div>
+    <div class="form-group" style="margin-bottom:1.5rem;">
+      <label class="form-label">Capacity (tons)</label>
+      <input class="form-input" type="number" id="truckCapacityInput" min="0.5" step="0.5" placeholder="e.g. 5" />
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" id="assignTruckCancel">Cancel</button>
+      <button class="btn btn--action" id="assignTruckConfirm">Assign Truck</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="confirmActionModal" role="dialog" aria-modal="true">
   <div class="modal__backdrop" id="actionModalBackdrop"></div>
   <div class="modal__box">
@@ -77,6 +97,7 @@
             <td><span class="badge badge--${d.is_available ? 'confirmed' : 'cancelled'}">${d.is_available ? 'Online' : 'Offline'}</span></td>
             <td><span class="badge badge--${d.is_verified ? 'confirmed' : 'pending'}">${d.is_verified ? 'Verified' : 'Pending'}</span></td>
             <td class="actions-cell">
+              <button class="btn btn--sm btn--action" onclick="openAssignTruckModal(${d.driver_id}, '${d.name}')">Assign Truck</button>
               <button class="btn btn--sm btn--ghost" onclick="toggleAvailability(${d.driver_id})">Toggle</button>
               <button class="btn btn--sm btn--ghost" onclick="removeVerification(${d.driver_id})">Unverify</button>
               <button class="btn btn--sm btn--danger" onclick="openActionModal('delete', ${d.driver_id})">Delete</button>
@@ -137,6 +158,50 @@
       } catch (e) { console.error(e); }
     }
     document.getElementById('confirmActionModal').classList.remove('modal--open');
+  });
+
+  // ── Assign Truck Modal ────────────────────────────────────
+  let assignTruckDriverId = null;
+
+  function openAssignTruckModal(driverId, driverName) {
+    assignTruckDriverId = driverId;
+    document.getElementById('assignTruckSubtitle').textContent = `Driver: ${driverName}`;
+    document.getElementById('truckPlateInput').value = '';
+    document.getElementById('truckCapacityInput').value = '';
+    document.getElementById('assignTruckModal').classList.add('modal--open');
+  }
+
+  document.getElementById('assignTruckCancel').addEventListener('click', () => {
+    document.getElementById('assignTruckModal').classList.remove('modal--open');
+  });
+  document.getElementById('assignTruckBackdrop').addEventListener('click', () => {
+    document.getElementById('assignTruckModal').classList.remove('modal--open');
+  });
+
+  document.getElementById('assignTruckConfirm').addEventListener('click', async () => {
+    const plate = document.getElementById('truckPlateInput').value.trim();
+    const capacity = document.getElementById('truckCapacityInput').value;
+    if (!plate || !capacity) { alert('Please fill in both fields.'); return; }
+    const btn = document.getElementById('assignTruckConfirm');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      const res = await fetch(`/admin/drivers/${assignTruckDriverId}/assign-truck`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plate_no: plate, capacity: parseFloat(capacity) }),
+      });
+      const json = await res.json();
+      if (json.status === 'success') {
+        document.getElementById('assignTruckModal').classList.remove('modal--open');
+        loadDrivers();
+      } else {
+        alert(json.message);
+      }
+    } catch (e) {
+      alert('Failed to assign truck. Please try again.');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Assign Truck';
+    }
   });
 
   loadDrivers();
