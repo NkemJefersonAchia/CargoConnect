@@ -239,6 +239,12 @@ def list_all_notifications():
     notes = Notification.query.order_by(Notification.sent_at.desc()).limit(100).all()
     return success([_serialize_notification(n) for n in notes])
 
+@admin_bp.route("/track-drivers")
+@login_required
+@require_admin
+def track_drivers():
+    """Render the live fleet tracking simulation map."""
+    return render_template("admin_map.html", user=current_user)
 
 def _serialize_user(u):
     """Serialize a user record to dict."""
