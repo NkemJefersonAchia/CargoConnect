@@ -15,11 +15,11 @@ def build_app_with_dashboards():
     def dashboard():
         return "admin"
 
-    @driver_bp.route("/dashboard")
+    @driver_bp.route("/dashboard", endpoint="dashboard")
     def dashboard_driver():
         return "driver"
 
-    @customer_bp.route("/dashboard")
+    @customer_bp.route("/dashboard", endpoint="dashboard")
     def dashboard_customer():
         return "customer"
 
