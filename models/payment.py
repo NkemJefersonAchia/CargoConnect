@@ -12,7 +12,7 @@ class Payment(db.Model):
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     method = db.Column(db.String(50), default="MoMo")
     status = db.Column(
-        db.Enum("pending", "paid", "failed", name="payment_status"),
+        db.Enum("pending", "paid", "failed", "success", name="payment_status"),
         default="pending",
     )
     paid_at = db.Column(db.DateTime, nullable=True)

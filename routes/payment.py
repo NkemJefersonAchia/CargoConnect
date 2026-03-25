@@ -128,7 +128,7 @@ def simulate_payment(booking_id):
             db.session.add(payment)
             db.session.flush()
 
-        if payment.status == "paid":
+        if payment.status in ("paid", "success"):
             return error("This booking has already been paid.")
 
         payment.status = "paid"
