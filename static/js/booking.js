@@ -39,12 +39,29 @@ async function loadActiveBooking() {
 
     if (json.status === 'success' && json.data) {
       const b = json.data;
-      const isPaid = b.payment_status === 'paid';
-      const payBtn = !isPaid
-        ? `<button class="btn btn--momo" onclick="openPaymentModal(${b.booking_id}, ${b.estimated_cost})">
-             <i class="fa-solid fa-mobile-screen-button"></i> Pay via MTN MoMo
-           </button>`
-        : `<span class="badge badge--paid">Paid</span>`;
+      
+      // Check if we JUST paid for this specific booking
+      const justPaidId = sessionStorage.getItem('justPaidBookingId');
+      const isJustPaid = (justPaidId == b.booking_id);
+      
+      // If the backend says paid, or if we locally know we just paid it
+      const isPaid = (b.payment_status === 'paid') || isJustPaid;
+
+      let actionHtml = '';
+      if (!isPaid) {
+        actionHtml = `<button class="btn btn--momo" onclick="openPaymentModal(${b.booking_id}, ${b.estimated_cost})"><i class="fa-solid fa-mobile-screen-button"></i> Pay with MoMo</button>`;
+      } else {
+        if (isJustPaid) {
+          // Show Paid badge initially, hide Track button
+          actionHtml = `
+            <span id="activePaidBadge" class="badge badge--paid">Paid</span>
+            <button id="activeTrackBtn" class="btn btn--action" style="display:none;" onclick="startMapTrackingSimulation()"><i class="fa-solid fa-location-dot"></i> Track Truck</button>
+          `;
+        } else {
+          // Show Track button normally for old bookings
+          actionHtml = `<button class="btn btn--action" onclick="startMapTrackingSimulation()"><i class="fa-solid fa-location-dot"></i> Track Truck</button>`;
+        }
+      }
 
       container.innerHTML = `
         <dl class="detail-list">
@@ -54,13 +71,22 @@ async function loadActiveBooking() {
           <dt>Dropoff</dt><dd>${b.dropoff_address}</dd>
           <dt>Cost</dt><dd>${Number(b.estimated_cost).toLocaleString()} RWF</dd>
         </dl>
-        <div class="btn-row" style="margin-top:1rem; gap:0.75rem; display:flex; flex-wrap:wrap; align-items:center;">
-          <a href="/track/${b.booking_id}" class="btn btn--action">
-            <i class="fa-solid fa-location-dot"></i> Track Truck
-          </a>
-          ${payBtn}
+        <div class="btn-row" style="margin-top:1rem; gap:0.75rem; display:flex;">
+          ${actionHtml}
         </div>
       `;
+
+      // Trigger the 3-second animation safely
+      if (isJustPaid) {
+        setTimeout(() => {
+          const badge = document.getElementById('activePaidBadge');
+          const trackBtn = document.getElementById('activeTrackBtn');
+          if (badge) badge.style.display = 'none';
+          if (trackBtn) trackBtn.style.display = 'inline-flex';
+          sessionStorage.removeItem('justPaidBookingId'); // Clear it so it doesn't animate twice
+        }, 3000);
+      }
+
     } else {
       container.innerHTML = `
         <div class="empty-state">
@@ -80,16 +106,36 @@ async function loadRecentBookings() {
     if (!tbody) return;
 
     if (json.status === 'success' && json.data.length > 0) {
+      
+      const justPaidId = sessionStorage.getItem('justPaidBookingId');
+
       tbody.innerHTML = json.data.map(b => {
-        const isPaid = b.payment_status === 'paid';
+        const isJustPaid = (justPaidId == b.booking_id);
+        const isPaid = (b.payment_status === 'paid') || isJustPaid;
         const canPay = !isPaid && (b.status === 'confirmed' || b.status === 'completed' || b.status === 'pending');
-        const actionCell = canPay
-          ? `<button class="btn btn--sm btn--momo" onclick="openPaymentModal(${b.booking_id}, ${b.estimated_cost})">
-               <i class="fa-solid fa-mobile-screen-button"></i> Pay
-             </button>`
-          : isPaid
-            ? `<span class="badge badge--paid">Paid</span>`
-            : `<a href="/track/${b.booking_id}" class="btn btn--sm btn--ghost">View</a>`;
+        
+        let actionCell = '';
+        if (canPay) {
+          actionCell = `<button class="btn btn--sm btn--momo" onclick="openPaymentModal(${b.booking_id}, ${b.estimated_cost})"><i class="fa-solid fa-mobile-screen-button"></i> Pay</button>`;
+        } else if (isPaid) {
+          if (isJustPaid) {
+            actionCell = `
+              <span id="recentPaidBadge-${b.booking_id}" class="badge badge--paid">Paid</span>
+              <button id="recentTrackBtn-${b.booking_id}" class="btn btn--sm btn--action" style="display:none;" onclick="startMapTrackingSimulation()"><i class="fa-solid fa-location-dot"></i> Track</button>
+            `;
+            // Trigger animation for the table row
+            setTimeout(() => {
+              const badge = document.getElementById(`recentPaidBadge-${b.booking_id}`);
+              const trackBtn = document.getElementById(`recentTrackBtn-${b.booking_id}`);
+              if (badge) badge.style.display = 'none';
+              if (trackBtn) trackBtn.style.display = 'inline-flex';
+            }, 3000);
+          } else {
+            actionCell = `<button class="btn btn--sm btn--action" onclick="startMapTrackingSimulation()"><i class="fa-solid fa-location-dot"></i> Track</button>`;
+          }
+        } else {
+          actionCell = `<a href="/track/${b.booking_id}" class="btn btn--sm btn--ghost">View</a>`;
+        }
 
         return `
           <tr>
@@ -129,7 +175,7 @@ async function loadNotifications() {
           listEl.innerHTML = items.map(n => `
             <div class="notification-item">
               <p class="notification-item__msg">${n.message}</p>
-              <p class="notification-item__time">${new Date(n.sent_at).toLocaleString('en-RW', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+              <p class="notification-item__time">${new Date(n.sent_at).toLocaleString()}</p>
             </div>
           `).join('');
         }
@@ -159,31 +205,15 @@ function setupSearchForm() {
     const dropoff = document.getElementById('dropoffAddress').value.trim();
     const weight = parseFloat(document.getElementById('cargoWeight').value) || 1;
 
-    const container = document.getElementById('truckResults');
-    const list = document.getElementById('truckList');
-    if (container && list) {
-      container.style.display = 'block';
-      list.innerHTML = '<p class="empty-state__text"><i class="fa-solid fa-spinner fa-spin"></i> Searching for available trucks...</p>';
-    }
-
     try {
       const res = await fetch('/booking/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          pickup_address: pickup,
-          dropoff_address: dropoff,
-          weight: weight,
-          pickup_lat: -1.9441,
-          pickup_lng: 30.0619,
-        }),
+        body: JSON.stringify({ pickup_address: pickup, dropoff_address: dropoff, weight: weight, pickup_lat: -1.9441, pickup_lng: 30.0619 }),
       });
       const json = await res.json();
-      if (json.status === 'success') {
-        displayTruckResults(json.data);
-      } else {
-        alert(json.message);
-      }
+      if (json.status === 'success') displayTruckResults(json.data);
+      else alert(json.message);
     } catch (e) { console.error(e); }
   });
 }
@@ -196,22 +226,21 @@ function displayTruckResults(drivers) {
   if (drivers.length === 0) {
     list.innerHTML = '<p class="empty-state__text">No available trucks found matching your criteria.</p>';
   } else {
-    list.innerHTML = drivers.map(d => `
+    // We attach the object directly to a global variable to avoid string quoting issues
+    window._tempDrivers = drivers; 
+    list.innerHTML = drivers.map((d, index) => `
       <article class="truck-card">
         <div class="truck-card__info">
           <p class="truck-card__name">${d.driver_name}</p>
           <div class="truck-card__meta">
-            <span class="truck-card__rating"><i class="fa-solid fa-star" style="color:#E85D04;font-size:0.85rem;"></i> ${d.rating.toFixed(1)}</span>
+            <span class="truck-card__rating"><i class="fa-solid fa-star" style="color:#E85D04;"></i> ${d.rating.toFixed(1)}</span>
             <span>Plate: ${d.plate_no}</span>
             <span>Capacity: ${d.capacity} tons</span>
-            ${d.distance_km ? `<span>~${d.distance_km} km away</span>` : ''}
           </div>
         </div>
         <div>
           <p class="truck-card__price">${Number(d.estimated_cost).toLocaleString()} RWF</p>
-          <button class="btn btn--action" style="margin-top:8px;" onclick="openBookingModal(${JSON.stringify(d).replace(/"/g, '&quot;')})">
-            Book This Truck
-          </button>
+          <button class="btn btn--action" style="margin-top:8px;" onclick="openBookingModal(window._tempDrivers[${index}])">Book</button>
         </div>
       </article>
     `).join('');
@@ -233,19 +262,17 @@ function setupModal() {
 
 function openBookingModal(driver) {
   selectedDriver = driver;
-  const details = document.getElementById('modalDetails');
   const pickup = document.getElementById('pickupAddress').value;
   const dropoff = document.getElementById('dropoffAddress').value;
   const scheduled = document.getElementById('scheduledTime').value;
 
-  details.innerHTML = `
+  document.getElementById('modalDetails').innerHTML = `
     <dl class="detail-list">
       <dt>Driver</dt><dd>${driver.driver_name}</dd>
-      <dt>Truck</dt><dd>${driver.plate_no} (${driver.capacity} tons)</dd>
+      <dt>Truck</dt><dd>${driver.plate_no}</dd>
       <dt>Pickup</dt><dd>${pickup}</dd>
       <dt>Dropoff</dt><dd>${dropoff}</dd>
-      <dt>Scheduled</dt><dd>${scheduled}</dd>
-      <dt>Estimated Cost</dt><dd>${Number(driver.estimated_cost).toLocaleString()} RWF</dd>
+      <dt>Cost</dt><dd>${Number(driver.estimated_cost).toLocaleString()} RWF</dd>
     </dl>
   `;
   document.getElementById('confirmModal').classList.add('modal--open');
@@ -258,20 +285,15 @@ function closeModal() {
 
 async function confirmBooking() {
   if (!selectedDriver) return;
-  const pickup = document.getElementById('pickupAddress').value;
-  const dropoff = document.getElementById('dropoffAddress').value;
-  const scheduled = document.getElementById('scheduledTime').value;
-
   try {
     const res = await fetch('/booking/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        truck_id: selectedDriver.truck_id,
-        driver_id: selectedDriver.driver_id,
-        pickup_address: pickup,
-        dropoff_address: dropoff,
-        scheduled_time: scheduled,
+        truck_id: selectedDriver.truck_id, driver_id: selectedDriver.driver_id,
+        pickup_address: document.getElementById('pickupAddress').value,
+        dropoff_address: document.getElementById('dropoffAddress').value,
+        scheduled_time: document.getElementById('scheduledTime').value,
         estimated_cost: selectedDriver.estimated_cost,
       }),
     });
@@ -279,12 +301,8 @@ async function confirmBooking() {
     if (json.status === 'success') {
       closeModal();
       alert('Booking created! The driver will confirm shortly.');
-      loadActiveBooking();
-      loadRecentBookings();
-      loadCustomerStats();
-    } else {
-      alert(json.message);
-    }
+      loadActiveBooking(); loadRecentBookings(); loadCustomerStats();
+    } else alert(json.message);
   } catch (e) { console.error(e); }
 }
 
@@ -294,73 +312,48 @@ let momoBookingId = null;
 let momoPin = '';
 
 function setupPaymentModal() {
-  const backdrop = document.getElementById('momoBackdrop');
-  if (backdrop) backdrop.addEventListener('click', closePaymentModal);
-
-  const cancelBtn = document.getElementById('momoCancelBtn');
-  if (cancelBtn) cancelBtn.addEventListener('click', closePaymentModal);
-
   const doneBtn = document.getElementById('momoDoneBtn');
-  if (doneBtn) doneBtn.addEventListener('click', closePaymentModal);
+  if (doneBtn) {
+    doneBtn.addEventListener('click', function () {
+      // 1. Mark this booking as 'just paid' in sessionStorage
+      sessionStorage.setItem('justPaidBookingId', momoBookingId);
+      // 2. Close modal (which triggers table reload)
+      closePaymentModal();
+    });
+  }
 
-  const clearBtn = document.getElementById('momoClear');
-  if (clearBtn) clearBtn.addEventListener('click', () => { momoPin = ''; updatePinDots(); });
-
-  const backBtn = document.getElementById('momoBack');
-  if (backBtn) backBtn.addEventListener('click', () => { momoPin = momoPin.slice(0, -1); updatePinDots(); });
-
-  // Digit keys
+  document.getElementById('momoBackdrop')?.addEventListener('click', closePaymentModal);
+  document.getElementById('momoCancelBtn')?.addEventListener('click', closePaymentModal);
+  document.getElementById('momoClear')?.addEventListener('click', () => { momoPin = ''; updatePinDots(); });
+  document.getElementById('momoBack')?.addEventListener('click', () => { momoPin = momoPin.slice(0, -1); updatePinDots(); });
   document.querySelectorAll('.momo-key[data-digit]').forEach(btn => {
     btn.addEventListener('click', function () {
-      if (momoPin.length < 4) {
-        momoPin += this.dataset.digit;
-        updatePinDots();
-      }
+      if (momoPin.length < 4) { momoPin += this.dataset.digit; updatePinDots(); }
     });
   });
-
-  const payBtn = document.getElementById('momoPayBtn');
-  if (payBtn) payBtn.addEventListener('click', submitPayment);
+  document.getElementById('momoPayBtn')?.addEventListener('click', submitPayment);
 }
 
 function openPaymentModal(bookingId, amount) {
-  momoBookingId = bookingId;
-  momoPin = '';
-  updatePinDots();
-
-  // Show amount and phone
+  momoBookingId = bookingId; momoPin = ''; updatePinDots();
   setEl('momoAmountLabel', Number(amount).toLocaleString() + ' RWF');
   setEl('momoSuccessAmount', Number(amount).toLocaleString() + ' RWF');
-
-  // Reset to PIN step
   document.getElementById('momoStepPin').style.display = '';
   document.getElementById('momoStepProcessing').style.display = 'none';
   document.getElementById('momoStepSuccess').style.display = 'none';
-
   document.getElementById('momoModal').style.display = 'flex';
 }
 
 function closePaymentModal() {
   document.getElementById('momoModal').style.display = 'none';
-  momoBookingId = null;
-  momoPin = '';
-  // Refresh data in case payment completed
-  loadActiveBooking();
-  loadRecentBookings();
-  loadNotifications();
-  loadCustomerStats();
+  momoBookingId = null; momoPin = '';
+  loadActiveBooking(); loadRecentBookings(); loadNotifications(); loadCustomerStats();
 }
 
 function updatePinDots() {
   for (let i = 0; i < 4; i++) {
     const dot = document.getElementById('momoDot' + i);
-    if (dot) {
-      if (i < momoPin.length) {
-        dot.classList.add('momo-dot--filled');
-      } else {
-        dot.classList.remove('momo-dot--filled');
-      }
-    }
+    if (dot) dot.classList.toggle('momo-dot--filled', i < momoPin.length);
   }
   const payBtn = document.getElementById('momoPayBtn');
   if (payBtn) payBtn.disabled = momoPin.length < 4;
@@ -368,38 +361,25 @@ function updatePinDots() {
 
 async function submitPayment() {
   if (!momoBookingId || momoPin.length < 4) return;
-
-  // Show processing step
   document.getElementById('momoStepPin').style.display = 'none';
   document.getElementById('momoStepProcessing').style.display = '';
-  document.getElementById('momoStepSuccess').style.display = 'none';
 
   try {
-    // Simulate processing delay (1.5s) for realism
     await new Promise(resolve => setTimeout(resolve, 1500));
-
     const res = await fetch(`/payment/simulate/${momoBookingId}`, { method: 'POST' });
     const json = await res.json();
-
     if (json.status === 'success') {
       document.getElementById('momoStepProcessing').style.display = 'none';
       document.getElementById('momoStepSuccess').style.display = '';
     } else {
       document.getElementById('momoStepProcessing').style.display = 'none';
       document.getElementById('momoStepPin').style.display = '';
-      alert(json.message || 'Payment failed. Please try again.');
+      alert(json.message);
     }
   } catch (e) {
-    console.error(e);
     document.getElementById('momoStepProcessing').style.display = 'none';
     document.getElementById('momoStepPin').style.display = '';
-    alert('Network error. Please try again.');
   }
 }
 
-// ── Utilities ────────────────────────────────────────────────
-
-function setEl(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
+function setEl(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }s
