@@ -303,6 +303,7 @@ async function confirmBooking() {
         pickup_address: document.getElementById('pickupAddress').value,
         dropoff_address: document.getElementById('dropoffAddress').value,
         scheduled_time: document.getElementById('scheduledTime').value,
+        cargo_weight: parseFloat(document.getElementById('cargoWeight').value) || 1.0,
         estimated_cost: selectedDriver.estimated_cost,
       }),
     });
