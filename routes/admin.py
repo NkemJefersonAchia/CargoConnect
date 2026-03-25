@@ -281,8 +281,8 @@ def _serialize_booking(b):
     payment = b.payment
     return {
         "booking_id": b.booking_id,
-        "customer_name": b.customer.user.user_name if b.customer else "",
-        "driver_name": b.driver.user.user_name if b.driver else "",
+        "customer_name": b.customer.user.user_name if b.customer and b.customer.user else "",
+        "driver_name": b.driver.user.user_name if b.driver and b.driver.user else "",
         "pickup_address": b.pickup_address,
         "dropoff_address": b.dropoff_address,
         "scheduled_time": b.scheduled_time.isoformat() if b.scheduled_time else None,
@@ -304,8 +304,8 @@ def _serialize_payment(p):
         "method": p.method or "MoMo",
         "status": p.status,
         "paid_at": p.paid_at.strftime("%Y-%m-%d %H:%M") if p.paid_at else None,
-        "customer_name": booking.customer.user.user_name if booking and booking.customer else "—",
-        "driver_name": booking.driver.user.user_name if booking and booking.driver else "—",
+        "customer_name": booking.customer.user.user_name if booking and booking.customer and booking.customer.user else "—",
+        "driver_name": booking.driver.user.user_name if booking and booking.driver and booking.driver.user else "—",
     }
 
 
