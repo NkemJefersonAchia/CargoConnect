@@ -158,7 +158,7 @@ def _serialize_booking(b):
         "estimated_cost": float(b.estimated_cost or 0),
         "status": b.status,
         "created_at": b.created_at.strftime("%Y-%m-%d") if b.created_at else "",
-        "driver_name": b.driver.user.user_name if b.driver else "",
+        "driver_name": b.driver.user.user_name if b.driver and b.driver.user else "",
         "plate_no": b.truck.plate_no if b.truck else "",
         "payment_status": b.payment.status if b.payment else None,
     }
