@@ -601,6 +601,7 @@
             }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 </head>
 <body class="light-mode">
 
@@ -819,6 +820,70 @@
         localStorage.removeItem('driverName');
         window.location.href = 'driver-auth.html';
     }
+
+    // Earnings and trips chart data (simulated)
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const earningsData = [12000, 18500, 9000, 22000, 15000, 27000, 19500];
+    const tripsData = [2, 3, 1, 4, 3, 5, 3];
+
+    // Earnings chart
+    const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+    new Chart(earningsCtx, {
+        type: 'bar',
+        data: {
+            labels: days,
+            datasets: [{
+                label: 'Earnings (RWF)',
+                data: earningsData,
+                backgroundColor: 'rgba(198, 93, 26, 0.7)',
+                borderColor: 'rgba(198, 93, 26, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: val => 'RWF ' + val.toLocaleString()
+                    }
+                }
+            }
+        }
+    });
+
+    // Trips chart
+    const tripsCtx = document.getElementById('tripsChart').getContext('2d');
+    new Chart(tripsCtx, {
+        type: 'line',
+        data: {
+            labels: days,
+            datasets: [{
+                label: 'Trips',
+                data: tripsData,
+                borderColor: 'rgba(15, 42, 68, 1)',
+                backgroundColor: 'rgba(15, 42, 68, 0.1)',
+                borderWidth: 2,
+                pointRadius: 4,
+                pointBackgroundColor: 'rgba(15, 42, 68, 1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>
