@@ -45,7 +45,7 @@ async function loadActiveBooking() {
       const isJustPaid = (justPaidId == b.booking_id);
       
       // If the backend says paid, or if we locally know we just paid it
-      const isPaid = (b.payment_status === 'paid') || isJustPaid;
+      const isPaid = (b.payment_status === 'paid' || b.payment_status === 'success') || isJustPaid;
 
       let actionHtml = '';
       if (!isPaid) {
@@ -115,7 +115,7 @@ async function loadRecentBookings() {
 
       tbody.innerHTML = json.data.map(b => {
         const isJustPaid = (justPaidId == b.booking_id);
-        const isPaid = (b.payment_status === 'paid') || isJustPaid;
+        const isPaid = (b.payment_status === 'paid' || b.payment_status === 'success') || isJustPaid;
         const canPay = !isPaid && (b.status === 'confirmed' || b.status === 'completed' || b.status === 'pending');
         
         let actionCell = '';
