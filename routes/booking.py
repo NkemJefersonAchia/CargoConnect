@@ -159,7 +159,11 @@ def create_booking():
         )
         db.session.add(note)
 
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return error("Failed to save booking. Please try again.", 500)
     return success({"booking_id": booking.booking_id}, "Booking created successfully.")
 
 
@@ -193,7 +197,7 @@ def _serialize_booking(b):
         "estimated_cost": float(b.estimated_cost) if b.estimated_cost else 0,
         "status": b.status,
         "created_at": b.created_at.isoformat() if b.created_at else None,
-        "driver_name": b.driver.user.user_name if b.driver else None,
+        "driver_name": b.driver.user.user_name if b.driver and b.driver.user else None,
         "plate_no": b.truck.plate_no if b.truck else None,
         "customer_name": b.customer.user.user_name if b.customer else None,
     }

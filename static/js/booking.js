@@ -292,6 +292,8 @@ function closeModal() {
 
 async function confirmBooking() {
   if (!selectedDriver) return;
+  const btn = document.getElementById('modalConfirm');
+  if (btn) { btn.disabled = true; btn.textContent = 'Booking…'; }
   try {
     const res = await fetch('/booking/create', {
       method: 'POST',
@@ -304,13 +306,21 @@ async function confirmBooking() {
         estimated_cost: selectedDriver.estimated_cost,
       }),
     });
-    const json = await res.json();
+    let json;
+    try { json = await res.json(); } catch (_) { throw new Error('Server error (' + res.status + '). Please try again.'); }
     if (json.status === 'success') {
       closeModal();
       alert('Booking created! The driver will confirm shortly.');
       loadActiveBooking(); loadRecentBookings(); loadCustomerStats();
-    } else alert(json.message);
-  } catch (e) { console.error(e); }
+    } else {
+      alert(json.message || 'Booking failed. Please try again.');
+    }
+  } catch (e) {
+    console.error(e);
+    alert(e.message || 'Could not connect. Please try again.');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Confirm Booking'; }
+  }
 }
 
 // ── MTN MoMo Payment Modal ───────────────────────────────────
