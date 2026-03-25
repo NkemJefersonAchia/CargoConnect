@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
+from sqlalchemy.orm import joinedload
 from models import db
 from models.customer import Customer
 from models.booking import Booking
@@ -69,7 +70,16 @@ def stats():
 def active_booking():
     """Return the customer's current confirmed booking if any."""
     customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()
-    booking = Booking.query.filter_by(customer_id=customer.customer_id, status="confirmed").first()
+    booking = (
+        Booking.query
+        .filter_by(customer_id=customer.customer_id, status="confirmed")
+        .options(
+            joinedload(Booking.driver).joinedload(Driver.user),
+            joinedload(Booking.truck),
+            joinedload(Booking.payment),
+        )
+        .first()
+    )
     if not booking:
         return success(None, "No active booking.")
     return success(_serialize_booking(booking))
@@ -82,7 +92,13 @@ def recent_bookings():
     """Return the customer's five most recent bookings."""
     customer = Customer.query.filter_by(user_id=current_user.user_id).first_or_404()
     bookings = (
-        Booking.query.filter_by(customer_id=customer.customer_id)
+        Booking.query
+        .filter_by(customer_id=customer.customer_id)
+        .options(
+            joinedload(Booking.driver).joinedload(Driver.user),
+            joinedload(Booking.truck),
+            joinedload(Booking.payment),
+        )
         .order_by(Booking.created_at.desc())
         .limit(5)
         .all()
