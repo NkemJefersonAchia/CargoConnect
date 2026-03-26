@@ -7,6 +7,7 @@ from models.booking import Booking
 from models.notification import Notification
 from models.rating import Rating
 from models.driver import Driver
+from models.payment import Payment
 
 customer_bp = Blueprint("customer", __name__)
 
@@ -51,9 +52,11 @@ def stats():
         total = Booking.query.filter_by(customer_id=customer.customer_id).count()
         completed = Booking.query.filter_by(customer_id=customer.customer_id, status="completed").count()
         pending = Booking.query.filter_by(customer_id=customer.customer_id, status="pending").count()
-        spent = db.session.query(db.func.sum(Booking.estimated_cost)).filter(
+        spent = db.session.query(db.func.sum(Payment.amount)).join(
+            Booking, Payment.booking_id == Booking.booking_id
+        ).filter(
             Booking.customer_id == customer.customer_id,
-            Booking.status == "completed",
+            Payment.status.in_(["paid", "success"]),
         ).scalar() or 0
         return success({
             "total_bookings": total,

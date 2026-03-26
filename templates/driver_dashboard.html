@@ -6,7 +6,8 @@
   <li><a href="{{ url_for('driver.dashboard') }}" class="sidebar__link sidebar__link--active"><i class="fa-solid fa-house"></i> Dashboard</a></li>
   <li><a href="#jobs" class="sidebar__link"><i class="fa-solid fa-clipboard-list"></i> My Jobs</a></li>
   <li><a href="#truck" class="sidebar__link"><i class="fa-solid fa-truck"></i> My Truck</a></li>
-  <li><a href="#history" class="sidebar__link"><i class="fa-solid fa-money-bill-wave"></i> Earnings</a></li>
+  <li><a href="#earningsChart" class="sidebar__link"><i class="fa-solid fa-chart-line"></i> Earnings Trend</a></li>
+  <li><a href="#history" class="sidebar__link"><i class="fa-solid fa-money-bill-wave"></i> Job History</a></li>
   <li><a href="#profile" class="sidebar__link"><i class="fa-solid fa-user"></i> My Profile</a></li>
 {% endblock %}
 
@@ -72,6 +73,14 @@
   </div>
 </section>
 
+<!-- Earnings Trend Chart -->
+<section class="card" id="earningsChart">
+  <h2 class="card__title">Earnings Trend <span style="font-size:0.75rem;font-weight:400;color:var(--color-text-muted);">(last 8 weeks)</span></h2>
+  <div style="position:relative;height:260px;">
+    <canvas id="earningsCanvas"></canvas>
+  </div>
+</section>
+
 <!-- Job History -->
 <section class="card" id="history">
   <h2 class="card__title">Job History</h2>
@@ -124,6 +133,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
   const DRIVER_ID = {{ driver.driver_id }};
@@ -305,9 +315,92 @@
     return new Date(iso).toLocaleDateString('en-RW', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
+  let earningsChart = null;
+
+  async function loadEarningsChart() {
+    try {
+      const res = await fetch('/driver/earnings-trend');
+      const json = await res.json();
+      if (json.status !== 'success') return;
+      const data = json.data;
+      const labels = data.map(d => d.label);
+      const earnings = data.map(d => d.earnings);
+      const jobs = data.map(d => d.jobs);
+
+      const ctx = document.getElementById('earningsCanvas').getContext('2d');
+      if (earningsChart) earningsChart.destroy();
+
+      earningsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Earnings (RWF)',
+              data: earnings,
+              backgroundColor: 'rgba(232, 93, 4, 0.75)',
+              borderColor: '#E85D04',
+              borderWidth: 2,
+              borderRadius: 6,
+              yAxisID: 'yEarnings',
+            },
+            {
+              label: 'Jobs',
+              data: jobs,
+              type: 'line',
+              borderColor: '#0A1F44',
+              backgroundColor: 'rgba(10, 31, 68, 0.1)',
+              pointBackgroundColor: '#0A1F44',
+              pointRadius: 4,
+              tension: 0.35,
+              fill: false,
+              yAxisID: 'yJobs',
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  if (ctx.dataset.yAxisID === 'yEarnings')
+                    return ' ' + Number(ctx.raw).toLocaleString() + ' RWF';
+                  return ' ' + ctx.raw + ' job' + (ctx.raw !== 1 ? 's' : '');
+                },
+              },
+            },
+          },
+          scales: {
+            yEarnings: {
+              type: 'linear',
+              position: 'left',
+              beginAtZero: true,
+              ticks: {
+                callback: (v) => Number(v).toLocaleString(),
+              },
+              grid: { color: 'rgba(0,0,0,0.06)' },
+            },
+            yJobs: {
+              type: 'linear',
+              position: 'right',
+              beginAtZero: true,
+              ticks: { stepSize: 1 },
+              grid: { display: false },
+            },
+          },
+        },
+      });
+    } catch (e) { console.error(e); }
+  }
+
   loadDriverStats();
   loadActiveJob();
   loadPendingJobs();
   loadJobHistory();
+  loadEarningsChart();
 </script>
 {% endblock %}

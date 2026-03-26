@@ -78,6 +78,7 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 - Accept or decline individual jobs with one click
 - Share live GPS location to the customer using the browser's geolocation API
 - Mark trip as completed to trigger the payment flow
+- **Earnings trend chart** showing weekly earnings (RWF) and job counts over the last 8 weeks, rendered as a combined bar + line chart using Chart.js
 - View job history with past earnings and ratings received
 - My Truck section showing registered truck plate and capacity
 - Profile section showing licence, rating, and verification status
@@ -133,6 +134,7 @@ CargoConnect/
 |-- app.py                  # Entry point. Creates the Flask app and starts the server
 |-- extensions.py           # Shared Flask extensions (db, bcrypt, socketio, migrate, login)
 |-- seed.py                 # Script to populate the database with demo drivers
+|-- seed_ola.py             # Script to populate the database with data for driver Ola
 |-- requirements.txt        # All Python packages the app needs
 |-- .env                    # Your secret config. Never commit this file
 |-- .env.example            # Safe template showing what variables are needed
@@ -467,7 +469,8 @@ The seed drivers use the licence format `RW-DL-XXXXXX` and are attached to user 
 | Dashboard | `/driver/dashboard` | Full dashboard page |
 | My Jobs | `#jobs` | Incoming job requests |
 | My Truck | `#truck` | Truck plate and capacity |
-| Earnings | `#history` | Job history table |
+| Earnings Trend | `#earningsChart` | Weekly earnings bar + line chart (last 8 weeks) |
+| Job History | `#history` | Completed jobs table with earnings and ratings |
 | My Profile | `#profile` | Driver account info |
 
 ---
@@ -526,6 +529,7 @@ On error:
 | POST | `/driver/job/<id>/decline` | Decline a pending booking |
 | POST | `/driver/job/<id>/complete` | Mark a confirmed trip as completed |
 | GET | `/driver/job-history` | Last 10 completed jobs |
+| GET | `/driver/earnings-trend` | Weekly earnings and job counts for the last 8 weeks |
 
 ### Payments (`/payment`)
 
@@ -584,6 +588,22 @@ The booking search endpoint (`/booking/search`) was returning no results because
 ### MTN MoMo simulation
 
 The payment flow includes a simulation mode for development. When real MoMo credentials are not configured, the app simulates a successful payment and marks the booking as paid. This allows the full booking and payment flow to be tested without a live MoMo sandbox account.
+
+### Driver earnings trend chart
+
+A weekly earnings chart was added to the driver dashboard using **Chart.js 4**. The chart displays two datasets — a bar series for total RWF earned and a line series for job count — over the last 8 calendar weeks. It is powered by a new `/driver/earnings-trend` API endpoint that groups completed bookings by Monday-aligned calendar week and sums their `estimated_cost`. The chart renders in a 260 px tall canvas between the stat cards and the job history table.
+
+### Seed data for driver Ola
+
+A `seed_ola.py` script was added to populate the database with realistic test data for a single named driver. Running it creates driver **Ola Ndayisaba** (verified, available, licence `RW-DL-2021-0042`, truck `RAC 042 B`), four customer accounts, and 54 completed bookings spread across 12 weeks with payments and ratings. This gives the earnings chart real data to display immediately after seeding.
+
+To run:
+
+```bash
+python3 seed_ola.py
+```
+
+Login credentials after seeding: `ola.ndayisaba@cargoconnect.rw` / `password123`
 
 ### `.env` and `ca.pem` added to `.gitignore`
 
