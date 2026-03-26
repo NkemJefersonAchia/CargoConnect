@@ -181,6 +181,34 @@ def complete_job(booking_id):
     return success(None, "Trip completed.")
 
 
+@driver_bp.route("/earnings-trend", methods=["GET"])
+@login_required
+@require_driver
+def earnings_trend():
+    """Return weekly earnings for the last 8 weeks for charting."""
+    driver = Driver.query.filter_by(user_id=current_user.user_id).first_or_404()
+    weeks = []
+    now = datetime.utcnow()
+    for i in range(7, -1, -1):
+        week_start = (now - timedelta(weeks=i)).replace(hour=0, minute=0, second=0, microsecond=0)
+        # align to Monday of that week
+        week_start -= timedelta(days=week_start.weekday())
+        week_end = week_start + timedelta(days=7)
+        bookings = Booking.query.filter(
+            Booking.driver_id == driver.driver_id,
+            Booking.status == "completed",
+            Booking.created_at >= week_start,
+            Booking.created_at < week_end,
+        ).all()
+        total = sum(float(b.estimated_cost or 0) for b in bookings)
+        weeks.append({
+            "label": week_start.strftime("%b %d"),
+            "earnings": round(total, 2),
+            "jobs": len(bookings),
+        })
+    return success(weeks)
+
+
 @driver_bp.route("/job-history", methods=["GET"])
 @login_required
 @require_driver
