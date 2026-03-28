@@ -23,6 +23,7 @@ Watch the full walkthrough of CargoConnect in action:
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Database](#database)
+- [Deploying with Aiven (optional)](#deploying-with-aiven-optional)
 - [Requirements](#requirements)
 - [Setup on macOS](#setup-on-macos)
 - [Setup on Windows](#setup-on-windows)
@@ -229,6 +230,43 @@ python3 seed.py
 ```
 
 > **Note:** The development team used **Aiven** (a managed cloud PostgreSQL service) to share the same database during development and testing. Those connection details are confidential. If you need access to the team's database, contact **Nkem**.
+
+### Deploying with Aiven (optional)
+
+If you want to deploy the app with a cloud-hosted database instead of running PostgreSQL locally, you can create your own free Aiven account and link it to the app in a few steps.
+
+**Step 1 — Create an Aiven account**
+
+Go to [aiven.io](https://aiven.io) and sign up for a free account.
+
+**Step 2 — Create a PostgreSQL service**
+
+1. Click **Create Service**
+2. Select **PostgreSQL**
+3. Choose the **Free tier**
+4. Pick the region closest to you
+5. Click **Create Service** and wait for it to start
+
+**Step 3 — Get your connection details**
+
+Once the service is running, go to the **Overview** tab and find:
+- **Service URI** — this is your `DATABASE_URL`
+- **CA Certificate** — download this and save it as `ca.pem` in the project root
+
+**Step 4 — Update your `.env`**
+
+```env
+DATABASE_URL=postgresql://avnadmin:YOUR_PASSWORD@YOUR_HOST:YOUR_PORT/defaultdb?sslmode=require
+PGSSLROOTCERT=ca.pem
+```
+
+**Step 5 — Run the app**
+
+```bash
+python3 app.py
+```
+
+The app will connect to your Aiven database and create all tables automatically. Run `python3 seed.py` to populate it with demo data.
 
 ---
 
