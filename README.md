@@ -149,7 +149,7 @@ CargoConnect/
 |
 |-- app.py                  # Entry point. Creates the Flask app and starts the server
 |-- extensions.py           # Shared Flask extensions (db, bcrypt, socketio, migrate, login)
-|-- seed.py                 # Populates the database with demo drivers and Ola's booking history
+|-- seed.py                 # Populates the database with demo drivers
 |-- requirements.txt        # All Python packages the app needs
 |-- .env                    # Your secret config. Never commit this file
 |-- .env.example            # Safe template showing what variables are needed
