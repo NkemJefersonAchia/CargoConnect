@@ -337,6 +337,16 @@ Open your browser and go to: **http://localhost:5000**
 
 To stop the app: press `Ctrl + C`.
 
+### Step 7 -- Populate the database
+
+The app starts with empty tables. To populate the database with demo drivers and test data, open a new terminal, activate the virtual environment, and run:
+
+```bash
+python3 seed.py
+```
+
+> **You must run this before you can search for or book a truck.** Without it, no drivers will appear in the system.
+
 ---
 
 ## Setup on Windows
@@ -373,17 +383,23 @@ Open `.env` and set your local PostgreSQL connection:
 DATABASE_URL=postgresql://postgres:YOUR_POSTGRES_PASSWORD@localhost:5432/cargoconnect
 ```
 
-### Step 5 -- Add the SSL certificate
-
-Place the `ca.pem` file (shared by the project lead) in the root of the project folder, at the same level as `app.py`.
-
-### Step 6 -- Start the app
+### Step 5 -- Start the app
 
 ```cmd
 python app.py
 ```
 
 Open your browser and go to: **http://localhost:5000**
+
+### Step 6 -- Populate the database
+
+The app starts with empty tables. To populate the database with demo drivers and test data, open a new terminal, activate the virtual environment, and run:
+
+```cmd
+python seed.py
+```
+
+> **You must run this before you can search for or book a truck.** Without it, no drivers will appear in the system.
 
 ---
 
