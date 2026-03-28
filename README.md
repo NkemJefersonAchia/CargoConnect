@@ -255,51 +255,15 @@ PGPASSWORD=YOUR_PASSWORD psql "postgresql://avnadmin@pg-2b4808d0-alustudent-792a
 
 ## Setting Up Aiven (New Team Members)
 
-If you are a new team member who needs to connect to the CargoConnect cloud database, follow these steps. You do **not** need to create your own Aiven account — the database already exists and is shared. You only need the credentials.
+The database is already hosted and shared. You do **not** need to create your own Aiven account.
 
-### Step 1 — Get the credentials from the project lead
-
-Ask the project lead (Nkem) for:
-- The `DATABASE_URL` (full PostgreSQL connection string including password)
+Contact the project lead **Nkem** to get:
+- The `DATABASE_URL` connection string
 - The `ca.pem` SSL certificate file
 
-These are never committed to GitHub for security reasons.
+Add both to your `.env` as described in the [Environment Variables](#environment-variables) section and the app will connect automatically.
 
-### Step 2 — Sign up for Aiven (optional, only if you need your own instance)
-
-If for any reason you need to host your own PostgreSQL instance on Aiven:
-
-1. Go to **[aiven.io](https://aiven.io)** and click **Sign Up**
-2. Create a free account using your email
-3. Once logged in, click **Create Service**
-4. Choose **PostgreSQL**
-5. Select the **Free tier** (Hobbyist plan)
-6. Choose region **Google Cloud — Iowa (us-central1)** or the one closest to you
-7. Click **Create Service** and wait about 1–2 minutes for it to provision
-8. Once it is running, go to the **Overview** tab of your service
-9. Under **Connection Information**, copy the **Service URI** — this is your `DATABASE_URL`
-10. Under **SSL**, download the **CA Certificate** — this is your `ca.pem`
-11. Place `ca.pem` in the root of the project folder
-12. Paste the Service URI into your `.env` as `DATABASE_URL=...`
-
-> **Important:** The free tier expires after 30 days. For a shared team project, always use the existing hosted instance provided by the project lead.
-
-### Step 3 — Configure your `.env`
-
-```env
-DATABASE_URL=postgresql://avnadmin:PASSWORD@HOST:PORT/defaultdb?sslmode=require
-PGSSLROOTCERT=ca.pem
-```
-
-### Step 4 — Verify the connection
-
-Start the app with `python3 app.py`. If the database connects successfully you will see:
-
-```
-wsgi starting up on http://0.0.0.0:5000
-```
-
-If you see a connection error, double-check that `ca.pem` is in the project root and that the password in `DATABASE_URL` is correct.
+> If you need your own Aiven instance for any reason, sign up at [aiven.io](https://aiven.io), create a free PostgreSQL service, and copy the Service URI and CA Certificate from the Overview tab. Then contact **Nkem** to sync up.
 
 ---
 
