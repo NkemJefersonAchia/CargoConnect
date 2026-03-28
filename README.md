@@ -48,8 +48,8 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 
 | Role | What they do |
 |------|-------------|
-| **Customer** | Search for trucks, book a driver, track the truck live on a map, pay via MTN MoMo |
-| **Driver** | Go online/offline, accept or decline job requests, share live GPS location, complete trips |
+| **Customer** | Search for trucks, book a driver, track the truck live on a map, pay via simulated MTN MoMo |
+| **Driver** | Go online/offline, accept or decline job requests, share simulated GPS location, complete trips |
 | **Admin** | Verify drivers, manage all users and bookings, view platform-wide statistics |
 
 ---
@@ -61,9 +61,9 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 3. The app finds **available, verified drivers** nearby using the Haversine distance formula
 4. The customer picks a driver and confirms the booking
 5. The **driver** gets a notification, reviews the job, and accepts it
-6. The customer can **track the truck live** on a Leaflet map as the driver shares GPS updates
+6. The customer can **track the truck live** on a Leaflet map as the driver shares simulated GPS updates
 7. When the trip is done, the driver marks it complete
-8. Payment is sent via **MTN MoMo** and both parties are notified
+8. Payment is processed via a **simulated MTN MoMo** flow and both parties are notified
 9. The customer leaves a **star rating** for the driver
 
 ---
@@ -76,7 +76,7 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 - Book a truck by searching by cargo weight, pickup/dropoff address, and preferred date/time
 - Smart driver matching sorted by rating, with estimated cost shown upfront
   - Cost formula: `2,000 RWF base fare + 500 RWF per ton + 200 RWF per km`
-- Live GPS tracking of the driver on an interactive map with no page refresh needed
+- Simulated live GPS tracking of the driver on an interactive map with no page refresh needed
 - View full booking history with colour-coded status badges
 - Receive in-app notifications (booking confirmed, trip completed, payment updates) with mark-as-read
 - Rate the driver 1-5 stars after a completed trip with an optional written comment
@@ -87,7 +87,7 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 - Go online/offline with a large toggle switch on the dashboard
 - See incoming job requests with customer details and estimated earnings
 - Accept or decline individual jobs with one click
-- Share live GPS location to the customer using the browser's geolocation API
+- Share simulated GPS location to the customer using the browser's geolocation API
 - Mark trip as completed to trigger the payment flow
 - **Earnings trend chart** showing weekly earnings (RWF) and job counts over the last 8 weeks, rendered as a combined bar + line chart using Chart.js
 - View job history with past earnings and ratings received
@@ -102,19 +102,24 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 - View and filter all bookings by status (pending / confirmed / completed / cancelled)
 - Full booking detail modal showing payment and trip information
 
-### Payment (MTN MoMo)
-- Payment initiated via the MTN Mobile Money sandbox Collections API
-- Customer receives a payment prompt directly on their phone
-- Webhook callback automatically updates the payment record in the database
-- Both customer and driver are notified on payment success or failure
-- If the MoMo API is unreachable, the payment stays pending and a retry notification is sent
-- A local payment simulation mode is available for development and testing without a live MoMo key
+### Payment (Simulated MTN MoMo)
 
-### Real-Time GPS Tracking
-- Driver location updates travel over WebSocket using Socket.IO
-- Customer's map marker moves live without any page refresh
-- Each booking has its own private Socket.IO room for security
-- Works from any modern browser that supports the Geolocation API
+> **Note:** Payment is fully simulated. We did not integrate the live MTN MoMo API. Our facilitator instructed us to simulate this functionality for the scope of this project.
+
+- When a trip is completed, the app simulates a successful MTN MoMo payment internally
+- The payment record in the database is automatically marked as paid without calling any external API
+- Both the customer and driver receive in-app notifications confirming the simulated payment
+- The payment route (`/payment`) and data model are structured to mirror how a real MoMo Collections API integration would work, making it straightforward to swap in live credentials in the future
+- No real money is moved and no external payment service is contacted
+
+### GPS Tracking (Simulated)
+
+> **Note:** GPS tracking is simulated. We did not integrate a live device GPS or third-party tracking API. Our facilitator instructed us to simulate this functionality for the scope of this project.
+
+- The tracking page uses the browser's built-in `navigator.geolocation` API to read the device's current location
+- Driver location updates are sent over WebSocket using Socket.IO and displayed on a Leaflet map for the customer
+- Each booking has its own private Socket.IO room so location updates are scoped to the correct trip
+- In a production system, this would be replaced with a dedicated GPS hardware feed or a third-party tracking service, but the Socket.IO and map architecture is already in place to support that
 
 ---
 
@@ -131,7 +136,7 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 | Auth | Flask-Login + Flask-Bcrypt | Session management and industry-standard password hashing |
 | Frontend | Vanilla HTML5, CSS3, JavaScript | No framework overhead |
 | Maps | Leaflet.js + OpenStreetMap | Free, open-source, works well for Kigali |
-| Payments | MTN MoMo Collections API | The dominant mobile money platform in Rwanda |
+| Payments | Simulated MTN MoMo flow | Mirrors the MoMo Collections API structure; payment is simulated as instructed |
 | Fonts | Google Fonts (Syne + DM Sans) | Clean, modern typography |
 | Version control | Git + GitHub | Collaboration and full code history |
 
@@ -434,10 +439,10 @@ All secrets and settings go in `.env` in the project root. This file is never co
 | `SECRET_KEY` | Random string Flask uses to protect sessions | `my-secret-key-abc123` |
 | `DATABASE_URL` | Aiven PostgreSQL connection string | see Database section above |
 | `PGSSLROOTCERT` | Path to the Aiven SSL certificate | `ca.pem` |
-| `MOMO_API_KEY` | MTN MoMo sandbox API key | from sandbox.momodeveloper.mtn.com |
-| `MOMO_USER_ID` | MTN MoMo sandbox user ID | from sandbox.momodeveloper.mtn.com |
-| `MOMO_BASE_URL` | MoMo API server address | `https://sandbox.momodeveloper.mtn.com` |
-| `MOMO_SUBSCRIPTION_KEY` | MoMo subscription key | from sandbox.momodeveloper.mtn.com |
+| `MOMO_API_KEY` | Not required — payment is simulated | Leave blank or omit |
+| `MOMO_USER_ID` | Not required — payment is simulated | Leave blank or omit |
+| `MOMO_BASE_URL` | Not required — payment is simulated | Leave blank or omit |
+| `MOMO_SUBSCRIPTION_KEY` | Not required — payment is simulated | Leave blank or omit |
 | `FLASK_ENV` | Set to `development` while building | `development` |
 | `FLASK_DEBUG` | Set to `1` to see detailed error pages in browser | `1` |
 
@@ -646,9 +651,13 @@ A `seed.py` script was created and run to populate the database with 25 verified
 
 The booking search endpoint (`/booking/search`) was returning no results because drivers had no GPS coordinates set. The seed data fixes this. Drivers now appear when a customer searches from any Kigali address.
 
-### MTN MoMo simulation
+### Payment and GPS tracking are simulated
 
-The payment flow includes a simulation mode for development. When real MoMo credentials are not configured, the app simulates a successful payment and marks the booking as paid. This allows the full booking and payment flow to be tested without a live MoMo sandbox account.
+As instructed by the project facilitator, both MTN MoMo payment and GPS tracking are simulated rather than integrated with live external APIs.
+
+For payments, the app internally marks a booking as paid without contacting the MTN MoMo API. The route structure and data model mirror how a real Collections API integration would work.
+
+For GPS tracking, the browser's built-in geolocation API reads the device's current position. That location is then broadcast over Socket.IO to the customer's map in real time. No third-party GPS service or hardware feed is used.
 
 ### Driver earnings trend chart
 
