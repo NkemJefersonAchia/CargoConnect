@@ -53,7 +53,7 @@ def create_app():
 
     @app.route("/")
     def index():
-        """Redirect"""
+        """Redirect root to the appropriate dashboard based on role."""
         if current_user.is_authenticated:
             if current_user.role == "admin":
                 return redirect(url_for("admin.dashboard"))
