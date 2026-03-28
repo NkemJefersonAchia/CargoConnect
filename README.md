@@ -149,8 +149,7 @@ CargoConnect/
 |
 |-- app.py                  # Entry point. Creates the Flask app and starts the server
 |-- extensions.py           # Shared Flask extensions (db, bcrypt, socketio, migrate, login)
-|-- seed.py                 # Script to populate the database with demo drivers
-|-- seed_ola.py             # Script to populate the database with data for driver Ola
+|-- seed.py                 # Populates the database with demo drivers and Ola's booking history
 |-- requirements.txt        # All Python packages the app needs
 |-- .env                    # Your secret config. Never commit this file
 |-- .env.example            # Safe template showing what variables are needed
@@ -613,15 +612,9 @@ For GPS tracking, the browser's built-in geolocation API reads the device's curr
 
 A weekly earnings chart was added to the driver dashboard using **Chart.js 4**. The chart displays two datasets — a bar series for total RWF earned and a line series for job count — over the last 8 calendar weeks. It is powered by a new `/driver/earnings-trend` API endpoint that groups completed bookings by Monday-aligned calendar week and sums their `estimated_cost`. The chart renders in a 260 px tall canvas between the stat cards and the job history table.
 
-### Seed data for driver Ola
+### Seed data merged into seed.py
 
-A `seed_ola.py` script was added to populate the database with realistic test data for a single named driver. Running it creates driver **Ola Ndayisaba** (verified, available, licence `RW-DL-2021-0042`, truck `RAC 042 B`), four customer accounts, and 54 completed bookings spread across 12 weeks with payments and ratings. This gives the earnings chart real data to display immediately after seeding.
-
-To run:
-
-```bash
-python3 seed_ola.py
-```
+Ola's booking history data was merged into `seed.py`. Running `python3 seed.py` now does everything in one step — creates the 25 demo drivers and creates driver **Ola Ndayisaba** (verified, licence `RW-DL-2021-0042`, truck `RAC 042 B`) with 4 customer accounts and 54 completed bookings spread across 12 weeks with payments and ratings.
 
 Login credentials after seeding: `ola.ndayisaba@cargoconnect.rw` / `password123`
 
@@ -664,15 +657,15 @@ Make sure `ca.pem` is in the project root and that `PGSSLROOTCERT=ca.pem` is in 
 
 ## Team Members
 
-| # | Member | Main Area | Key Files |
-|---|--------|-----------|-----------|
-| 1 | Nkem Jeferson Achia | Project Lead and Architecture | `app.py`, `extensions.py`, `config/`, `README.md` |
-| 2 | *(Add name)* | Database | All `models/*.py` files |
-| 3 | *(Add name)* | Auth and Admin | `routes/auth.py`, `routes/admin.py`, login/register/admin templates |
-| 4 | *(Add name)* | Customer Backend | `routes/customer.py`, `routes/booking.py` |
-| 5 | *(Add name)* | Customer Frontend | `templates/customer_dashboard.html`, `booking.js`, `dashboard.js`, `auth.js` |
-| 6 | *(Add name)* | Driver Dashboard | `routes/driver.py`, `driver_dashboard.html`, `driver_job.html` |
-| 7 | *(Add name)* | Tracking, Payments and CSS | `routes/tracking.py`, `routes/payment.py`, `track_booking.html`, `tracking.js`, `style.css` |
+| # | Member | Role | Email |
+|---|--------|------|-------|
+| 1 | Nkem Jeferson Achia | Team Lead / Backend | j.nkem@alustudent.com |
+| 2 | Muhammed Awwal Achuja | Backend Engineer | m.achuja@alustudent.com |
+| 3 | Cherish Yusuf | Project Manager | c.yusuf@alustudent.com |
+| 4 | Grace Karimi Njunge | Database Architect | g.njunge@alustudent.com |
+| 5 | Byusa M Martin De Poles | UI/UX Designer | m.byusa@alustudent.com |
+| 6 | Christian Mpano | Frontend Developer | c.mpano1@alustudent.com |
+| 7 | Teniola Olaleye | Frontend Developer | t.olaleye@alustudent.com |
 
 ---
 
