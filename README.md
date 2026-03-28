@@ -23,7 +23,6 @@ Watch the full walkthrough of CargoConnect in action:
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [Database](#database)
-- [Setting Up Aiven (New Team Members)](#setting-up-aiven-new-team-members)
 - [Requirements](#requirements)
 - [Setup on macOS](#setup-on-macos)
 - [Setup on Windows](#setup-on-windows)
@@ -130,7 +129,7 @@ CargoConnect is a web application that makes it easy to book a truck for moving 
 | Backend language | Python 3 | Readable, fast to build with, huge ecosystem |
 | Web framework | Flask | Lightweight and unopinionated |
 | Real-time | Flask-SocketIO + eventlet | WebSocket support for live GPS without polling |
-| Database | PostgreSQL (hosted on Aiven) | Reliable, production-grade, accessible to the whole team |
+| Database | PostgreSQL | Reliable, production-grade relational database |
 | ORM | SQLAlchemy + Flask-SQLAlchemy | Clean Python objects instead of raw SQL |
 | Schema migrations | Flask-Migrate (Alembic) | Safe, versioned database schema changes |
 | Auth | Flask-Login + Flask-Bcrypt | Session management and industry-standard password hashing |
@@ -209,61 +208,27 @@ CargoConnect/
 
 ## Database
 
-The database for this project is hosted on **Aiven**, a managed cloud PostgreSQL service. You do not need to install or run PostgreSQL locally. The database is shared across all team members and is always accessible as long as you have the correct credentials.
+The app uses a local **PostgreSQL** database. You need PostgreSQL installed on your machine before running the app.
 
-### What you need to connect
-
-To run the app, your `.env` file must have the following values. Ask the project lead for these:
-
-```
-DATABASE_URL=postgresql://avnadmin:PASSWORD@HOST:PORT/defaultdb?sslmode=require
-PGSSLROOTCERT=ca.pem
-```
-
-You also need the `ca.pem` file in the root of the project. This is the SSL certificate Aiven requires. It is not committed to the repo because it is a security file. Ask the project lead to share it with you directly.
-
-### Aiven connection details
-
-| Field | Value |
-|-------|-------|
-| Host | pg-2b4808d0-alustudent-792a.i.aivencloud.com |
-| Port | 22910 |
-| Database | defaultdb |
-| User | avnadmin |
-| SSL mode | require |
-
-The password is shared privately. Do not commit it to GitHub.
-
-### If you want to explore the database directly
-
-You can connect using any PostgreSQL client (TablePlus, DBeaver, psql) with the credentials above and the `ca.pem` file set as the SSL root certificate.
-
-Using psql from the terminal:
+Once PostgreSQL is running, create a database called `cargoconnect`:
 
 ```bash
-PGPASSWORD=YOUR_PASSWORD psql "postgresql://avnadmin@pg-2b4808d0-alustudent-792a.i.aivencloud.com:22910/defaultdb?sslmode=require&sslrootcert=ca.pem"
+psql -U postgres -c "CREATE DATABASE cargoconnect;"
 ```
 
-### To promote a user to admin via Aiven
+Then set your `DATABASE_URL` in `.env`:
+
+```env
+DATABASE_URL=postgresql://postgres:YOUR_POSTGRES_PASSWORD@localhost:5432/cargoconnect
+```
+
+The app will create all tables automatically on first run. To populate the database with demo drivers, run the seed script after starting the app:
 
 ```bash
-PGPASSWORD=YOUR_PASSWORD psql "postgresql://avnadmin@pg-2b4808d0-alustudent-792a.i.aivencloud.com:22910/defaultdb?sslmode=require&sslrootcert=ca.pem" \
-  -c "UPDATE users SET role = 'admin' WHERE user_email = 'your@email.com';"
+python3 seed.py
 ```
 
----
-
-## Setting Up Aiven (New Team Members)
-
-The database is already hosted and shared. You do **not** need to create your own Aiven account.
-
-Contact the project lead **Nkem** to get:
-- The `DATABASE_URL` connection string
-- The `ca.pem` SSL certificate file
-
-Add both to your `.env` as described in the [Environment Variables](#environment-variables) section and the app will connect automatically.
-
-> If you need your own Aiven instance for any reason, sign up at [aiven.io](https://aiven.io), create a free PostgreSQL service, and copy the Service URI and CA Certificate from the Overview tab. Then contact **Nkem** to sync up.
+> **Using the team's shared database?** The team uses a shared cloud database (Aiven) so we all work with the same data during development. If you need access to it, contact **Nkem**.
 
 ---
 
@@ -274,9 +239,8 @@ Make sure the following are installed on your computer before you start.
 | Tool | Minimum Version | Download Link |
 |------|----------------|---------------|
 | Python | 3.10 | python.org/downloads |
+| PostgreSQL | 13 or higher | postgresql.org/download |
 | Git | Any recent | git-scm.com |
-
-You do **not** need to install PostgreSQL locally. The database runs on Aiven.
 
 ---
 
@@ -314,18 +278,13 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Open `.env` and fill in the two values shared by the project lead:
+Open `.env` and set your local PostgreSQL connection:
 
 ```env
-DATABASE_URL=postgresql://avnadmin:PASSWORD@pg-2b4808d0-alustudent-792a.i.aivencloud.com:22910/defaultdb?sslmode=require
-PGSSLROOTCERT=ca.pem
+DATABASE_URL=postgresql://postgres:YOUR_POSTGRES_PASSWORD@localhost:5432/cargoconnect
 ```
 
-### Step 5 -- Add the SSL certificate
-
-Place the `ca.pem` file (shared by the project lead) in the root of the project folder, at the same level as `app.py`.
-
-### Step 6 -- Start the app
+### Step 5 -- Start the app
 
 ```bash
 python3 app.py
@@ -371,11 +330,10 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Open `.env` and fill in the two values shared by the project lead:
+Open `.env` and set your local PostgreSQL connection:
 
 ```env
-DATABASE_URL=postgresql://avnadmin:PASSWORD@pg-2b4808d0-alustudent-792a.i.aivencloud.com:22910/defaultdb?sslmode=require
-PGSSLROOTCERT=ca.pem
+DATABASE_URL=postgresql://postgres:YOUR_POSTGRES_PASSWORD@localhost:5432/cargoconnect
 ```
 
 ### Step 5 -- Add the SSL certificate
@@ -394,12 +352,11 @@ Open your browser and go to: **http://localhost:5000**
 
 ## Environment Variables
 
-The app only requires two variables in your `.env` file. Everything else has a working default.
+The app only requires one variable in your `.env` file. Everything else has a working default.
 
 | Variable | What it is |
 |----------|-----------|
-| `DATABASE_URL` | Aiven PostgreSQL connection string — get this from the project lead |
-| `PGSSLROOTCERT` | Path to the Aiven SSL certificate — set this to `ca.pem` |
+| `DATABASE_URL` | Your local PostgreSQL connection string |
 
 ---
 
