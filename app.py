@@ -27,7 +27,7 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        """Load user by ID for Flask-Login session management."""
+        """Load user by ID for Flask-Login"""
         try:
             return User.query.get(int(user_id))
         except Exception:
