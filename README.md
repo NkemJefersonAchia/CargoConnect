@@ -208,7 +208,7 @@ CargoConnect/
 
 ## Database
 
-The app uses a local **PostgreSQL** database. You need PostgreSQL installed on your machine before running the app.
+The app uses **PostgreSQL**. You can run it locally with your own PostgreSQL installation.
 
 Once PostgreSQL is running, create a database called `cargoconnect`:
 
@@ -222,13 +222,13 @@ Then set your `DATABASE_URL` in `.env`:
 DATABASE_URL=postgresql://postgres:YOUR_POSTGRES_PASSWORD@localhost:5432/cargoconnect
 ```
 
-The app will create all tables automatically on first run. To populate the database with demo drivers, run the seed script after starting the app:
+The app will create all tables automatically on first run. To populate the database with demo data, run:
 
 ```bash
 python3 seed.py
 ```
 
-> **Using the team's shared database?** The team uses a shared cloud database (Aiven) so we all work with the same data during development. If you need access to it, contact **Nkem**.
+> **Note:** The development team used **Aiven** (a managed cloud PostgreSQL service) to share the same database during development and testing. Those connection details are confidential. If you need access to the team's database, contact **Nkem**.
 
 ---
 
