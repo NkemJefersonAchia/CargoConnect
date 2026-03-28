@@ -350,10 +350,9 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Open `.env` and fill in the Aiven credentials shared by the project lead:
+Open `.env` and fill in the two values shared by the project lead:
 
 ```env
-SECRET_KEY=any-random-string-you-make-up
 DATABASE_URL=postgresql://avnadmin:PASSWORD@pg-2b4808d0-alustudent-792a.i.aivencloud.com:22910/defaultdb?sslmode=require
 PGSSLROOTCERT=ca.pem
 ```
@@ -408,10 +407,9 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Open `.env` and fill in the Aiven credentials shared by the project lead:
+Open `.env` and fill in the two values shared by the project lead:
 
 ```env
-SECRET_KEY=any-random-string-you-make-up
 DATABASE_URL=postgresql://avnadmin:PASSWORD@pg-2b4808d0-alustudent-792a.i.aivencloud.com:22910/defaultdb?sslmode=require
 PGSSLROOTCERT=ca.pem
 ```
@@ -432,19 +430,12 @@ Open your browser and go to: **http://localhost:5000**
 
 ## Environment Variables
 
-All secrets and settings go in `.env` in the project root. This file is never committed to GitHub.
+The app only requires two variables in your `.env` file. Everything else has a working default.
 
-| Variable | What it is | Example |
-|----------|-----------|---------|
-| `SECRET_KEY` | Random string Flask uses to protect sessions | `my-secret-key-abc123` |
-| `DATABASE_URL` | Aiven PostgreSQL connection string | see Database section above |
-| `PGSSLROOTCERT` | Path to the Aiven SSL certificate | `ca.pem` |
-| `MOMO_API_KEY` | Not required — payment is simulated | Leave blank or omit |
-| `MOMO_USER_ID` | Not required — payment is simulated | Leave blank or omit |
-| `MOMO_BASE_URL` | Not required — payment is simulated | Leave blank or omit |
-| `MOMO_SUBSCRIPTION_KEY` | Not required — payment is simulated | Leave blank or omit |
-| `FLASK_ENV` | Set to `development` while building | `development` |
-| `FLASK_DEBUG` | Set to `1` to see detailed error pages in browser | `1` |
+| Variable | What it is |
+|----------|-----------|
+| `DATABASE_URL` | Aiven PostgreSQL connection string — get this from the project lead |
+| `PGSSLROOTCERT` | Path to the Aiven SSL certificate — set this to `ca.pem` |
 
 ---
 
