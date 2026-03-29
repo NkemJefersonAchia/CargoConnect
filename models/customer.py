@@ -2,7 +2,7 @@ from models import db
 
 
 class Customer(db.Model):
-    """Customer profile linked to a user account."""
+    #Customer profile linked to a user account.
 
     __tablename__ = "customers"
 
