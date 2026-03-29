@@ -4,7 +4,7 @@ from models import db
 
 
 class User(UserMixin, db.Model):
-    """User account shared across all roles."""
+    #User account shared across all roles
 
     __tablename__ = "users"
 
