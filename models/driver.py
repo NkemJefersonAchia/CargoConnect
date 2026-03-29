@@ -3,7 +3,7 @@ from models import db
 
 
 class Driver(db.Model):
-    """Driver profile linked to a user account."""
+    #Driver profile linked to a user account
 
     __tablename__ = "drivers"
 
