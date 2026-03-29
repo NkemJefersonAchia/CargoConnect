@@ -4,7 +4,7 @@ from models import db
 
 
 class Booking(db.Model):
-    """Booking record linking customer, driver, and truck."""
+    #Booking record linking customer, driver, and truck.
 
     __tablename__ = "bookings"
 
