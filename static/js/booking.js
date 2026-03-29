@@ -1,4 +1,4 @@
-/* ── Booking Form, Truck Search & MoMo Payment ────────────── */
+/* ── Customer booking: stats, search, notifications, MoMo ─── */
 
 document.addEventListener('DOMContentLoaded', function () {
   loadCustomerStats();

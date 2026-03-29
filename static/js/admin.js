@@ -1,4 +1,4 @@
-/* ── Admin Panel Utilities ────────────────────────────────── */
+/* ── Admin UI: sidebar toggle, dates, API helpers ─────────── */
 
 document.addEventListener('DOMContentLoaded', function () {
   setupHamburger();

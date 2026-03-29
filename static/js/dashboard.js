@@ -1,4 +1,4 @@
-/* ── Shared Dashboard Utilities ──────────────────────────── */
+/* ── Dashboards: nav, money/date formatting, shared tables ─ */
 
 document.addEventListener('DOMContentLoaded', function () {
   setupHamburger();

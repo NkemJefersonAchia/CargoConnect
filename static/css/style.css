@@ -1,8 +1,8 @@
 /* ============================================================
-   CARGOCONNECT — GLOBAL STYLESHEET
+   CargoConnect — app-wide layout, components, and tokens
    ============================================================ */
 
-/* ── Design Tokens ─────────────────────────────────────────── */
+/* ── CSS custom properties (colors, type, radii) ──────────── */
 :root {
   --color-primary-navy: #0A1F44;
   --color-primary-orange: #E85D04;
