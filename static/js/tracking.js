@@ -1,4 +1,4 @@
-/* ── Live GPS Tracking — Customer View ───────────────────── */
+/* ── Customer tracking: map + Socket.IO location updates ──── */
 
 document.addEventListener('DOMContentLoaded', function () {
   initMap();

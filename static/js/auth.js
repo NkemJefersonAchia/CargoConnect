@@ -1,4 +1,4 @@
-/* ── Auth Page Logic ──────────────────────────────────────── */
+/* ── Login/register: role toggle and flash auto-dismiss ───── */
 
 document.addEventListener('DOMContentLoaded', function () {
   setupRoleToggle();
